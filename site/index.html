@@ -3,128 +3,134 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tab Butler – free Chrome extension to organise tabs, save memory and clean history</title>
-  <meta name="description" content="Tab Butler auto-sorts your Chrome tabs into colour groups, sleeps idle tabs to save memory, closes duplicates, saves sessions, tidies bookmarks and cleans junk history. Free, private, works offline.">
-  <meta property="og:title" content="Tab Butler – your tabs, finally organised">
-  <meta property="og:description" content="Free Chrome extension: auto tab groups, tab sleeping, duplicate closer, sessions, bookmark tidy-up and a browsing dashboard. 100% local.">
-  <meta property="og:image" content="/img/overview.png">
+  <title>Tab Butler — a calm, private home for your Chrome tabs</title>
+  <meta name="description" content="Tab Butler sorts Chrome tabs into colour groups, sleeps idle tabs to save memory, closes duplicates and saves sessions. Free. No servers, no network access — safe for work profiles.">
+  <meta property="og:title" content="Tab Butler — your tabs, beautifully in order">
+  <meta property="og:description" content="Free Chrome extension. Auto tab groups, sleeping tabs, sessions and a private browsing dashboard. Nothing leaves your computer.">
+  <meta property="og:image" content="https://tab-butler.vercel.app/img/overview.png">
+  <meta name="theme-color" content="#0b0b0f">
   <link rel="icon" href="/icon.svg">
-  <style>
-    :root { --bg:#fbfcfe; --text:#16181d; --muted:#5b6270; --line:#e6e9ef; --accent:#1a5fd0; --accent2:#eaf1ff; --card:#fff; }
-    * { box-sizing: border-box; }
-    body { margin:0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif; color:var(--text); background:var(--bg); line-height:1.55; }
-    a { color: var(--accent); }
-    .wrap { max-width: 1080px; margin: 0 auto; padding: 0 22px; }
-    header { display:flex; align-items:center; gap:10px; padding:18px 0; }
-    header b { font-size:18px; }
-    header nav { margin-left:auto; display:flex; gap:18px; font-size:15px; }
-    header nav a { color: var(--muted); text-decoration:none; }
-    .hero { display:grid; grid-template-columns: 1.05fr 1fr; gap:40px; align-items:center; padding:40px 0 30px; }
-    h1 { font-size: 46px; line-height:1.1; margin:0 0 16px; letter-spacing:-.02em; }
-    .lead { font-size:19px; color:var(--muted); margin:0 0 24px; }
-    .btn { display:inline-flex; align-items:center; gap:8px; padding:13px 20px; border-radius:10px; background:var(--accent); color:#fff; text-decoration:none; font-weight:600; font-size:16px; border:1px solid var(--accent); }
-    .btn.ghost { background:#fff; color:var(--text); border-color:var(--line); }
-    .badges { display:flex; gap:14px; flex-wrap:wrap; margin-top:18px; color:var(--muted); font-size:14px; }
-    .shot { width:100%; border-radius:14px; border:1px solid var(--line); box-shadow: 0 20px 50px -20px rgba(20,40,90,.35); background:#fff; }
-    section { padding: 56px 0; }
-    h2 { font-size: 32px; margin:0 0 10px; letter-spacing:-.01em; }
-    .sub { color:var(--muted); margin:0 0 28px; font-size:17px; }
-    .grid3 { display:grid; grid-template-columns: repeat(3, 1fr); gap:16px; }
-    .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; }
-    .card h3 { margin:6px 0 6px; font-size:17px; }
-    .card p { margin:0; color:var(--muted); font-size:15px; }
-    .emoji { font-size:26px; }
-    .steps { counter-reset: s; display:grid; gap:12px; }
-    .step { display:grid; grid-template-columns: 44px 1fr; gap:14px; align-items:start; }
-    .step::before { counter-increment: s; content: counter(s); width:36px; height:36px; border-radius:50%; background:var(--accent2); color:var(--accent); font-weight:700; display:grid; place-items:center; }
-    code { background:#f1f3f7; padding:2px 6px; border-radius:6px; font-size:14px; }
-    .two { display:grid; grid-template-columns: 1fr 1fr; gap:28px; align-items:center; }
-    details { border:1px solid var(--line); border-radius:12px; padding:14px 18px; background:#fff; margin-bottom:10px; }
-    summary { cursor:pointer; font-weight:600; }
-    footer { padding:30px 0 50px; color:var(--muted); font-size:14px; border-top:1px solid var(--line); }
-    .groups { display:flex; gap:8px; flex-wrap:wrap; margin: 4px 0 18px; }
-    .g { padding:4px 10px; border-radius:8px; color:#fff; font-size:13px; font-weight:600; }
-    @media (max-width: 860px) { .hero, .two, .grid3 { grid-template-columns: 1fr; } h1 { font-size:36px; } header nav { display:none; } }
-  </style>
+  <link rel="preload" href="/fonts/instrument-serif-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/Satoshi-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/site.css">
 </head>
 <body>
-  <div class="wrap">
-    <header><img src="/icon.svg" width="30" height="30" alt=""><b>Tab Butler</b>
-      <nav><a href="#features">Features</a><a href="#install">Install</a><a href="#privacy">Privacy</a><a href="#faq">FAQ</a><a href="https://github.com/NareshMuppalla/tab-butler">GitHub</a></nav>
-    </header>
-
-    <div class="hero">
-      <div>
-        <h1>Too many tabs? Let the butler tidy up.</h1>
-        <p class="lead">Tab Butler is a free Chrome extension that sorts your tabs into colour groups automatically, puts idle tabs to sleep so Chrome stops eating your memory, and shows where your browsing time goes.</p>
-        <div class="groups">
-          <span class="g" style="background:#d93025">Mail &amp; Chat</span><span class="g" style="background:#1a73e8">Work &amp; Docs</span><span class="g" style="background:#5f6368">Dev</span><span class="g" style="background:#a142f4">AI</span><span class="g" style="background:#188038">Jobs</span><span class="g" style="background:#d01884">Social</span><span class="g" style="background:#fa903e">Video</span><span class="g" style="background:#f9ab00">Shopping</span>
-        </div>
-        <a class="btn" href="/tab-butler.zip" download>⬇️ Download free</a>
-        <a class="btn ghost" href="#install">How to install (2 min)</a>
-        <div class="badges"><span>✅ Free forever</span><span>🔒 Nothing leaves your computer</span><span>⚡ Works on Chrome, Edge, Brave</span></div>
-      </div>
-      <img class="shot" src="/img/overview.png" alt="Tab Butler dashboard showing time by category and top sites">
+  <div class="aura" aria-hidden="true"></div>
+  <header class="nav">
+    <div class="wrap row">
+      <a href="/" class="brand"><img src="/logo.png" alt="" width="30" height="30"><span><b>Tab Butler</b><small>Built with Hermes</small></span></a>
+      <nav><a href="#features">Features</a><a href="#security">Security</a><a href="#install">Install</a><a href="#faq">FAQ</a></nav>
+      <a class="btn btn-gold btn-sm" href="/tab-butler.zip" download>Download free</a>
     </div>
+  </header>
 
-    <section id="features">
-      <h2>Everything your browser should do already</h2>
-      <p class="sub">One click, or fully automatic. You choose.</p>
-      <div class="grid3">
-        <div class="card"><div class="emoji">🗂️</div><h3>Auto tab groups</h3><p>New tabs drop into the right colour group: Mail, Work, Dev, AI, Jobs, Social, Shopping and more. Your own groups are never touched.</p></div>
-        <div class="card"><div class="emoji">😴</div><h3>Sleep idle tabs</h3><p>Tabs you haven't looked at for 30 minutes go to sleep and free up memory. They reload when you click them. Gmail, Meet and music stay awake.</p></div>
-        <div class="card"><div class="emoji">🧹</div><h3>Close duplicates</h3><p>The same page open three times? One click keeps one. Optionally stop duplicates from opening at all.</p></div>
-        <div class="card"><div class="emoji">💾</div><h3>Sessions</h3><p>Save a whole window as "Job hunt" or "Client work", close it, and bring it back later with the same groups.</p></div>
-        <div class="card"><div class="emoji">⭐</div><h3>Bookmark tidy-up</h3><p>Builds a neat copy of your bookmarks sorted into folders and finds duplicates. Your originals are never moved or deleted, and a backup is one click.</p></div>
-        <div class="card"><div class="emoji">📊</div><h3>Browsing dashboard</h3><p>See time per category and per site for the week, plus your most visited sites. Clean junk history (login pages, redirects, OTP pages) in one go.</p></div>
+  <main>
+    <section class="hero wrap">
+      <span class="pill"><span class="spark"></span>Free · Chrome, Edge &amp; Brave · v1.1</span>
+      <h1>Your tabs,<br><em>beautifully</em> in order.</h1>
+      <p class="lead">Tab Butler quietly sorts every tab into colour groups, puts idle tabs to sleep so Chrome stops eating your memory, and shows where your day goes. No servers. No accounts. Nothing leaves your computer.</p>
+      <div class="cta">
+        <a class="btn btn-gold" href="/tab-butler.zip" download><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>Download for Chrome</a>
+        <a class="btn" href="#install">Install in 2 minutes</a>
+      </div>
+      <div class="frame">
+        <div class="frame-bar"><i></i><i></i><i></i><span>Tab Butler — Dashboard</span></div>
+        <img src="/img/overview.png" alt="Tab Butler dashboard: time by category, daily rhythm and top sites" width="1800" height="1125">
+      </div>
+      <div class="groups" aria-label="Default categories">
+        <span style="--c:#e5675a">Mail &amp; Chat</span><span style="--c:#5b8def">Work &amp; Docs</span><span style="--c:#8a8f98">Dev</span><span style="--c:#9b7bea">AI</span><span style="--c:#4caf7d">Jobs</span><span style="--c:#d96ba8">Social</span><span style="--c:#e8894a">Video &amp; Music</span><span style="--c:#e8b931">Shopping</span><span style="--c:#3fb5c1">Money</span>
       </div>
     </section>
 
-    <section>
-      <div class="two">
-        <div>
-          <h2>Make it yours</h2>
-          <p class="sub">Rename categories, change colours, add your own sites (your company tools, your college portal) and reorder groups. Export your settings and share them with your team.</p>
-          <p>Keyboard shortcuts: <code>Alt+Shift+G</code> sort tabs · <code>Alt+Shift+D</code> close duplicates · <code>Alt+Shift+S</code> sleep tabs.</p>
-        </div>
-        <img class="shot" src="/img/settings.png" alt="Tab Butler settings with editable categories">
+    <section class="strip">
+      <div class="wrap stats">
+        <div><b>0</b><span>network requests</span></div>
+        <div><b>0</b><span>servers or accounts</span></div>
+        <div><b>6</b><span>install-time permissions</span></div>
+        <div><b>100%</b><span>yours to customise</span></div>
       </div>
     </section>
 
-    <section id="install">
-      <h2>Install in 2 minutes</h2>
-      <p class="sub">Tab Butler is not in the Chrome Web Store yet, so you add it yourself. It's safe and takes four steps.</p>
-      <div class="two">
-        <div class="steps">
-          <div class="step"><div><b>Download</b> <a href="/tab-butler.zip" download>tab-butler.zip</a> and double-click it to unzip. You get a folder called <code>tab-butler</code>. Keep it somewhere permanent, like Documents.</div></div>
-          <div class="step"><div>In Chrome, open <code>chrome://extensions</code> (copy it into the address bar).</div></div>
-          <div class="step"><div>Turn on <b>Developer mode</b> (switch at the top right).</div></div>
-          <div class="step"><div>Click <b>Load unpacked</b> and choose the <code>tab-butler</code> folder. Done! Click the puzzle icon 🧩 and pin Tab Butler.</div></div>
-        </div>
-        <img class="shot" src="/img/popup.png" alt="Tab Butler popup" style="max-width:340px;justify-self:center">
+    <section id="features" class="wrap">
+      <span class="eyebrow">What it does</span>
+      <h2>Everything your browser <em>should</em> do already.</h2>
+      <div class="bento">
+        <article class="tile big">
+          <div class="txt"><span class="ic"><svg viewBox="0 0 24 24"><path d="M13 13.74a2 2 0 0 1-2 0L2.5 8.87a1 1 0 0 1 0-1.74L11 2.26a2 2 0 0 1 2 0l8.5 4.87a1 1 0 0 1 0 1.74z"/><path d="m20 14.285 1.5.845a1 1 0 0 1 0 1.74L13 21.74a2 2 0 0 1-2 0l-8.5-4.87a1 1 0 0 1 0-1.74l1.5-.845"/></svg></span>
+          <h3>Auto tab groups</h3><p>Open a tab and it lands in the right colour group: Mail, Work, Dev, AI, Jobs, Social, Shopping. Groups follow the order you choose. Any group you make yourself is never touched.</p></div>
+          <img src="/img/tabs.png" alt="Open tabs arranged by category" loading="lazy">
+        </article>
+        <article class="tile"><span class="ic"><svg viewBox="0 0 24 24"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span><h3>Sleeping tabs</h3><p>Tabs idle for 30 minutes release their memory and wake when you click them. Calls, music and chat stay awake.</p></article>
+        <article class="tile"><span class="ic"><svg viewBox="0 0 24 24"><path d="m12 12 6 6"/><path d="m12 18 6-6"/><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></span><h3>No more duplicates</h3><p>One click closes repeat copies of the same page, or have Tab Butler stop them from opening at all.</p></article>
+        <article class="tile"><span class="ic"><svg viewBox="0 0 24 24"><rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h2"/><path d="M20 8v11a2 2 0 0 1-2 2h-2"/><path d="m9 15 3-3 3 3"/><path d="M12 12v9"/></svg></span><h3>Sessions</h3><p>Park a whole window as "Job hunt" or "Client work" and bring it back later, groups included.</p></article>
+        <article class="tile"><span class="ic"><svg viewBox="0 0 24 24"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg></span><h3>A private dashboard</h3><p>Time by category, your daily rhythm and top sites, computed on your machine and never uploaded.</p></article>
+        <article class="tile"><span class="ic"><svg viewBox="0 0 24 24"><path d="M14 17H5"/><path d="M19 7h-9"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg></span><h3>Yours to shape</h3><p>Rename categories, pick colours, add your own sites and reorder groups. Export your setup and share it with your team.</p></article>
+        <article class="tile"><span class="ic"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg></span><h3>Bookmarks &amp; history</h3><p>Build a sorted copy of your bookmarks without touching the originals. Clear login and OTP junk from history after you review it.</p></article>
       </div>
     </section>
 
-    <section id="privacy">
-      <h2>Private by design</h2>
-      <p class="sub">Tab Butler has no server, no account, no analytics and no ads. Your tabs, history, bookmarks and time stats are stored only in your own Chrome and never uploaded. It never reads page content, passwords or form data. The code is open, so anyone can check.</p>
-      <div class="grid3">
-        <div class="card"><h3>Why it asks for "history"</h3><p>To show most-visited sites and to delete junk pages when you ask it to.</p></div>
-        <div class="card"><h3>Why it asks for "bookmarks"</h3><p>To count duplicates and create the sorted copy. It never deletes bookmarks.</p></div>
-        <div class="card"><h3>Why it asks for "tabs"</h3><p>To read tab addresses so it can group, sleep and de-duplicate them.</p></div>
+    <section id="security" class="wrap security">
+      <div class="sec-copy">
+        <span class="eyebrow">Built for work profiles</span>
+        <h2>Secure by <em>construction</em>, not by promise.</h2>
+        <p class="lead small">Tab Butler is built so it can't leak your work data. These limits are enforced by Chrome itself.</p>
+        <ul class="checks">
+          <li><b>No network access at all.</b> A strict security policy blocks every outgoing request, so there's nowhere for data to go.</li>
+          <li><b>Can't read web pages.</b> There are no content scripts and no site access, so it never sees email text, documents, forms, passwords or cookies.</li>
+          <li><b>Minimal permissions.</b> History and bookmarks are off by default. Chrome asks you before Tab Butler can use them, and you can switch them off at any time.</li>
+          <li><b>Private sites list.</b> Add your company's internal tools and they are never timed or shown in stats.</li>
+          <li><b>Profile-isolated.</b> Work and personal Chrome profiles keep separate data. It never runs in Incognito.</li>
+          <li><b>Open source.</b> Every line is on GitHub for you or your IT team to review.</li>
+        </ul>
+      </div>
+      <div class="frame small-frame"><div class="frame-bar"><i></i><i></i><i></i><span>Privacy &amp; security</span></div><img src="/img/privacy.png" alt="Privacy and security page in Tab Butler" loading="lazy"></div>
+    </section>
+
+    <section class="wrap duo">
+      <div class="frame popup-frame"><img src="/img/popup.png" alt="Tab Butler toolbar popup" loading="lazy"></div>
+      <div>
+        <span class="eyebrow">One click away</span>
+        <h2>A butler in your <em>toolbar</em>.</h2>
+        <p class="lead small">Live counts of tabs, sleeping tabs and duplicates, with one gold button that tidies everything. Shortcuts too:</p>
+        <div class="kbds"><span><kbd>⌥</kbd><kbd>⇧</kbd><kbd>G</kbd> Tidy tabs</span><span><kbd>⌥</kbd><kbd>⇧</kbd><kbd>D</kbd> Close duplicates</span><span><kbd>⌥</kbd><kbd>⇧</kbd><kbd>S</kbd> Sleep tabs</span></div>
+        <p class="muted tiny">On Windows use Alt + Shift.</p>
       </div>
     </section>
 
-    <section id="faq">
-      <h2>Questions</h2>
-      <details><summary>Will it close my tabs or lose my work?</summary><p>No. Sorting only moves tabs into groups. Sleeping keeps the tab in place; it reloads when you click it (like Chrome's own Memory Saver). Tabs are only closed when you click "Close duplicates" or "Close all" yourself.</p></details>
-      <details><summary>Does it work with many Chrome profiles?</summary><p>Yes. Install it in each profile you want. Each profile keeps its own settings; use Export / Import settings to copy them across.</p></details>
-      <details><summary>I already use tab groups. Will it mess them up?</summary><p>No. Tab Butler only manages groups named after its own categories. Any group you create yourself is left exactly as it is.</p></details>
-      <details><summary>Chrome shows "Disable developer mode extensions". Is that a problem?</summary><p>That's Chrome's standard notice for extensions installed outside the Web Store. Click the X to dismiss it; Tab Butler keeps working.</p></details>
-      <details><summary>How do I remove it?</summary><p>Go to <code>chrome://extensions</code> and click Remove on Tab Butler. Your tabs, bookmarks and history stay as they are.</p></details>
+    <section id="install" class="wrap">
+      <span class="eyebrow">Install</span>
+      <h2>Ready in <em>two minutes</em>.</h2>
+      <p class="lead small">Tab Butler isn't on the Chrome Web Store yet, so it's added in developer mode. That's safe and takes four steps.</p>
+      <ol class="steps">
+        <li><b>Download</b><span>Get <a href="/tab-butler.zip" download>tab-butler.zip</a> and unzip it. Move the <code>tab-butler</code> folder somewhere it can stay, like Documents.</span></li>
+        <li><b>Open extensions</b><span>Paste <code>chrome://extensions</code> into the address bar.</span></li>
+        <li><b>Developer mode</b><span>Turn on the <em>Developer mode</em> switch, top right.</span></li>
+        <li><b>Load unpacked</b><span>Choose the <code>tab-butler</code> folder, then pin it from the puzzle icon.</span></li>
+      </ol>
     </section>
 
-    <footer>Tab Butler is free and <a href="https://github.com/NareshMuppalla/tab-butler">open source on GitHub</a>. Made by Naresh Muppalla in Bengaluru. · <a href="/privacy.html">Privacy policy</a></footer>
-  </div>
+    <section id="faq" class="wrap faq">
+      <span class="eyebrow">Questions</span>
+      <h2>Good to <em>know</em>.</h2>
+      <details><summary>Can I use it in my work Chrome profile?</summary><p>Yes. It can't read pages and has no network access, so work content can't leave your computer. Each profile keeps its own data. If your company manages Chrome, IT may block extensions installed in developer mode. In that case, ask them to allow it (the code is open for review), or wait for the Chrome Web Store listing.</p></details>
+      <details><summary>Will it close my tabs or lose my work?</summary><p>No. Sorting only moves tabs into groups. A sleeping tab stays in place and reloads when you click it, the same as Chrome's Memory Saver. Tabs are only closed when you press "Close duplicates" or "Close all" yourself.</p></details>
+      <details><summary>Will it mess up the tab groups I already have?</summary><p>Never. Tab Butler only manages groups named after its own categories. Groups you create are left exactly as they are.</p></details>
+      <details><summary>What data does it store?</summary><p>Your settings, saved sessions and minutes per site name, stored in this Chrome profile only. Page titles and full addresses are never stored for stats. "Erase Tab Butler data" wipes it all in one click.</p></details>
+      <details><summary>Chrome shows "Disable developer mode extensions". Is that a problem?</summary><p>That's Chrome's standard notice for extensions installed outside the Web Store. Dismiss it and Tab Butler keeps working.</p></details>
+      <details><summary>How do I remove it?</summary><p>Open <code>chrome://extensions</code> and click Remove. Your tabs, bookmarks and history stay as they are.</p></details>
+    </section>
+
+    <section class="wrap final">
+      <img src="/logo.png" alt="" width="64" height="64">
+      <h2>Give Chrome a <em>butler</em>.</h2>
+      <p class="lead small">Free, private and open source.</p>
+      <div class="cta"><a class="btn btn-gold" href="/tab-butler.zip" download>Download free</a><a class="btn" href="https://github.com/NareshMuppalla/tab-butler">View source on GitHub</a></div>
+    </section>
+  </main>
+
+  <footer class="wrap foot">
+    <span>© 2026 Tab Butler · Built with Hermes Agent by Naresh Muppalla, Bengaluru.</span>
+    <span><a href="/privacy.html">Privacy</a><a href="https://github.com/NareshMuppalla/tab-butler">GitHub</a><a href="https://github.com/NareshMuppalla/tab-butler/issues">Support</a></span>
+  </footer>
 </body>
 </html>

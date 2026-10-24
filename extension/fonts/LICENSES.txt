@@ -1,0 +1,3 @@
+Instrument Serif and Geist Mono: SIL Open Font License 1.1 (https://openfontlicense.org).
+Satoshi: Indian Type Foundry Free Font License (https://www.fontshare.com/licenses/itf-ffl).
+Icons: Lucide (https://lucide.dev), ISC licence.

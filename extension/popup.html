@@ -2,45 +2,74 @@
 <html>
 <head>
   <meta charset="utf-8">
+  <script src="lib/theme-boot.js"></script>
   <link rel="stylesheet" href="ui.css">
   <style>
-    body { width: 340px; padding: 14px; }
-    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 10px 0 12px; }
-    .stat { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 8px 6px; text-align: center; }
-    .stat b { display: block; font-size: 18px; }
-    .stat span { font-size: 11px; color: var(--muted); }
-    .actions { display: grid; gap: 6px; }
-    .actions button { width: 100%; }
-    .kbd { margin-left: auto; font-size: 11px; color: var(--muted); }
-    .save { margin-top: 10px; display: grid; gap: 6px; }
-    .toggles { margin-top: 10px; border-top: 1px solid var(--line); padding-top: 6px; }
+    body { width: 368px; background: var(--bg); background-image: var(--glow); }
+    .wrap { padding: 16px 16px 14px; }
+    header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--line); border-radius: 14px; background: var(--card); overflow: hidden; margin-bottom: 12px; }
+    .stat { padding: 11px 10px 10px; }
+    .stat + .stat { border-left: 1px solid var(--line); }
+    .stat b { display: block; font: 500 22px/1.1 var(--mono); letter-spacing: -.02em; margin-top: 6px; }
+    .stat.hot b { color: var(--gold-ink); }
+    .hero-btn { width: 100%; justify-content: center; padding: 13px; font-size: 14.5px; border-radius: 12px; }
+    .actions { margin-top: 10px; border: 1px solid var(--line); border-radius: 14px; background: var(--card); padding: 4px; }
+    .action { width: 100%; display: flex; align-items: center; gap: 12px; padding: 10px; border: 0; background: transparent; color: var(--text); border-radius: 10px; cursor: pointer; text-align: left; font: inherit; transition: background .2s; }
+    .action:hover:not(:disabled) { background: var(--hover); }
+    .action:disabled { opacity: .45; cursor: default; }
+    .action .tile { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; background: var(--gold-soft); color: var(--gold-ink); flex: none; }
+    .action .t { font-weight: 600; font-size: 13.5px; }
+    .action .s { color: var(--muted); font-size: 11.5px; margin-top: 1px; }
+    .save { margin-top: 10px; border: 1px solid var(--line); border-radius: 14px; background: var(--card); padding: 12px; }
+    .save .row input[type=text] { padding: 8px 10px; }
+    footer { margin-top: 12px; display: grid; gap: 2px; }
+    .tog { display: flex; align-items: center; justify-content: space-between; padding: 7px 4px; font-size: 13px; color: var(--text-2); }
+    .foot { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; padding-top: 10px; border-top: 1px solid var(--line); }
   </style>
 </head>
 <body>
-  <div class="row"><img src="icons/32.png" width="22" height="22" alt=""><h2 style="margin:0">Tab Butler</h2><a class="btn small" id="open-dash" style="margin-left:auto;padding:5px 9px" href="#">Dashboard</a></div>
+<div class="wrap">
+  <header>
+    <img class="mark" src="icons/128.png" alt="">
+    <div class="grow"><div class="brand"><b>Tab Butler</b></div><div class="brand"><span class="by">Built with Hermes</span></div></div>
+    <button class="btn btn-sm" id="open-dash" title="Open dashboard"><i data-icon="layout-dashboard" data-size="15"></i>Dashboard</button>
+  </header>
+
   <div class="stats">
-    <div class="stat"><b id="s-tabs">–</b><span>tabs</span></div>
-    <div class="stat"><b id="s-wins">–</b><span>windows</span></div>
-    <div class="stat"><b id="s-sleep">–</b><span>sleeping</span></div>
-    <div class="stat"><b id="s-dupes">–</b><span>duplicates</span></div>
+    <div class="stat"><span class="eyebrow">Tabs</span><b id="s-tabs">–</b></div>
+    <div class="stat"><span class="eyebrow">Windows</span><b id="s-wins">–</b></div>
+    <div class="stat"><span class="eyebrow">Asleep</span><b id="s-sleep">–</b></div>
+    <div class="stat" id="dupe-stat"><span class="eyebrow">Dupes</span><b id="s-dupes">–</b></div>
   </div>
+
+  <button class="btn btn-gold hero-btn" id="group"><i data-icon="sparkles" data-size="17"></i>Tidy my tabs</button>
+
   <div class="actions">
-    <button class="primary" id="group">🗂️ Sort tabs into groups <span class="kbd">⌥⇧G</span></button>
-    <button id="dupes">🧹 Close duplicate tabs <span class="kbd">⌥⇧D</span></button>
-    <button id="sleep">😴 Sleep background tabs <span class="kbd">⌥⇧S</span></button>
-    <button id="ungroup">↩️ Remove Tab Butler groups</button>
+    <button class="action" id="dupes"><span class="tile"><i data-icon="copy-x" data-size="16"></i></span><span class="grow"><div class="t">Close duplicates</div><div class="s" id="dupes-sub">Keep one copy of each page</div></span><kbd class="kbd" data-k="D">⌥⇧D</kbd></button>
+    <button class="action" id="sleep"><span class="tile"><i data-icon="moon" data-size="16"></i></span><span class="grow"><div class="t">Sleep background tabs</div><div class="s">Free memory now · wakes on click</div></span><kbd class="kbd" data-k="S">⌥⇧S</kbd></button>
+    <button class="action" id="ungroup"><span class="tile"><i data-icon="undo-2" data-size="16"></i></span><span class="grow"><div class="t">Undo grouping</div><div class="s">Your own groups stay untouched</div></span></button>
   </div>
-  <div class="save card" style="padding:10px">
-    <b>Save this window as a session</b>
-    <input type="text" id="sess-name" placeholder="e.g. Job hunt, Client work">
-    <label class="row small muted"><input type="checkbox" id="sess-close"> Close the tabs after saving</label>
-    <button id="save">💾 Save session</button>
+
+  <div class="save">
+    <div class="row" style="margin-bottom:9px"><i data-icon="save" data-size="15"></i><span class="eyebrow" style="color:var(--text-2)">Save window as a session</span></div>
+    <div class="row">
+      <input type="text" id="sess-name" placeholder="e.g. Job hunt · Client work" maxlength="60">
+      <button class="btn btn-icon" id="save" title="Save session"><i data-icon="check" data-size="16"></i></button>
+    </div>
+    <label class="check" style="margin-top:9px"><input type="checkbox" id="sess-close">Close the tabs after saving</label>
   </div>
-  <div class="toggles">
-    <label class="switch"><span>Auto-sort new tabs</span><input type="checkbox" id="t-auto"></label>
-    <label class="switch"><span>Auto-sleep idle tabs (<span id="t-min">30</span> min)</span><input type="checkbox" id="t-sleep"></label>
-  </div>
-  <div class="toast" id="toast"></div>
-  <script type="module" src="popup.js"></script>
+
+  <footer>
+    <div class="tog"><span>Auto-sort new tabs</span><span class="switch"><input type="checkbox" id="t-auto" aria-label="Auto-sort new tabs"></span></div>
+    <div class="tog"><span>Auto-sleep after <span class="mono" id="t-min">30</span> min idle</span><span class="switch"><input type="checkbox" id="t-sleep" aria-label="Auto-sleep idle tabs"></span></div>
+    <div class="foot">
+      <span class="chip chip-ok"><i data-icon="shield-check" data-size="12"></i>Local only · no network</span>
+      <a href="#" id="open-settings" class="small muted row" style="gap:6px"><i data-icon="settings-2" data-size="14"></i>Settings</a>
+    </div>
+  </footer>
+</div>
+<div class="toast" id="toast"></div>
+<script type="module" src="popup.js"></script>
 </body>
 </html>

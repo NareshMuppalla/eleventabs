@@ -1,15 +1,21 @@
 // Generates clean marketing screenshots for the website.
 const { chromium } = require('playwright');
 const path = require('path'), fs = require('fs');
-const EXT = path.join(__dirname, '../extension');
+const SRC = path.join(__dirname, '../extension');
+const EXT = fs.mkdtempSync(path.join(process.env.TMPDIR || '/tmp', 'tb-ext-'));
+fs.cpSync(SRC, EXT, { recursive: true });
+{ const m = JSON.parse(fs.readFileSync(path.join(EXT, 'manifest.json'), 'utf8')); m.permissions.push(...(m.optional_permissions || [])); delete m.optional_permissions; fs.writeFileSync(path.join(EXT, 'manifest.json'), JSON.stringify(m)); }
+const SCHEME = process.env.SCHEME || 'dark';
+const SUFFIX = process.env.SUFFIX || '';
 const IMG = path.join(__dirname, '../site/img'); fs.mkdirSync(IMG, { recursive: true });
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 (async () => {
-  const ctx = await chromium.launchPersistentContext(fs.mkdtempSync(path.join(process.env.TMPDIR || '/tmp', 'tbs-')), { channel: 'chromium', headless: true, args: [`--disable-extensions-except=${EXT}`, `--load-extension=${EXT}`] });
+  const ctx = await chromium.launchPersistentContext(fs.mkdtempSync(path.join(process.env.TMPDIR || '/tmp', 'tbs-')), { channel: 'chromium', headless: true, colorScheme: SCHEME, deviceScaleFactor: 2, args: [`--disable-extensions-except=${EXT}`, `--load-extension=${EXT}`] });
   await ctx.route(/^https?:\/\//, r => {
+    if (r.request().url().includes('/s2/favicons')) return r.continue();
     const u = new URL(r.request().url());
-    if (u.pathname.includes('/s2/favicons')) return r.continue();
-    return r.fulfill({ contentType: 'text/html', body: `<title>${u.hostname}</title>` });
+    // real favicon so Chrome caches it for the local _favicon API
+    return r.fulfill({ contentType: 'text/html', body: `<title>${u.hostname}</title><link rel="icon" href="https://www.google.com/s2/favicons?sz=64&domain=${u.hostname}">` });
   });
   let [sw] = ctx.serviceWorkers(); if (!sw) sw = await ctx.waitForEvent('serviceworker');
   const id = sw.url().split('/')[2];
@@ -29,14 +35,17 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     const visits = { 'https://github.com/': 48, 'https://mail.google.com/': 41, 'https://claude.ai/': 36, 'https://www.linkedin.com/jobs/': 22, 'https://docs.google.com/': 19, 'https://www.youtube.com/': 17, 'https://chatgpt.com/': 14, 'https://www.naukri.com/': 11, 'https://vercel.com/': 9, 'https://www.amazon.in/': 6 };
     for (const [u, n] of Object.entries(visits)) for (let i = 0; i < n; i++) await chrome.history.addUrl({ url: u + '?v=' + i });
   });
+  await sleep(1500);
   const popup = await ctx.newPage();
-  await popup.setViewportSize({ width: 340, height: 545 });
+  await popup.goto(`chrome-extension://${id}/popup.html`); await sleep(500);
+  await popup.fill('#sess-name', 'Job hunt'); await popup.click('#save'); await sleep(800);
+  await popup.setViewportSize({ width: 368, height: 600 });
   await popup.goto(`chrome-extension://${id}/popup.html`); await sleep(800);
   await popup.click('#group'); await sleep(1500);
   await popup.reload(); await sleep(800);
-  await popup.screenshot({ path: path.join(IMG, 'popup.png'), fullPage: true });
+  await popup.screenshot({ path: path.join(IMG, `popup${SUFFIX}.png`), fullPage: true });
   const d = await ctx.newPage();
   await d.setViewportSize({ width: 1280, height: 800 });
-  for (const s of ['overview', 'tabs', 'settings']) { await d.goto(`chrome-extension://${id}/dashboard.html#${s}`); await sleep(2500); await d.screenshot({ path: path.join(IMG, s + '.png') }); }
+  for (const s of ['overview', 'tabs', 'settings', 'privacy', 'welcome', 'sessions']) { await d.goto(`chrome-extension://${id}/dashboard.html#${s}`); await sleep(2000); await d.screenshot({ path: path.join(IMG, s + SUFFIX + '.png') }); }
   await ctx.close(); console.log('shots done');
 })();

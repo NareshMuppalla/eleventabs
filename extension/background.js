@@ -1,5 +1,5 @@
 // Tab Butler service worker: grouping, duplicates, sleeping, sessions, time tracking.
-import { getConfig, categorize, isWebUrl, hostOf, normUrl, todayKey } from './lib/config.js';
+import { getConfig, categorize, isWebUrl, hostOf, normUrl, todayKey, isPrivate } from './lib/config.js';
 
 const SLEEP_ALARM = 'tb-sleep';
 const FLUSH_ALARM = 'tb-flush';
@@ -247,6 +247,8 @@ async function trackActive() {
   const [t] = await chrome.tabs.query({ active: true, windowId: w.id });
   const state = await chrome.idle.queryState(120);
   if (!t || !isWebUrl(t.url) || state !== 'active') return flushTime(null);
+  const { settings } = await getConfig();
+  if (!settings.trackTime || isPrivate(t.url, settings)) return flushTime(null);
   return flushTime({ host: hostOf(t.url), start: Date.now() });
 }
 
@@ -318,9 +320,12 @@ const handlers = {
     const dupes = await findDuplicates();
     return { tabs: tabs.length, windows: wins.length, sleeping: tabs.filter(t => t.discarded).length, duplicates: dupes.filter(t => !t.pinned && !t.active).length };
   },
-  flush: () => flushTime()
+  flush: () => flushTime(),
+  wipe: async () => { await chrome.storage.local.clear(); await chrome.storage.session.clear(); await seedActivity(); return {}; }
 };
-chrome.runtime.onMessage.addListener((msg, _sender, reply) => {
+chrome.runtime.onMessage.addListener((msg, sender, reply) => {
+  // Only our own popup/dashboard pages may call in. Web pages can't reach this (no externally_connectable).
+  if (sender.id !== chrome.runtime.id || !String(sender.url || '').startsWith(chrome.runtime.getURL(''))) return false;
   const fn = handlers[msg?.type];
   if (!fn) return false;
   Promise.resolve(fn(msg.payload || {})).then(r => reply({ ok: true, ...r }), e => reply({ ok: false, error: String(e?.message || e) }));

@@ -10,7 +10,16 @@ A free, private Chrome extension that keeps your browser tidy.
 - **Dashboard.** Shows time per category and per site, daily charts, your most-visited sites, and a junk-history clean-up (login pages, redirects, OTP pages).
 - **Fully configurable.** You can edit categories, colours, site patterns and their order, and export or import your settings.
 
-Everything is stored in `chrome.storage.local`. There's no server, no analytics and no network calls, except Google's favicon service for the small site icons.
+## Security model (safe for work profiles)
+
+- **No network:** the extension-page CSP sets `connect-src 'none'`, so Chrome blocks every request, and `test/e2e.js` checks this. Icons come from Chrome's local `_favicon` cache, and fonts and icons are bundled.
+- **Can't read pages:** there are no `host_permissions`, no content scripts, no `externally_connectable` and no web-accessible resources.
+- **Minimal install-time permissions:** `tabs`, `tabGroups`, `storage`, `alarms`, `idle` and `favicon`. `history` and `bookmarks` are *optional* and only requested when you use those features. You can turn them off again under Privacy & security.
+- **Messages accepted only from the extension's own pages**, after checking the sender id and URL. Imported settings are schema-validated, and every title or URL is HTML-escaped before rendering.
+- **Private sites list:** listed sites are never timed or shown. Stats store only site name and seconds, never titles or full URLs.
+- **Profile-isolated and `incognito: not_allowed`.**
+
+Everything is stored in `chrome.storage.local` inside the current Chrome profile.
 
 ## Install (unpacked)
 
@@ -23,6 +32,8 @@ Everything is stored in `chrome.storage.local`. There's no server, no analytics 
 ```
 cd test && NODE_ENV=development npm i --include=dev
 node e2e.js          # loads the extension in Chromium and tests every feature
+node gate.js         # real build: optional-permission gates, minimal manifest, web pages can't message it
+node make-icon-set.js # regenerates lib/icons.js from lucide-static
 node site-shots.js   # regenerates website screenshots
 node make-icons.js   # regenerates icons
 ../scripts/build.sh  # builds site/tab-butler.zip

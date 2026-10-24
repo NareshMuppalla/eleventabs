@@ -24,16 +24,15 @@ export const DEFAULT_SETTINGS = {
   sleepMinutes: 30,
   neverSleep: ['mail.google.com', 'web.whatsapp.com', 'meet.google.com', 'music.youtube.com', 'spotify.com'],
   trackTime: true,
+  privateSites: [],         // never tracked, never shown in stats (e.g. your company's internal tools)
+  theme: 'system',          // 'system' | 'dark' | 'light'
   otherGroupName: '',       // '' = leave unmatched tabs ungrouped
   junkPatterns: ['accounts.google.com', '/login', '/signin', '/sign-in', '/oauth', '/authorize', '/callback', '/redirect', 'otp', '/verify', '/logout', 'auth0.com', 'login.microsoftonline.com', 'about:blank']
 };
 
 export async function getConfig() {
   const { categories, settings } = await chrome.storage.local.get(['categories', 'settings']);
-  return {
-    categories: Array.isArray(categories) && categories.length ? categories : structuredClone(DEFAULT_CATEGORIES),
-    settings: { ...DEFAULT_SETTINGS, ...(settings || {}) }
-  };
+  return sanitizeConfig({ categories, settings });
 }
 
 export async function saveConfig({ categories, settings }) {
@@ -41,6 +40,43 @@ export async function saveConfig({ categories, settings }) {
   if (categories) patch.categories = categories;
   if (settings) patch.settings = settings;
   await chrome.storage.local.set(patch);
+}
+
+// Validate anything that comes from an import file or old storage before using it.
+const str = (v, max = 200) => String(v ?? '').slice(0, max);
+const list = (v, max = 300) => (Array.isArray(v) ? v : []).map(x => str(x, 200).trim()).filter(Boolean).slice(0, max);
+export function sanitizeConfig(cfg = {}) {
+  const cats = (Array.isArray(cfg.categories) ? cfg.categories : []).slice(0, 40).map((c, i) => ({
+    id: str(c?.id || 'c' + i, 64),
+    name: str(c?.name, 40).trim() || 'Untitled',
+    color: COLORS.includes(c?.color) ? c.color : 'grey',
+    patterns: list(c?.patterns)
+  }));
+  const s = { ...DEFAULT_SETTINGS };
+  const src = cfg.settings || {};
+  for (const k of ['autoGroup', 'collapseOtherGroups', 'dedupeOnOpen', 'sleepEnabled', 'trackTime']) if (typeof src[k] === 'boolean') s[k] = src[k];
+  for (const [k, lo, hi] of [['minTabsForGroup', 1, 10], ['sleepMinutes', 1, 1440]]) if (Number.isFinite(+src[k])) s[k] = Math.min(hi, Math.max(lo, Math.round(+src[k])));
+  for (const k of ['neverSleep', 'junkPatterns', 'privateSites']) if (Array.isArray(src[k])) s[k] = list(src[k]);
+  if (typeof src.otherGroupName === 'string') s.otherGroupName = str(src.otherGroupName, 40).trim();
+  if (['system', 'dark', 'light'].includes(src.theme)) s.theme = src.theme;
+  return { categories: cats.length ? cats : structuredClone(DEFAULT_CATEGORIES), settings: s };
+}
+
+export function isPrivate(url, settings) {
+  let h = ''; try { const u = new URL(url); h = (u.hostname.replace(/^www\./, '') + u.pathname).toLowerCase(); } catch { return false; }
+  return (settings.privateSites || []).some(p => p && h.includes(p.toLowerCase()));
+}
+
+// Favicons come from Chrome's own local cache (needs the "favicon" permission) — no network request.
+export function faviconUrl(pageUrl, size = 32) {
+  const u = new URL(chrome.runtime.getURL('/_favicon/'));
+  u.searchParams.set('pageUrl', pageUrl); u.searchParams.set('size', String(size));
+  return u.toString();
+}
+
+export function applyTheme(theme) {
+  const t = theme === 'dark' || theme === 'light' ? theme : (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+  document.documentElement.dataset.theme = t;
 }
 
 export function isWebUrl(url) {

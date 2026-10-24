@@ -1,0 +1,10 @@
+const { chromium } = require('playwright'); const path = require('path');
+(async () => { const b = await chromium.launch(); const url = 'file://' + path.join(__dirname, '../site/index.html');
+  const p = await b.newPage({ viewport: { width: 1440, height: 900 } });
+  await p.route('file:///**', r => { const u = new URL(r.request().url()); let f = u.pathname; if (!f.includes('/site/')) f = path.join(__dirname, '../site', f); return r.fulfill({ path: f }); });
+  await p.goto(url); await p.waitForTimeout(1200);
+  await p.screenshot({ path: path.join(__dirname, 'shots/site-full.png'), fullPage: true });
+  const m = await b.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2 });
+  await m.route('file:///**', r => { const u = new URL(r.request().url()); let f = u.pathname; if (!f.includes('/site/')) f = path.join(__dirname, '../site', f); return r.fulfill({ path: f }); });
+  await m.goto(url); await m.waitForTimeout(1000); await m.screenshot({ path: path.join(__dirname, 'shots/site-mobile.png'), fullPage: false });
+  await b.close(); })();

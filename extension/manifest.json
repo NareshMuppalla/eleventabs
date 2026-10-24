@@ -1,10 +1,12 @@
 {
   "manifest_version": 3,
-  "name": "Tab Butler – Tab Groups, Sleep & History",
+  "name": "Tab Butler — Tabs, Sleep & Focus",
   "short_name": "Tab Butler",
-  "version": "1.0.0",
-  "description": "Auto-sorts tabs into colour groups, closes duplicates, sleeps idle tabs to save memory, saves sessions, tidies bookmarks and cleans history. 100% local.",
-  "permissions": ["tabs", "tabGroups", "storage", "alarms", "bookmarks", "history", "idle"],
+  "version": "1.1.0",
+  "description": "Sorts tabs into colour groups, sleeps idle tabs to save memory, closes duplicates and saves sessions. Private: no servers, no network.",
+  "minimum_chrome_version": "116",
+  "permissions": ["tabs", "tabGroups", "storage", "alarms", "idle", "favicon"],
+  "optional_permissions": ["history", "bookmarks"],
   "background": { "service_worker": "background.js", "type": "module" },
   "action": {
     "default_popup": "popup.html",
@@ -13,6 +15,10 @@
   },
   "icons": { "16": "icons/16.png", "32": "icons/32.png", "48": "icons/48.png", "128": "icons/128.png" },
   "options_page": "dashboard.html#settings",
+  "incognito": "not_allowed",
+  "content_security_policy": {
+    "extension_pages": "default-src 'self'; script-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; connect-src 'none'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; font-src 'self'"
+  },
   "commands": {
     "group-now": { "suggested_key": { "default": "Alt+Shift+G" }, "description": "Sort all tabs into groups" },
     "close-duplicates": { "suggested_key": { "default": "Alt+Shift+D" }, "description": "Close duplicate tabs" },

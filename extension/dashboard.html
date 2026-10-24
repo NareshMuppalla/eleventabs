@@ -4,147 +4,242 @@
   <meta charset="utf-8">
   <title>Tab Butler</title>
   <link rel="icon" href="icons/32.png">
+  <script src="lib/theme-boot.js"></script>
   <link rel="stylesheet" href="ui.css">
   <style>
-    .layout { display: grid; grid-template-columns: 210px 1fr; min-height: 100vh; }
-    nav { align-self: start; border-right: 1px solid var(--line); padding: 18px 12px; background: var(--card); position: sticky; top: 0; height: 100vh; }
-    nav a { display: block; padding: 9px 12px; border-radius: 8px; color: var(--text); text-decoration: none; margin-bottom: 2px; }
-    nav a.active { background: var(--accent-2); color: var(--accent); font-weight: 600; }
-    main { padding: 24px 28px; max-width: 1100px; }
-    section { display: none; } section.active { display: block; }
-    .kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
-    .kpi b { font-size: 26px; display: block; }
-    .two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .catrow { display: grid; grid-template-columns: 140px 1fr 70px; gap: 10px; align-items: center; margin: 7px 0; }
-    .days { display: flex; align-items: flex-end; gap: 8px; height: 150px; padding-top: 8px; }
-    .day { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 4px; height: 100%; }
-    .day .stack { width: 100%; display: flex; flex-direction: column-reverse; border-radius: 6px; overflow: hidden; min-height: 2px; background: var(--accent-2); }
-    .catedit { display: grid; grid-template-columns: 170px 120px 1fr 36px; gap: 8px; align-items: start; padding: 8px 0; border-bottom: 1px solid var(--line); }
-    .list { max-height: 460px; overflow: auto; }
-    .hero { background: linear-gradient(135deg, var(--accent-2), transparent); }
-    @media (max-width: 860px) { .layout { grid-template-columns: 1fr; } nav { position: static; height: auto; display: flex; flex-wrap: wrap; } .two, .kpis { grid-template-columns: 1fr 1fr; } }
+    body { background-image: var(--glow); background-attachment: fixed; }
+    .layout { display: grid; grid-template-columns: 236px 1fr; min-height: 100vh; }
+    nav { position: sticky; top: 0; height: 100vh; padding: 22px 14px; border-right: 1px solid var(--line); display: flex; flex-direction: column; gap: 2px; background: color-mix(in srgb, var(--bg) 70%, transparent); backdrop-filter: blur(12px); }
+    nav .brand { padding: 0 8px 22px; }
+    nav a { display: flex; align-items: center; gap: 11px; padding: 9px 11px; border-radius: 10px; color: var(--text-2); font-weight: 550; font-size: 13.5px; transition: background .2s, color .2s; }
+    nav a .ic { color: var(--muted); transition: color .2s; }
+    nav a:hover { background: var(--hover); color: var(--text); }
+    nav a.active { background: var(--card-2); color: var(--text); box-shadow: inset 0 0 0 1px var(--line-2); }
+    nav a.active .ic { color: var(--gold); }
+    nav .group-label { margin: 16px 11px 6px; }
+    nav .bottom { margin-top: auto; padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); }
+    main { padding: 34px 44px 60px; max-width: 1180px; width: 100%; }
+    section { display: none; animation: rise .45s var(--ease); } section.active { display: block; }
+    @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+    .page-head { display: flex; align-items: flex-end; gap: 16px; margin-bottom: 26px; }
+    .page-head h1 { font: 400 44px/1.02 var(--serif); letter-spacing: -.02em; margin-top: 10px; }
+    .page-head p { color: var(--muted); margin: 8px 0 0; max-width: 620px; }
+    .kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-bottom: 14px; }
+    .kpi b { display: block; font: 500 32px/1 var(--mono); letter-spacing: -.03em; margin-top: 14px; }
+    .kpi .sub { color: var(--muted); font-size: 12.5px; margin-top: 6px; }
+    .kpi.gold b { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .grid2 > .card { min-width: 0; }
+    .catrow { display: grid; grid-template-columns: 150px 1fr 64px; gap: 14px; align-items: center; padding: 7px 0; }
+    .catrow .v { text-align: right; font: 500 12.5px var(--mono); color: var(--text-2); }
+    .days { display: flex; align-items: flex-end; gap: 10px; height: 190px; padding-top: 6px; }
+    .day { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 8px; height: 100%; }
+    .day .stack { width: 100%; max-width: 46px; display: flex; flex-direction: column-reverse; border-radius: 8px; overflow: hidden; min-height: 3px; background: var(--bg-2); gap: 2px; }
+    .day .stack span { display: block; }
+    .day .lbl { font: 500 10.5px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+    .day .tot { font: 500 11px var(--mono); color: var(--text-2); min-height: 14px; }
+    .site-row .v { font: 500 12.5px var(--mono); color: var(--text-2); white-space: nowrap; }
+    .empty { padding: 26px; text-align: center; color: var(--muted); border: 1px dashed var(--line-2); border-radius: 12px; }
+    .empty .ic { margin: 0 auto 10px; color: var(--gold); }
+    .gate { display: flex; align-items: center; gap: 16px; padding: 18px; border: 1px solid var(--gold-line); background: var(--gold-soft); border-radius: 14px; margin-bottom: 14px; }
+    .gate .ic { color: var(--gold); }
+    .tabgroup { margin-bottom: 14px; }
+    .tabgroup .card-head { margin-bottom: 6px; }
+    .tab-row .t { font-weight: 550; } .tab-row .h { color: var(--muted); font-size: 12px; width: 190px; text-align: right; }
+    .tab-row .x { opacity: 0; transition: opacity .2s; } .tab-row:hover .x { opacity: 1; }
+    .sess { display: flex; align-items: center; gap: 16px; }
+    .sess .icons { display: flex; } .sess .icons img { width: 18px; height: 18px; border-radius: 5px; margin-right: -4px; box-shadow: 0 0 0 2px var(--card); background: var(--card-2); }
+    .catedit { display: grid; grid-template-columns: 30px 180px 130px 1fr 34px; gap: 10px; align-items: start; padding: 12px 0; border-top: 1px solid var(--line); }
+    .catedit .mv { display: flex; flex-direction: column; gap: 2px; }
+    .catedit .mv button { padding: 2px; }
+    .seg { display: inline-flex; padding: 3px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg-2); }
+    .seg button { border: 0; background: transparent; color: var(--muted); font: 550 12.5px var(--sans); padding: 6px 11px; border-radius: 7px; cursor: pointer; display: inline-flex; gap: 6px; align-items: center; }
+    .seg button.on { background: var(--card); color: var(--text); box-shadow: 0 1px 2px rgba(0,0,0,.2), inset 0 0 0 1px var(--line-2); }
+    .hist-row input { accent-color: var(--gold); }
+    .scroll { max-height: 520px; overflow: auto; margin: 0 -6px; padding: 0 6px; }
+    .welcome { position: relative; overflow: hidden; padding: 46px; }
+    .welcome::after { content: ""; position: absolute; right: -120px; top: -120px; width: 420px; height: 420px; border-radius: 50%; background: radial-gradient(circle, rgba(242,193,78,.18), transparent 65%); pointer-events: none; }
+    .welcome h1 { font: 400 56px/1 var(--serif); letter-spacing: -.02em; margin: 14px 0 14px; max-width: 700px; }
+    .feat { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 26px; }
+    .feat .card { padding: 16px; } .feat .ic { color: var(--gold); margin-bottom: 10px; }
+    .feat b { display: block; margin-bottom: 4px; }
+    .trust { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .trust > div { display: flex; gap: 10px; align-items: flex-start; } .trust .ic { color: var(--ok); margin-top: 2px; }
+    @media (max-width: 980px) { .layout { grid-template-columns: 1fr; } nav { position: static; height: auto; flex-direction: row; flex-wrap: wrap; } nav .bottom, nav .group-label { display: none; } main { padding: 24px; } .kpis, .grid2, .feat, .trust { grid-template-columns: 1fr 1fr; } }
   </style>
 </head>
 <body>
 <div class="layout">
   <nav>
-    <div class="row" style="padding:0 8px 14px"><img src="icons/32.png" width="24" height="24" alt=""><b style="font-size:16px">Tab Butler</b></div>
-    <a href="#overview" data-s="overview">📊 Overview</a>
-    <a href="#tabs" data-s="tabs">🗂️ Open tabs</a>
-    <a href="#sessions" data-s="sessions">💾 Sessions</a>
-    <a href="#bookmarks" data-s="bookmarks">⭐ Bookmarks</a>
-    <a href="#history" data-s="history">🧽 History clean-up</a>
-    <a href="#settings" data-s="settings">⚙️ Settings</a>
-    <p class="small muted" style="padding:14px 8px">Everything stays on this computer. Nothing is uploaded.</p>
+    <div class="brand"><img class="mark" src="icons/128.png" alt=""><div><b>Tab Butler</b><div class="by">Built with Hermes</div></div></div>
+    <a href="#overview" data-s="overview"><i data-icon="chart-column" data-size="17"></i>Overview</a>
+    <a href="#tabs" data-s="tabs"><i data-icon="layers-2" data-size="17"></i>Open tabs</a>
+    <a href="#sessions" data-s="sessions"><i data-icon="archive-restore" data-size="17"></i>Sessions</a>
+    <span class="eyebrow group-label">Clean up</span>
+    <a href="#bookmarks" data-s="bookmarks"><i data-icon="bookmark" data-size="17"></i>Bookmarks</a>
+    <a href="#history" data-s="history"><i data-icon="history" data-size="17"></i>History</a>
+    <span class="eyebrow group-label">Preferences</span>
+    <a href="#settings" data-s="settings"><i data-icon="settings-2" data-size="17"></i>Settings</a>
+    <a href="#privacy" data-s="privacy"><i data-icon="shield-check" data-size="17"></i>Privacy &amp; security</a>
+    <div class="bottom">
+      <div class="row" style="gap:8px;color:var(--ok)"><i data-icon="shield-check" data-size="15"></i><b style="font-size:12.5px">Local only</b></div>
+      <p class="tiny muted" style="margin:6px 0 0">No servers, no accounts, no network access. Your data never leaves this browser profile.</p>
+    </div>
   </nav>
+
   <main>
+    <!-- WELCOME -->
     <section id="welcome">
-      <div class="card hero" style="padding:28px">
-        <h1>Welcome to Tab Butler 👋</h1>
-        <p>Here is what it does from now on:</p>
-        <ul>
-          <li><b>Sorts tabs</b> into colour groups (Mail, Work, Dev, AI, Jobs, Social…) as you open them.</li>
-          <li><b>Sleeps</b> tabs you haven't looked at for 30 minutes, so Chrome uses less memory. They come back when you click them.</li>
-          <li><b>Closes duplicate</b> tabs, <b>saves sessions</b>, tidies <b>bookmarks</b> (copies only, nothing deleted) and cleans <b>junk history</b>.</li>
-        </ul>
-        <p>Your saved passwords and your own tab groups are never touched.</p>
-        <div class="row wrap" style="margin-top:14px">
-          <button class="primary" id="w-sort">🗂️ Sort my tabs now</button>
-          <a class="btn" href="#settings">⚙️ Change categories</a>
-          <a class="btn" href="#overview">📊 Go to dashboard</a>
+      <div class="card welcome">
+        <span class="chip chip-gold"><i data-icon="sparkles" data-size="12"></i>Installed · ready</span>
+        <h1>Your tabs, <em class="gold">beautifully</em> in order.</h1>
+        <p class="muted" style="max-width:600px;font-size:15.5px">From now on, new tabs drop into colour groups by themselves, idle tabs fall asleep to save memory, and this dashboard shows where your day goes. Nothing leaves your computer.</p>
+        <div class="row wrap" style="margin-top:24px">
+          <button class="btn btn-gold" id="w-sort" style="padding:12px 18px;font-size:14.5px"><i data-icon="sparkles" data-size="17"></i>Tidy my tabs now</button>
+          <a class="btn" href="#settings"><i data-icon="settings-2" data-size="16"></i>Customise categories</a>
+          <a class="btn btn-quiet" href="#privacy"><i data-icon="shield-check" data-size="16"></i>How your data is protected</a>
         </div>
-        <p class="small muted" style="margin-top:14px">Tip: pin the extension (puzzle icon → pin) so the Tab Butler button is always one click away.</p>
+        <div class="feat">
+          <div class="card"><i data-icon="layers-2" data-size="20"></i><b>Auto groups</b><span class="small muted">Mail, Work, Dev, AI, Jobs, Social and more. Your own groups are never touched.</span></div>
+          <div class="card"><i data-icon="moon" data-size="20"></i><b>Sleeping tabs</b><span class="small muted">Tabs idle for 30 minutes release their memory and wake up when you click them.</span></div>
+          <div class="card"><i data-icon="pin" data-size="20"></i><b>Pin the butler</b><span class="small muted">Click the puzzle icon in Chrome's toolbar and pin Tab Butler for one-click access.</span></div>
+        </div>
       </div>
     </section>
 
+    <!-- OVERVIEW -->
     <section id="overview">
-      <div class="row" style="margin-bottom:14px"><h2 class="grow" style="margin:0">Overview</h2><button id="o-sort" class="primary">🗂️ Sort tabs</button><button id="o-dupes">🧹 Close duplicates</button><button id="o-sleep">😴 Sleep tabs</button></div>
-      <div class="kpis">
-        <div class="card kpi"><b id="k-tabs">–</b><span class="muted">open tabs</span></div>
-        <div class="card kpi"><b id="k-sleep">–</b><span class="muted">sleeping (saving memory)</span></div>
-        <div class="card kpi"><b id="k-dupes">–</b><span class="muted">duplicates</span></div>
-        <div class="card kpi"><b id="k-today">–</b><span class="muted">browsing today</span></div>
+      <div class="page-head">
+        <div class="grow"><span class="eyebrow" id="o-date">This week</span><h1>Your week, <em class="gold">at a glance</em></h1></div>
+        <button class="btn" id="o-dupes"><i data-icon="copy-x" data-size="16"></i>Close duplicates</button>
+        <button class="btn" id="o-sleep"><i data-icon="moon" data-size="16"></i>Sleep tabs</button>
+        <button class="btn btn-gold" id="o-sort"><i data-icon="sparkles" data-size="16"></i>Tidy tabs</button>
       </div>
-      <div class="two">
-        <div class="card"><h3>Time by category · last 7 days</h3><div id="o-cats"></div><p class="small muted" id="o-cats-note"></p></div>
-        <div class="card"><h3>Daily browsing time</h3><div class="days" id="o-days"></div></div>
-        <div class="card"><h3>Top sites by time · last 7 days</h3><table id="o-top"></table></div>
-        <div class="card"><h3>Most visited · last 7 days</h3><table id="o-visits"></table><p class="small muted">From Chrome history (page visits).</p></div>
+      <div class="kpis">
+        <div class="card kpi"><span class="eyebrow">Open tabs</span><b id="k-tabs">–</b><div class="sub" id="k-tabs-sub"></div></div>
+        <div class="card kpi"><span class="eyebrow">Asleep</span><b id="k-sleep">–</b><div class="sub">holding no memory</div></div>
+        <div class="card kpi"><span class="eyebrow">Duplicates</span><b id="k-dupes">–</b><div class="sub">same page open twice</div></div>
+        <div class="card kpi gold"><span class="eyebrow">Browsing today</span><b id="k-today">–</b><div class="sub" id="k-week"></div></div>
+      </div>
+      <div class="grid2">
+        <div class="card"><div class="card-head"><i data-icon="layers-2" data-size="16"></i><h3>Time by category</h3><span class="grow"></span><span class="eyebrow">7 days</span></div><div id="o-cats"></div></div>
+        <div class="card"><div class="card-head"><i data-icon="chart-column" data-size="16"></i><h3>Daily rhythm</h3><span class="grow"></span><span class="eyebrow">7 days</span></div><div class="days" id="o-days"></div></div>
+        <div class="card"><div class="card-head"><i data-icon="clock" data-size="16"></i><h3>Where your time went</h3></div><div id="o-top"></div></div>
+        <div class="card"><div class="card-head"><i data-icon="globe" data-size="16"></i><h3>Most visited</h3><span class="grow"></span><span class="eyebrow">from history</span></div><div id="o-visits"></div></div>
       </div>
     </section>
 
+    <!-- TABS -->
     <section id="tabs">
-      <div class="row" style="margin-bottom:14px"><h2 class="grow" style="margin:0">Open tabs</h2><input type="text" id="t-filter" placeholder="Search open tabs…" style="max-width:280px"></div>
-      <div id="t-list" class="grid"></div>
+      <div class="page-head">
+        <div class="grow"><span class="eyebrow">Live view</span><h1>Open <em class="gold">tabs</em></h1><p>Every tab in every window, arranged by category. Click a tab to jump to it.</p></div>
+        <div style="width:280px;position:relative"><input type="text" id="t-filter" placeholder="Search tabs…" style="padding-left:34px"><span style="position:absolute;left:11px;top:10px;color:var(--muted)"><i data-icon="search" data-size="15"></i></span></div>
+      </div>
+      <div id="t-list"></div>
     </section>
 
+    <!-- SESSIONS -->
     <section id="sessions">
-      <h2>Sessions</h2>
-      <p class="muted">Save a window's tabs and bring them back later. Use the popup's "Save session" button to add one.</p>
-      <div id="s-list" class="grid"></div>
+      <div class="page-head"><div class="grow"><span class="eyebrow">Saved windows</span><h1>Sessions</h1><p>Park a set of tabs and bring it back later, groups included. Save one from the toolbar popup.</p></div></div>
+      <div id="s-list" class="col" style="gap:10px"></div>
     </section>
 
+    <!-- BOOKMARKS -->
     <section id="bookmarks">
-      <h2>Bookmarks</h2>
-      <p class="muted">Tab Butler never deletes or moves your bookmarks. "Create sorted copy" builds a new folder with copies arranged by category. Download a backup first if you like.</p>
-      <div class="row wrap" style="margin:12px 0">
-        <button id="b-backup">⬇️ Download backup (HTML, re-importable)</button>
-        <button id="b-sort" class="primary">⭐ Create sorted copy</button>
+      <div class="page-head">
+        <div class="grow"><span class="eyebrow">Clean up</span><h1>Bookmarks, <em class="gold">sorted</em></h1><p>Tab Butler never moves or deletes your bookmarks. It builds a tidy <b>copy</b> in a new folder, arranged by category.</p></div>
+        <button class="btn" id="b-backup"><i data-icon="download" data-size="16"></i>Download backup</button>
+        <button class="btn btn-gold" id="b-sort"><i data-icon="folder-tree" data-size="16"></i>Create sorted copy</button>
       </div>
-      <div class="kpis">
-        <div class="card kpi"><b id="b-total">–</b><span class="muted">bookmarks</span></div>
-        <div class="card kpi"><b id="b-folders">–</b><span class="muted">folders</span></div>
-        <div class="card kpi"><b id="b-dupes">–</b><span class="muted">duplicate links</span></div>
-        <div class="card kpi"><b id="b-loose">–</b><span class="muted">unsorted (no category)</span></div>
+      <div id="b-gate"></div>
+      <div id="b-body">
+        <div class="kpis">
+          <div class="card kpi"><span class="eyebrow">Bookmarks</span><b id="b-total">–</b></div>
+          <div class="card kpi"><span class="eyebrow">Folders</span><b id="b-folders">–</b></div>
+          <div class="card kpi"><span class="eyebrow">Duplicates</span><b id="b-dupes">–</b></div>
+          <div class="card kpi"><span class="eyebrow">No category</span><b id="b-loose">–</b></div>
+        </div>
+        <div class="card"><div class="card-head"><i data-icon="folder-tree" data-size="16"></i><h3>How the sorted copy will look</h3></div><div id="b-cats"></div></div>
       </div>
-      <div class="card"><h3>How they would be sorted</h3><div id="b-cats"></div></div>
     </section>
 
+    <!-- HISTORY -->
     <section id="history">
-      <h2>History clean-up</h2>
-      <p class="muted">Finds junk pages from the last 90 days: login screens, sign-in redirects, OTP and verification pages. Review the list, untick anything you want to keep, then delete.</p>
-      <div class="row wrap" style="margin:12px 0">
-        <button id="h-scan" class="primary">🔍 Scan history</button>
-        <button id="h-del" class="danger" disabled>🗑️ Delete selected</button>
-        <label class="row small"><input type="checkbox" id="h-all" checked> select all</label>
-        <span class="muted small" id="h-count"></span>
+      <div class="page-head">
+        <div class="grow"><span class="eyebrow">Clean up</span><h1>History, <em class="gold">minus the junk</em></h1><p>Finds sign-in screens, redirects and OTP pages from the last 90 days. Review the list, untick anything to keep, then delete. Nothing is removed without your click.</p></div>
       </div>
-      <div class="card list"><table id="h-list"><tr><td class="muted">Click "Scan history" to start.</td></tr></table></div>
-      <div class="card" style="margin-top:16px">
-        <h3>Remove one site from history</h3>
-        <div class="row"><input type="text" id="h-site" placeholder="e.g. example.com"><button id="h-site-del" class="danger">Delete this site's history</button></div>
+      <div id="h-gate"></div>
+      <div id="h-body">
+        <div class="card" style="margin-bottom:14px">
+          <div class="row wrap">
+            <button class="btn btn-gold" id="h-scan"><i data-icon="search" data-size="16"></i>Scan history</button>
+            <button class="btn btn-danger" id="h-del" disabled><i data-icon="trash-2" data-size="16"></i>Delete selected</button>
+            <label class="check"><input type="checkbox" id="h-all" checked>Select all</label>
+            <span class="grow"></span><span class="chip" id="h-count">Not scanned yet</span>
+          </div>
+          <div class="scroll" style="margin-top:12px" id="h-list"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><i data-icon="eye-off" data-size="16"></i><h3>Forget one site</h3></div>
+          <div class="row"><input type="text" id="h-site" placeholder="example.com"><button class="btn btn-danger" id="h-site-del"><i data-icon="trash-2" data-size="16"></i>Delete its history</button></div>
+        </div>
       </div>
     </section>
 
+    <!-- SETTINGS -->
     <section id="settings">
-      <h2>Settings</h2>
-      <div class="two">
+      <div class="page-head"><div class="grow"><span class="eyebrow">Preferences</span><h1>Make it <em class="gold">yours</em></h1></div>
+        <button class="btn" id="c-export"><i data-icon="download" data-size="16"></i>Export</button>
+        <label class="btn"><i data-icon="upload" data-size="16"></i>Import<input type="file" id="c-import" accept="application/json" hidden></label>
+        <button class="btn btn-gold" id="c-save"><i data-icon="check" data-size="16"></i>Save changes</button>
+      </div>
+      <div class="grid2" style="margin-bottom:14px">
         <div class="card">
-          <h3>Behaviour</h3>
-          <label class="switch"><span>Auto-sort tabs into groups as I browse</span><input type="checkbox" data-k="autoGroup"></label>
-          <label class="switch"><span>Only make a group when this many tabs match</span><input type="number" min="1" max="10" data-k="minTabsForGroup" style="width:70px"></label>
-          <label class="switch"><span>Group for tabs that match nothing (blank = leave loose)</span><input type="text" data-k="otherGroupName" placeholder="Other" style="width:120px"></label>
-          <label class="switch"><span>Stop me opening a page that is already open</span><input type="checkbox" data-k="dedupeOnOpen"></label>
-          <label class="switch"><span>Auto-sleep idle tabs</span><input type="checkbox" data-k="sleepEnabled"></label>
-          <label class="switch"><span>Sleep after (minutes)</span><input type="number" min="1" max="1440" data-k="sleepMinutes" style="width:70px"></label>
-          <label class="switch"><span>Track time per site (stays on this computer)</span><input type="checkbox" data-k="trackTime"></label>
+          <div class="card-head"><i data-icon="zap" data-size="16"></i><h3>Behaviour</h3></div>
+          <div class="setting"><div><div class="label">Auto-sort tabs as I browse</div><div class="hint">New tabs join their category group</div></div><span class="switch"><input type="checkbox" data-k="autoGroup"></span></div>
+          <div class="setting"><div><div class="label">Minimum tabs per group</div><div class="hint">Wait until this many tabs share a category</div></div><input type="number" min="1" max="10" data-k="minTabsForGroup" style="width:76px"></div>
+          <div class="setting"><div><div class="label">Group for everything else</div><div class="hint">Leave blank to keep unmatched tabs loose</div></div><input type="text" data-k="otherGroupName" placeholder="Other" style="width:130px"></div>
+          <div class="setting"><div><div class="label">Block duplicate tabs</div><div class="hint">Jump to the open copy instead</div></div><span class="switch"><input type="checkbox" data-k="dedupeOnOpen"></span></div>
         </div>
         <div class="card">
-          <h3>Never sleep these sites</h3>
-          <textarea data-k="neverSleep" data-list="1" rows="5"></textarea>
-          <h3 style="margin-top:12px">Junk history patterns</h3>
-          <textarea data-k="junkPatterns" data-list="1" rows="5"></textarea>
-          <p class="small muted">One per line. Matches anywhere in the address.</p>
+          <div class="card-head"><i data-icon="moon" data-size="16"></i><h3>Sleep &amp; appearance</h3></div>
+          <div class="setting"><div><div class="label">Auto-sleep idle tabs</div><div class="hint">Frees memory; tabs reload on click</div></div><span class="switch"><input type="checkbox" data-k="sleepEnabled"></span></div>
+          <div class="setting"><div><div class="label">Sleep after</div><div class="hint">Minutes without looking at a tab</div></div><input type="number" min="1" max="1440" data-k="sleepMinutes" style="width:76px"></div>
+          <div class="setting" style="align-items:flex-start"><div class="grow"><div class="label">Never sleep</div><div class="hint">One site per line: calls, music, chat</div><textarea data-k="neverSleep" data-list="1" rows="3" style="margin-top:8px"></textarea></div></div>
+          <div class="setting"><div><div class="label">Theme</div></div><div class="seg" id="theme-seg"><button data-t="system"><i data-icon="monitor" data-size="14"></i>Auto</button><button data-t="dark"><i data-icon="moon" data-size="14"></i>Dark</button><button data-t="light"><i data-icon="sun" data-size="14"></i>Light</button></div></div>
         </div>
       </div>
-      <div class="card" style="margin-top:16px">
-        <div class="row"><h3 class="grow">Categories</h3><button id="c-add">➕ Add category</button><button id="c-reset">Reset to defaults</button></div>
-        <p class="small muted">Order here = order of groups in your tab bar. Patterns: one per line or comma separated. Plain text matches the site name (<code>github.com</code>); text with a <code>/</code> also matches the path (<code>linkedin.com/jobs</code>). The longest match wins.</p>
+      <div class="card">
+        <div class="card-head"><i data-icon="layers-2" data-size="16"></i><h3>Categories</h3><span class="grow"></span><button class="btn btn-sm" id="c-add"><i data-icon="plus" data-size="14"></i>Add</button><button class="btn btn-sm btn-quiet" id="c-reset"><i data-icon="rotate-ccw" data-size="14"></i>Reset</button></div>
+        <p class="small muted" style="margin:0 0 6px">Order here is the order of groups in your tab bar. Plain text matches the site (<span class="mono">github.com</span>); text with a <span class="mono">/</span> also matches the path (<span class="mono">linkedin.com/jobs</span>). The longest match wins.</p>
         <div id="c-list"></div>
-        <div class="row wrap" style="margin-top:12px">
-          <button id="c-save" class="primary">💾 Save settings</button>
-          <button id="c-export">⬇️ Export settings</button>
-          <label class="btn">⬆️ Import settings<input type="file" id="c-import" accept="application/json" hidden></label>
+      </div>
+    </section>
+
+    <!-- PRIVACY -->
+    <section id="privacy">
+      <div class="page-head"><div class="grow"><span class="eyebrow">Trust</span><h1>Privacy &amp; <em class="gold">security</em></h1><p>Safe for work profiles. Tab Butler can't read web pages, can't make network requests, and keeps everything inside this Chrome profile.</p></div></div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="trust">
+          <div><i data-icon="globe" data-size="17"></i><div><b>No network access</b><div class="small muted">A locked-down security policy blocks every outgoing request. There are no servers or analytics.</div></div></div>
+          <div><i data-icon="eye-off" data-size="17"></i><div><b>Can't read pages</b><div class="small muted">No content scripts and no site access, so it never sees page text, forms, passwords or cookies.</div></div></div>
+          <div><i data-icon="lock" data-size="17"></i><div><b>Stays in this profile</b><div class="small muted">Work and personal profiles are fully separate. Incognito is never touched.</div></div></div>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="card">
+          <div class="card-head"><i data-icon="key-round" data-size="16"></i><h3>Permissions</h3></div>
+          <div class="setting"><div><div class="label">Tabs &amp; tab groups</div><div class="hint">Read tab addresses to group, sleep and de-duplicate. Always on.</div></div><span class="chip chip-ok">Granted</span></div>
+          <div class="setting"><div><div class="label">History</div><div class="hint">Optional. Only for "Most visited" and history clean-up.</div></div><span id="p-history"></span></div>
+          <div class="setting"><div><div class="label">Bookmarks</div><div class="hint">Optional. Only for the sorted copy and backup.</div></div><span id="p-bookmarks"></span></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><i data-icon="briefcase-business" data-size="16"></i><h3>Work-safe controls</h3></div>
+          <div class="setting"><div><div class="label">Track time per site</div><div class="hint">Stored as site names and minutes only, never page titles or addresses</div></div><span class="switch"><input type="checkbox" data-k="trackTime" data-autosave="1"></span></div>
+          <div class="setting" style="align-items:flex-start"><div class="grow"><div class="label">Private sites</div><div class="hint">Never timed, never shown in stats. Add your company's internal tools, for example <span class="mono">intranet.company.com</span>.</div><textarea data-k="privateSites" data-list="1" data-autosave="1" rows="3" style="margin-top:8px" placeholder="one site per line"></textarea></div></div>
+          <div class="setting"><div><div class="label">Junk history patterns</div><div class="hint">What the history clean-up looks for</div></div><button class="btn btn-sm" id="p-junk-edit"><i data-icon="pencil" data-size="14"></i>Edit</button></div>
+          <div id="p-junk-wrap" hidden><textarea data-k="junkPatterns" data-list="1" data-autosave="1" rows="5"></textarea></div>
+          <div class="setting"><div><div class="label">Erase Tab Butler data</div><div class="hint">Deletes stats, sessions and settings. Your tabs, bookmarks and history are not affected.</div></div><button class="btn btn-sm btn-danger" id="p-wipe"><i data-icon="trash-2" data-size="14"></i>Erase</button></div>
         </div>
       </div>
     </section>

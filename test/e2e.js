@@ -2,7 +2,11 @@
 const { chromium } = require('playwright');
 const path = require('path');
 const fs = require('fs');
-const EXT = process.env.EXT || path.join(__dirname, '../extension');
+const SRC = process.env.EXT || path.join(__dirname, '../extension');
+// Test copy: history/bookmarks pre-granted (Chrome's permission prompt can't be clicked in automation).
+const EXT = fs.mkdtempSync(path.join(process.env.TMPDIR || '/tmp', 'tb-ext-'));
+fs.cpSync(SRC, EXT, { recursive: true });
+{ const m = JSON.parse(fs.readFileSync(path.join(EXT, 'manifest.json'), 'utf8')); m.permissions.push(...(m.optional_permissions || [])); delete m.optional_permissions; fs.writeFileSync(path.join(EXT, 'manifest.json'), JSON.stringify(m)); }
 const OUT = path.join(__dirname, 'shots'); fs.mkdirSync(OUT, { recursive: true });
 let fails = 0;
 const ok = (cond, msg) => { console.log((cond ? 'PASS ' : 'FAIL ') + msg); if (!cond) fails++; };
@@ -132,6 +136,13 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   await popup.reload(); await sleep(700);
   await popup.screenshot({ path: path.join(OUT, 'popup.png'), fullPage: true });
 
+  // Security: extension pages cannot make network requests (CSP connect-src 'none').
+  const net = await dash.evaluate(async () => { try { await fetch('https://example.com/'); return 'allowed'; } catch { return 'blocked'; } });
+  ok(net === 'blocked', 'network requests from extension pages are blocked: ' + net);
+  // Security: private sites are hidden from stats.
+  await sw.evaluate(async () => { const { settings } = await chrome.storage.local.get('settings'); await chrome.storage.local.set({ settings: { ...settings, privateSites: ['github.com'] } }); });
+  await dash.goto(`chrome-extension://${id}/dashboard.html#overview`); await sleep(1200);
+  ok(!(await dash.textContent('#o-top')).includes('github.com') && !(await dash.textContent('#o-visits')).includes('github.com'), 'private sites hidden from dashboard');
   ok(errors.length === 0, 'no page errors' + (errors.length ? ': ' + errors.join(' | ') : ''));
   await ctx.close();
   console.log(fails ? `\n${fails} FAILED` : '\nALL PASSED');

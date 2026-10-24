@@ -1,15 +1,19 @@
-// Renders the Tab Butler icon at all sizes.
+// Renders the Tab Butler app icon (ink tile, gold stacked tabs) at all sizes + site assets.
 const { chromium } = require('playwright');
-const path = require('path');
+const path = require('path'), fs = require('fs');
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
-  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4f8df7"/><stop offset="1" stop-color="#1a5fd0"/></linearGradient></defs>
-  <rect x="4" y="4" width="120" height="120" rx="28" fill="url(#g)"/>
-  <rect x="22" y="30" width="38" height="18" rx="6" fill="#fff"/>
-  <rect x="64" y="30" width="22" height="18" rx="6" fill="#ffd166"/>
-  <rect x="90" y="30" width="16" height="18" rx="6" fill="#ff8fa3"/>
-  <rect x="22" y="56" width="84" height="44" rx="10" fill="#fff" opacity=".95"/>
-  <rect x="32" y="68" width="40" height="7" rx="3.5" fill="#1a5fd0"/>
-  <rect x="32" y="82" width="58" height="7" rx="3.5" fill="#9bbcf5"/>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1d1b24"/><stop offset="1" stop-color="#0b0b0f"/></linearGradient>
+    <linearGradient id="au" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fbe39a"/><stop offset=".45" stop-color="#f0b93f"/><stop offset="1" stop-color="#b8732f"/></linearGradient>
+    <linearGradient id="rim" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f7d774" stop-opacity=".55"/><stop offset="1" stop-color="#f7d774" stop-opacity="0"/></linearGradient>
+  </defs>
+  <rect x="2" y="2" width="124" height="124" rx="30" fill="url(#bg)"/>
+  <rect x="2.75" y="2.75" width="122.5" height="122.5" rx="29.25" fill="none" stroke="url(#rim)" stroke-width="1.5"/>
+  <path d="M30 44a8 8 0 0 1 8-8h18l6 8h28a8 8 0 0 1 8 8v4H30z" fill="url(#au)" opacity=".35"/>
+  <path d="M26 56a8 8 0 0 1 8-8h20l6 8h34a8 8 0 0 1 8 8v4H26z" fill="url(#au)" opacity=".6"/>
+  <rect x="22" y="60" width="84" height="42" rx="10" fill="url(#au)"/>
+  <rect x="34" y="73" width="30" height="6" rx="3" fill="#1a1406" opacity=".75"/>
+  <rect x="34" y="85" width="46" height="6" rx="3" fill="#1a1406" opacity=".4"/>
 </svg>`;
 (async () => {
   const b = await chromium.launch();
@@ -19,7 +23,7 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
     await p.setContent(`<html><body style="margin:0;background:transparent">${svg.replace('<svg ', `<svg width="${s}" height="${s}" `)}</body></html>`);
     await p.screenshot({ path: path.join(__dirname, '../extension/icons', `${s}.png`), omitBackground: true });
   }
-  require('fs').writeFileSync(path.join(__dirname, '../site/icon.svg'), svg);
+  fs.writeFileSync(path.join(__dirname, '../site/icon.svg'), svg);
   await b.close();
   console.log('icons done');
 })();
