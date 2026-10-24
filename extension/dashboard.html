@@ -1,0 +1,156 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Tab Butler</title>
+  <link rel="icon" href="icons/32.png">
+  <link rel="stylesheet" href="ui.css">
+  <style>
+    .layout { display: grid; grid-template-columns: 210px 1fr; min-height: 100vh; }
+    nav { align-self: start; border-right: 1px solid var(--line); padding: 18px 12px; background: var(--card); position: sticky; top: 0; height: 100vh; }
+    nav a { display: block; padding: 9px 12px; border-radius: 8px; color: var(--text); text-decoration: none; margin-bottom: 2px; }
+    nav a.active { background: var(--accent-2); color: var(--accent); font-weight: 600; }
+    main { padding: 24px 28px; max-width: 1100px; }
+    section { display: none; } section.active { display: block; }
+    .kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
+    .kpi b { font-size: 26px; display: block; }
+    .two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .catrow { display: grid; grid-template-columns: 140px 1fr 70px; gap: 10px; align-items: center; margin: 7px 0; }
+    .days { display: flex; align-items: flex-end; gap: 8px; height: 150px; padding-top: 8px; }
+    .day { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 4px; height: 100%; }
+    .day .stack { width: 100%; display: flex; flex-direction: column-reverse; border-radius: 6px; overflow: hidden; min-height: 2px; background: var(--accent-2); }
+    .catedit { display: grid; grid-template-columns: 170px 120px 1fr 36px; gap: 8px; align-items: start; padding: 8px 0; border-bottom: 1px solid var(--line); }
+    .list { max-height: 460px; overflow: auto; }
+    .hero { background: linear-gradient(135deg, var(--accent-2), transparent); }
+    @media (max-width: 860px) { .layout { grid-template-columns: 1fr; } nav { position: static; height: auto; display: flex; flex-wrap: wrap; } .two, .kpis { grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body>
+<div class="layout">
+  <nav>
+    <div class="row" style="padding:0 8px 14px"><img src="icons/32.png" width="24" height="24" alt=""><b style="font-size:16px">Tab Butler</b></div>
+    <a href="#overview" data-s="overview">📊 Overview</a>
+    <a href="#tabs" data-s="tabs">🗂️ Open tabs</a>
+    <a href="#sessions" data-s="sessions">💾 Sessions</a>
+    <a href="#bookmarks" data-s="bookmarks">⭐ Bookmarks</a>
+    <a href="#history" data-s="history">🧽 History clean-up</a>
+    <a href="#settings" data-s="settings">⚙️ Settings</a>
+    <p class="small muted" style="padding:14px 8px">Everything stays on this computer. Nothing is uploaded.</p>
+  </nav>
+  <main>
+    <section id="welcome">
+      <div class="card hero" style="padding:28px">
+        <h1>Welcome to Tab Butler 👋</h1>
+        <p>Here is what it does from now on:</p>
+        <ul>
+          <li><b>Sorts tabs</b> into colour groups (Mail, Work, Dev, AI, Jobs, Social…) as you open them.</li>
+          <li><b>Sleeps</b> tabs you haven't looked at for 30 minutes, so Chrome uses less memory. They come back when you click them.</li>
+          <li><b>Closes duplicate</b> tabs, <b>saves sessions</b>, tidies <b>bookmarks</b> (copies only, nothing deleted) and cleans <b>junk history</b>.</li>
+        </ul>
+        <p>Your saved passwords and your own tab groups are never touched.</p>
+        <div class="row wrap" style="margin-top:14px">
+          <button class="primary" id="w-sort">🗂️ Sort my tabs now</button>
+          <a class="btn" href="#settings">⚙️ Change categories</a>
+          <a class="btn" href="#overview">📊 Go to dashboard</a>
+        </div>
+        <p class="small muted" style="margin-top:14px">Tip: pin the extension (puzzle icon → pin) so the Tab Butler button is always one click away.</p>
+      </div>
+    </section>
+
+    <section id="overview">
+      <div class="row" style="margin-bottom:14px"><h2 class="grow" style="margin:0">Overview</h2><button id="o-sort" class="primary">🗂️ Sort tabs</button><button id="o-dupes">🧹 Close duplicates</button><button id="o-sleep">😴 Sleep tabs</button></div>
+      <div class="kpis">
+        <div class="card kpi"><b id="k-tabs">–</b><span class="muted">open tabs</span></div>
+        <div class="card kpi"><b id="k-sleep">–</b><span class="muted">sleeping (saving memory)</span></div>
+        <div class="card kpi"><b id="k-dupes">–</b><span class="muted">duplicates</span></div>
+        <div class="card kpi"><b id="k-today">–</b><span class="muted">browsing today</span></div>
+      </div>
+      <div class="two">
+        <div class="card"><h3>Time by category · last 7 days</h3><div id="o-cats"></div><p class="small muted" id="o-cats-note"></p></div>
+        <div class="card"><h3>Daily browsing time</h3><div class="days" id="o-days"></div></div>
+        <div class="card"><h3>Top sites by time · last 7 days</h3><table id="o-top"></table></div>
+        <div class="card"><h3>Most visited · last 7 days</h3><table id="o-visits"></table><p class="small muted">From Chrome history (page visits).</p></div>
+      </div>
+    </section>
+
+    <section id="tabs">
+      <div class="row" style="margin-bottom:14px"><h2 class="grow" style="margin:0">Open tabs</h2><input type="text" id="t-filter" placeholder="Search open tabs…" style="max-width:280px"></div>
+      <div id="t-list" class="grid"></div>
+    </section>
+
+    <section id="sessions">
+      <h2>Sessions</h2>
+      <p class="muted">Save a window's tabs and bring them back later. Use the popup's "Save session" button to add one.</p>
+      <div id="s-list" class="grid"></div>
+    </section>
+
+    <section id="bookmarks">
+      <h2>Bookmarks</h2>
+      <p class="muted">Tab Butler never deletes or moves your bookmarks. "Create sorted copy" builds a new folder with copies arranged by category. Download a backup first if you like.</p>
+      <div class="row wrap" style="margin:12px 0">
+        <button id="b-backup">⬇️ Download backup (HTML, re-importable)</button>
+        <button id="b-sort" class="primary">⭐ Create sorted copy</button>
+      </div>
+      <div class="kpis">
+        <div class="card kpi"><b id="b-total">–</b><span class="muted">bookmarks</span></div>
+        <div class="card kpi"><b id="b-folders">–</b><span class="muted">folders</span></div>
+        <div class="card kpi"><b id="b-dupes">–</b><span class="muted">duplicate links</span></div>
+        <div class="card kpi"><b id="b-loose">–</b><span class="muted">unsorted (no category)</span></div>
+      </div>
+      <div class="card"><h3>How they would be sorted</h3><div id="b-cats"></div></div>
+    </section>
+
+    <section id="history">
+      <h2>History clean-up</h2>
+      <p class="muted">Finds junk pages from the last 90 days: login screens, sign-in redirects, OTP and verification pages. Review the list, untick anything you want to keep, then delete.</p>
+      <div class="row wrap" style="margin:12px 0">
+        <button id="h-scan" class="primary">🔍 Scan history</button>
+        <button id="h-del" class="danger" disabled>🗑️ Delete selected</button>
+        <label class="row small"><input type="checkbox" id="h-all" checked> select all</label>
+        <span class="muted small" id="h-count"></span>
+      </div>
+      <div class="card list"><table id="h-list"><tr><td class="muted">Click "Scan history" to start.</td></tr></table></div>
+      <div class="card" style="margin-top:16px">
+        <h3>Remove one site from history</h3>
+        <div class="row"><input type="text" id="h-site" placeholder="e.g. example.com"><button id="h-site-del" class="danger">Delete this site's history</button></div>
+      </div>
+    </section>
+
+    <section id="settings">
+      <h2>Settings</h2>
+      <div class="two">
+        <div class="card">
+          <h3>Behaviour</h3>
+          <label class="switch"><span>Auto-sort tabs into groups as I browse</span><input type="checkbox" data-k="autoGroup"></label>
+          <label class="switch"><span>Only make a group when this many tabs match</span><input type="number" min="1" max="10" data-k="minTabsForGroup" style="width:70px"></label>
+          <label class="switch"><span>Group for tabs that match nothing (blank = leave loose)</span><input type="text" data-k="otherGroupName" placeholder="Other" style="width:120px"></label>
+          <label class="switch"><span>Stop me opening a page that is already open</span><input type="checkbox" data-k="dedupeOnOpen"></label>
+          <label class="switch"><span>Auto-sleep idle tabs</span><input type="checkbox" data-k="sleepEnabled"></label>
+          <label class="switch"><span>Sleep after (minutes)</span><input type="number" min="1" max="1440" data-k="sleepMinutes" style="width:70px"></label>
+          <label class="switch"><span>Track time per site (stays on this computer)</span><input type="checkbox" data-k="trackTime"></label>
+        </div>
+        <div class="card">
+          <h3>Never sleep these sites</h3>
+          <textarea data-k="neverSleep" data-list="1" rows="5"></textarea>
+          <h3 style="margin-top:12px">Junk history patterns</h3>
+          <textarea data-k="junkPatterns" data-list="1" rows="5"></textarea>
+          <p class="small muted">One per line. Matches anywhere in the address.</p>
+        </div>
+      </div>
+      <div class="card" style="margin-top:16px">
+        <div class="row"><h3 class="grow">Categories</h3><button id="c-add">➕ Add category</button><button id="c-reset">Reset to defaults</button></div>
+        <p class="small muted">Order here = order of groups in your tab bar. Patterns: one per line or comma separated. Plain text matches the site name (<code>github.com</code>); text with a <code>/</code> also matches the path (<code>linkedin.com/jobs</code>). The longest match wins.</p>
+        <div id="c-list"></div>
+        <div class="row wrap" style="margin-top:12px">
+          <button id="c-save" class="primary">💾 Save settings</button>
+          <button id="c-export">⬇️ Export settings</button>
+          <label class="btn">⬆️ Import settings<input type="file" id="c-import" accept="application/json" hidden></label>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+<div class="toast" id="toast"></div>
+<script type="module" src="dashboard.js"></script>
+</body>
+</html>

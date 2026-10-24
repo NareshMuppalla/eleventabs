@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="ui.css">
+  <style>
+    body { width: 340px; padding: 14px; }
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 10px 0 12px; }
+    .stat { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 8px 6px; text-align: center; }
+    .stat b { display: block; font-size: 18px; }
+    .stat span { font-size: 11px; color: var(--muted); }
+    .actions { display: grid; gap: 6px; }
+    .actions button { width: 100%; }
+    .kbd { margin-left: auto; font-size: 11px; color: var(--muted); }
+    .save { margin-top: 10px; display: grid; gap: 6px; }
+    .toggles { margin-top: 10px; border-top: 1px solid var(--line); padding-top: 6px; }
+  </style>
+</head>
+<body>
+  <div class="row"><img src="icons/32.png" width="22" height="22" alt=""><h2 style="margin:0">Tab Butler</h2><a class="btn small" id="open-dash" style="margin-left:auto;padding:5px 9px" href="#">Dashboard</a></div>
+  <div class="stats">
+    <div class="stat"><b id="s-tabs">–</b><span>tabs</span></div>
+    <div class="stat"><b id="s-wins">–</b><span>windows</span></div>
+    <div class="stat"><b id="s-sleep">–</b><span>sleeping</span></div>
+    <div class="stat"><b id="s-dupes">–</b><span>duplicates</span></div>
+  </div>
+  <div class="actions">
+    <button class="primary" id="group">🗂️ Sort tabs into groups <span class="kbd">⌥⇧G</span></button>
+    <button id="dupes">🧹 Close duplicate tabs <span class="kbd">⌥⇧D</span></button>
+    <button id="sleep">😴 Sleep background tabs <span class="kbd">⌥⇧S</span></button>
+    <button id="ungroup">↩️ Remove Tab Butler groups</button>
+  </div>
+  <div class="save card" style="padding:10px">
+    <b>Save this window as a session</b>
+    <input type="text" id="sess-name" placeholder="e.g. Job hunt, Client work">
+    <label class="row small muted"><input type="checkbox" id="sess-close"> Close the tabs after saving</label>
+    <button id="save">💾 Save session</button>
+  </div>
+  <div class="toggles">
+    <label class="switch"><span>Auto-sort new tabs</span><input type="checkbox" id="t-auto"></label>
+    <label class="switch"><span>Auto-sleep idle tabs (<span id="t-min">30</span> min)</span><input type="checkbox" id="t-sleep"></label>
+  </div>
+  <div class="toast" id="toast"></div>
+  <script type="module" src="popup.js"></script>
+</body>
+</html>
