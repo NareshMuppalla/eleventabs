@@ -2,7 +2,7 @@
 const { chromium } = require('playwright');
 const path = require('path');
 const fs = require('fs');
-const EXT = path.join(__dirname, '../extension');
+const EXT = process.env.EXT || path.join(__dirname, '../extension');
 const OUT = path.join(__dirname, 'shots'); fs.mkdirSync(OUT, { recursive: true });
 let fails = 0;
 const ok = (cond, msg) => { console.log((cond ? 'PASS ' : 'FAIL ') + msg); if (!cond) fails++; };
