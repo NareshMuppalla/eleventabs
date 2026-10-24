@@ -1,0 +1,115 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Welcome back · ElevenTabs</title>
+  <link rel="icon" href="icons/32.png">
+  <script src="lib/theme-boot.js"></script>
+  <link rel="stylesheet" href="ui.css">
+  <style>
+    body { min-height: 100vh; background-image: var(--glow); background-attachment: fixed; }
+    .top { display: flex; align-items: center; gap: 12px; padding: 22px 34px; }
+    .top .brand b { font-size: 20px; }
+    .shell { max-width: 1120px; margin: 0 auto; padding: 18px 34px 60px; }
+    .hello { text-align: center; padding: 30px 0 26px; }
+    .clock { font: 400 15px var(--mono); letter-spacing: .12em; color: var(--muted); text-transform: uppercase; }
+    .hello h1 { font: 400 clamp(46px, 6vw, 76px)/1 var(--serif); letter-spacing: -.025em; margin: 14px 0 0; }
+    .search { position: relative; max-width: 640px; margin: 30px auto 0; }
+    .search input { padding: 16px 20px 16px 50px; font-size: 16px; border-radius: 16px; background: var(--card); border-color: var(--line-2); box-shadow: var(--shadow); }
+    .search .ic { position: absolute; left: 18px; top: 17px; color: var(--muted); }
+    .quick { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin: 22px auto 0; max-width: 820px; }
+    .quick a { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 88px; padding: 12px 6px; border-radius: 14px; color: var(--text-2); font-size: 11.5px; transition: background .2s; }
+    .quick a:hover { background: var(--hover); }
+    .quick .q { width: 44px; height: 44px; border-radius: 13px; background: var(--card); border: 1px solid var(--line); display: grid; place-items: center; box-shadow: var(--shadow); }
+    .quick .q img { width: 22px; height: 22px; }
+    .quick span.n { max-width: 84px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .grid { display: grid; grid-template-columns: 1.55fr 1fr; gap: 16px; margin-top: 34px; }
+    .stack { display: grid; gap: 16px; align-content: start; }
+    .resume h2 { font: 400 32px/1.05 var(--serif); letter-spacing: -.015em; margin: 10px 0 6px; }
+    .groups { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 6px; }
+    .gchip { display: inline-flex; align-items: center; gap: 8px; padding: 7px 11px; border-radius: 10px; border: 1px solid var(--line-2); background: var(--card-2); color: var(--text); font: 550 12.5px var(--sans); cursor: pointer; transition: border-color .2s; }
+    .gchip:hover { border-color: var(--gold-line); }
+    .gchip .c { font: 500 11px var(--mono); color: var(--muted); }
+    .tabs { margin-top: 10px; }
+    .tabs .list-row { cursor: pointer; }
+    .tabs .t { font-weight: 550; }
+    .tabs .h { font-size: 12px; color: var(--muted); width: 160px; text-align: right; }
+    .metric { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border-radius: 12px; overflow: hidden; border: 1px solid var(--line); }
+    .metric > div { background: var(--card); padding: 14px; }
+    .metric b { display: block; font: 500 24px/1.1 var(--mono); letter-spacing: -.02em; margin-top: 8px; }
+    .metric b.g { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    [data-theme="light"] .metric b.g { background: none; color: var(--gold-ink); }
+    .streak { display: flex; gap: 6px; margin-top: 14px; align-items: center; }
+    .streak i { width: 100%; height: 6px; border-radius: 99px; background: var(--bg-2); }
+    .streak i.on { background: var(--grad); }
+    .themes { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .sw { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--card); box-shadow: 0 0 0 1px var(--line-2); cursor: pointer; transition: transform .2s var(--ease); }
+    .sw:hover { transform: scale(1.12); }
+    .sw.on { box-shadow: 0 0 0 2px var(--gold); }
+    .foot { display: flex; align-items: center; gap: 14px; margin-top: 26px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12.5px; flex-wrap: wrap; }
+    .done { display: flex; align-items: center; gap: 10px; color: var(--ok); font-weight: 550; margin-top: 14px; }
+    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } .shell, .top { padding-left: 18px; padding-right: 18px; } }
+  </style>
+</head>
+<body>
+  <div class="top">
+    <img class="mark" src="icons/128.png" alt="">
+    <div class="grow"><div class="brand"><b>ElevenTabs</b></div><div class="brand"><span class="by">by YourElevens</span></div></div>
+    <span class="chip" id="ver"></span>
+    <a class="btn btn-sm btn-quiet" href="dashboard.html#overview"><i data-icon="layout-dashboard" data-size="15"></i>Dashboard</a>
+    <a class="btn btn-sm btn-quiet" href="dashboard.html#settings" title="Settings"><i data-icon="settings-2" data-size="15"></i></a>
+  </div>
+
+  <div class="shell">
+    <div class="hello">
+      <div class="clock" id="clock"></div>
+      <h1 id="greet">Welcome back.</h1>
+      <form class="search" id="search-form" autocomplete="off">
+        <i data-icon="search" data-size="18"></i>
+        <input type="text" id="q" placeholder="Search the web or type an address" aria-label="Search">
+      </form>
+      <div class="quick" id="quick"></div>
+    </div>
+
+    <div class="grid">
+      <div class="stack">
+        <div class="card resume" id="resume"></div>
+        <div class="card" id="sessions-card" hidden>
+          <div class="card-head"><i data-icon="archive-restore" data-size="16"></i><h3>Saved sessions</h3><span class="grow"></span><a class="small" href="dashboard.html#sessions">All sessions</a></div>
+          <div id="sessions"></div>
+        </div>
+      </div>
+      <div class="stack">
+        <div class="card">
+          <div class="card-head"><i data-icon="sparkles" data-size="16"></i><h3>Today</h3><span class="grow"></span><span class="eyebrow" id="today-date"></span></div>
+          <div class="metric">
+            <div><span class="eyebrow">Browsing</span><b class="g" id="m-time">–</b></div>
+            <div><span class="eyebrow">Open tabs</span><b id="m-tabs">–</b></div>
+            <div><span class="eyebrow">Asleep now</span><b id="m-sleep">–</b></div>
+            <div><span class="eyebrow">Memory freed</span><b id="m-mem">–</b></div>
+          </div>
+          <div class="row" style="margin-top:16px"><b id="streak-n" class="mono">0</b><span class="small muted" id="streak-t">day streak</span></div>
+          <div class="streak" id="streak"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><i data-icon="clock" data-size="16"></i><h3>Yesterday</h3><span class="grow"></span><span class="mono small muted" id="y-total"></span></div>
+          <div id="yesterday"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><i data-icon="sun" data-size="16"></i><h3>Theme</h3><span class="grow"></span><span class="small muted" id="theme-name"></span></div>
+          <div class="themes" id="themes"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="foot">
+      <span class="chip chip-ok"><i data-icon="shield-check" data-size="12"></i>Local only · no network</span>
+      <span class="grow"></span>
+      <label class="row" style="gap:10px;cursor:pointer">Open this page when Chrome starts<span class="switch"><input type="checkbox" id="on-launch"></span></label>
+      <span class="mono" id="ver-foot"></span>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+  <script type="module" src="start.js"></script>
+</body>
+</html>

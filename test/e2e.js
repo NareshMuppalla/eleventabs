@@ -33,6 +33,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   await sleep(1500);
   // welcome page opened on install
   ok(ctx.pages().some(p => p.url().includes('dashboard.html#welcome')), 'welcome page opens on install');
+  ok(!ctx.pages().some(p => p.url().includes('start.html')), 'Welcome back does not open on first install (only on Chrome start)');
 
   const urls = ['https://github.com/a', 'https://github.com/b', 'https://www.youtube.com/watch?v=1', 'https://claude.ai/new', 'https://www.linkedin.com/jobs/view/1', 'https://www.linkedin.com/feed', 'https://example.com/', 'https://github.com/a#readme', 'https://mail.google.com/mail/u/0', 'https://site.test/login?next=/', 'https://www.amazon.in/dp/x'];
   for (const u of urls) { const p = await ctx.newPage(); await p.goto(u); }
@@ -109,7 +110,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   const bpath = path.join(OUT, 'bm.html'); await dl.saveAs(bpath);
   ok(fs.readFileSync(bpath, 'utf8').includes('NETSCAPE-Bookmark-file-1') && fs.readFileSync(bpath, 'utf8').includes('chatgpt.com'), 'bookmark backup is a valid Netscape HTML export');
   await dash.click('#b-sort'); await sleep(1500);
-  const sorted = await sw.evaluate(async () => { const r = (await chrome.bookmarks.search({ title: 'Tab Butler – Sorted' }))[0] || (await chrome.bookmarks.getTree()) && null; const all = await chrome.bookmarks.getTree(); const find = n => n.title?.startsWith('Tab Butler – Sorted') ? n : (n.children || []).map(find).find(Boolean); const f = find(all[0]); const orig = (await chrome.bookmarks.search({ title: 'Random' }))[0]; const origKids = await chrome.bookmarks.getChildren(orig.id); return { folders: (f?.children || []).map(c => c.title + ':' + c.children.length), orig: origKids.length }; });
+  const sorted = await sw.evaluate(async () => { const r = (await chrome.bookmarks.search({ title: 'ElevenTabs – Sorted' }))[0] || (await chrome.bookmarks.getTree()) && null; const all = await chrome.bookmarks.getTree(); const find = n => n.title?.startsWith('ElevenTabs – Sorted') ? n : (n.children || []).map(find).find(Boolean); const f = find(all[0]); const orig = (await chrome.bookmarks.search({ title: 'Random' }))[0]; const origKids = await chrome.bookmarks.getChildren(orig.id); return { folders: (f?.children || []).map(c => c.title + ':' + c.children.length), orig: origKids.length }; });
   ok(sorted.folders.length >= 3 && sorted.orig === 5, `sorted copy created (${sorted.folders.join(', ')}); originals untouched (${sorted.orig})`);
   await dash.screenshot({ path: path.join(OUT, 'bookmarks.png'), fullPage: true });
 
@@ -143,6 +144,45 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   await sw.evaluate(async () => { const { settings } = await chrome.storage.local.get('settings'); await chrome.storage.local.set({ settings: { ...settings, privateSites: ['github.com'] } }); });
   await dash.goto(`chrome-extension://${id}/dashboard.html#overview`); await sleep(1200);
   ok(!(await dash.textContent('#o-top')).includes('github.com') && !(await dash.textContent('#o-visits')).includes('github.com'), 'private sites hidden from dashboard');
+  // ---------- v2: Welcome back, snapshot, themes, versions ----------
+  await sw.evaluate(async () => { const { settings } = await chrome.storage.local.get('settings'); await chrome.storage.local.set({ settings: { ...settings, privateSites: [] } }); });
+  await dash.evaluate(() => chrome.runtime.sendMessage({ type: 'snapshotNow' }));
+  const snap = await sw.evaluate(async () => (await chrome.storage.local.get('lastState')).lastState);
+  ok(snap && snap.windows.flatMap(w => w.tabs).length >= 5 && snap.windows.flatMap(w => w.tabs).some(t => t.group), 'snapshot remembers open tabs with their groups (' + (snap ? snap.windows.flatMap(w => w.tabs).length : 0) + ' tabs)');
+  // simulate a browser restart: last snapshot becomes previousSession, and some tabs are gone
+  await sw.evaluate(async () => { const { lastState } = await chrome.storage.local.get('lastState'); lastState.windows[0].tabs.push({ url: 'https://www.example.com/left-open', title: 'Roadmap doc', group: { title: 'Work & Docs', color: 'blue' }, last: Date.now() }); await chrome.storage.local.set({ previousSession: { ...lastState, at: Date.now() - 3600e3 }, userName: 'x' }); const { settings } = await chrome.storage.local.get('settings'); await chrome.storage.local.set({ settings: { ...settings, userName: 'Naresh' } }); });
+  const start = await ctx.newPage();
+  start.on('dialog', d => d.accept());
+  start.on('pageerror', e => errors.push('start: ' + e.message));
+  await start.setViewportSize({ width: 1280, height: 900 });
+  await start.goto(`chrome-extension://${id}/start.html`); await sleep(1500);
+  ok((await start.textContent('#greet')).includes('Naresh'), 'Welcome back greets by name: ' + await start.textContent('#greet'));
+  ok((await start.textContent('#resume')).includes('1 tab from last time'), 'Welcome back finds the tab that is missing since last time');
+  ok((await start.textContent('#ver')) === 'v' + (await sw.evaluate(() => chrome.runtime.getManifest().version)), 'version shown on Welcome back');
+  ok((await start.$$('#quick a')).length >= 3, 'quick links built from your most-used sites');
+  await start.click('#restore-all'); await sleep(2500);
+  console.log('  restore toast:', await start.textContent('#toast'), '| tabs:', await sw.evaluate(async () => (await chrome.tabs.query({})).map(t => t.url).filter(u => u.includes('left-open')).join(',')));
+  const reopened = await sw.evaluate(async () => (await chrome.tabs.query({ url: 'https://www.example.com/left-open' })).length);
+  ok(reopened === 1, 'Restore reopens only the missing tab (no duplicates)');
+  await start.reload(); await sleep(1200);
+  ok((await start.textContent('#resume')).includes('caught up'), 'after restore: "You\'re all caught up"');
+  await start.screenshot({ path: path.join(OUT, 'start.png'), fullPage: true });
+  // theme switch from Welcome back
+  await start.click('#themes [data-t="aurora"]'); await sleep(500);
+  const bg = await start.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--bg').trim());
+  const stTheme = await sw.evaluate(async () => (await chrome.storage.local.get('settings')).settings);
+  ok(bg === '#081011' && stTheme.themeMode === 'fixed' && stTheme.themeId === 'aurora', 'theme switch applies instantly and is saved (' + bg + ')');
+  await dash.goto(`chrome-extension://${id}/dashboard.html#appearance`); await sleep(900);
+  ok((await dash.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--bg').trim())) === '#081011', 'other pages follow the theme');
+  ok((await dash.$$('#theme-grid .tcard')).length === 9, '9 theme packs listed');
+  await dash.click('#mode-seg [data-m="auto"]'); await sleep(600);
+  ok((await dash.textContent('#auto-sched')).includes('Evening'), 'Auto (time of day) shows its schedule');
+  await dash.click('#custom-presets [data-c="#e0718d"]'); await sleep(600);
+  const cst = await sw.evaluate(async () => (await chrome.storage.local.get('settings')).settings);
+  ok(cst.themeId === 'custom' && cst.customTheme.accent === '#e0718d', 'custom accent colour applies');
+  await dash.screenshot({ path: path.join(OUT, 'appearance.png'), fullPage: true });
+  await dash.goto(`chrome-extension://${id}/dashboard.html#whatsnew`); await sleep(600);
+  ok((await dash.textContent('#wn-list')).includes('Installed') && (await dash.textContent('#nav-ver')).startsWith('ElevenTabs v'), "What's new marks the installed version");
   ok(errors.length === 0, 'no page errors' + (errors.length ? ': ' + errors.join(' | ') : ''));
   await ctx.close();
   console.log(fails ? `\n${fails} FAILED` : '\nALL PASSED');

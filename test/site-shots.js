@@ -46,6 +46,23 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   await popup.screenshot({ path: path.join(IMG, `popup${SUFFIX}.png`), fullPage: true });
   const d = await ctx.newPage();
   await d.setViewportSize({ width: 1280, height: 800 });
-  for (const s of ['overview', 'tabs', 'settings', 'privacy', 'welcome', 'sessions']) { await d.goto(`chrome-extension://${id}/dashboard.html#${s}`); await sleep(2000); await d.screenshot({ path: path.join(IMG, s + SUFFIX + '.png') }); }
+  const THEME = process.env.THEME || 'gold';
+  await sw.evaluate(async (THEME) => {
+    const { settings = {} } = await chrome.storage.local.get('settings');
+    const tabs = (await chrome.tabs.query({})).filter(t => t.url.startsWith('http'));
+    const gs = Object.fromEntries((await chrome.tabGroups.query({})).map(g => [g.id, { title: g.title, color: g.color }]));
+    const prev = tabs.map((t, i) => ({ url: t.url, title: ({ 'mail.google.com': 'Inbox (3) – Gmail', 'github.com': 'NareshMuppalla/tab-butler · GitHub', 'vercel.com': 'Deployments – Vercel', 'claude.ai': 'Planning the ElevenTabs launch – Claude', 'chatgpt.com': 'ChatGPT', 'www.linkedin.com': 'Customer Success Manager jobs | LinkedIn', 'www.naukri.com': 'CSM jobs in Bengaluru – Naukri', 'www.youtube.com': 'YouTube', 'docs.google.com': 'Launch plan – Google Docs', 'www.amazon.in': 'Amazon.in' })[new URL(t.url).hostname] || t.title, group: gs[t.groupId] || null, last: Date.now() - i * 600e3 }));
+    prev.push({ url: 'https://www.notion.so/roadmap', title: 'Q4 roadmap – Notion', group: { title: 'Work & Docs', color: 'blue' }, last: Date.now() - 200e3 });
+    prev.push({ url: 'https://www.figma.com/file/x', title: 'ElevenTabs – store listing – Figma', group: { title: 'Work & Docs', color: 'blue' }, last: Date.now() - 100e3 });
+    prev.push({ url: 'https://wellfound.com/jobs', title: 'Customer Success roles – Wellfound', group: { title: 'Jobs', color: 'green' }, last: Date.now() - 50e3 });
+    await chrome.storage.local.set({ previousSession: { at: Date.now() - 9 * 3600e3, windows: [{ tabs: prev }] }, slept: { [new Date().toISOString().slice(0, 10)]: 14 },
+      settings: { ...settings, userName: 'Naresh', themeMode: 'fixed', themeId: THEME } });
+  }, THEME);
+  for (const s of ['overview', 'tabs', 'settings', 'privacy', 'welcome', 'sessions', 'appearance', 'whatsnew']) { await d.goto(`chrome-extension://${id}/dashboard.html#${s}`); await d.reload(); await sleep(1800); await d.screenshot({ path: path.join(IMG, s + SUFFIX + '.png') }); }
+  const st = await ctx.newPage(); await st.setViewportSize({ width: 1280, height: 900 });
+  await st.goto(`chrome-extension://${id}/start.html`); await sleep(2200);
+  await st.screenshot({ path: path.join(IMG, 'start' + SUFFIX + '.png') });
+  await popup.reload(); await sleep(800);
+  await popup.screenshot({ path: path.join(IMG, `popup${SUFFIX}.png`), fullPage: true });
   await ctx.close(); console.log('shots done');
 })();

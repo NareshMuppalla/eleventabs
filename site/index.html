@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tab Butler — a calm, private home for your Chrome tabs</title>
-  <meta name="description" content="Tab Butler sorts Chrome tabs into colour groups, sleeps idle tabs to save memory, closes duplicates and saves sessions. Free. No servers, no network access — safe for work profiles.">
-  <meta property="og:title" content="Tab Butler — your tabs, beautifully in order">
+  <title>ElevenTabs — pick up where you left off, every time you open Chrome</title>
+  <meta name="description" content="ElevenTabs greets you with where you left off, sorts tabs into colour groups, sleeps idle tabs and switches beautiful themes. Free. No servers, no network access — safe for work profiles.">
+  <meta property="og:title" content="ElevenTabs by YourElevens — your tabs, beautifully in order">
   <meta property="og:description" content="Free Chrome extension. Auto tab groups, sleeping tabs, sessions and a private browsing dashboard. Nothing leaves your computer.">
-  <meta property="og:image" content="https://tab-butler.vercel.app/img/overview.png">
+  <meta property="og:image" content="https://eleventabs.vercel.app/img/start.png">
   <meta name="theme-color" content="#0b0b0f">
   <link rel="icon" href="/icon.svg">
   <link rel="preload" href="/fonts/instrument-serif-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
@@ -18,24 +18,24 @@
   <div class="aura" aria-hidden="true"></div>
   <header class="nav">
     <div class="wrap row">
-      <a href="/" class="brand"><img src="/logo.png" alt="" width="30" height="30"><span><b>Tab Butler</b><small>Built with Hermes</small></span></a>
-      <nav><a href="#features">Features</a><a href="#security">Security</a><a href="#install">Install</a><a href="#faq">FAQ</a></nav>
-      <a class="btn btn-gold btn-sm" href="/tab-butler.zip" download>Download free</a>
+      <a href="/" class="brand"><img src="/logo.png" alt="" width="30" height="30"><span><b>ElevenTabs</b><small>by YourElevens</small></span></a>
+      <nav><a href="#features">Features</a><a href="#themes">Themes</a><a href="#security">Security</a><a href="#install">Install</a><a href="/changelog.html">Versions</a></nav>
+      <a class="btn btn-gold btn-sm dl" href="/eleventabs-latest.zip" download>Download <span class="v">v2.0.0</span></a>
     </div>
   </header>
 
   <main>
     <section class="hero wrap">
-      <span class="pill"><span class="spark"></span>Free · Chrome, Edge &amp; Brave · v1.1</span>
+      <a class="pill" href="/changelog.html"><span class="spark"></span><span class="v">v2.0.0</span> · New: Welcome back &amp; themes →</a>
       <h1>Your tabs,<br><em>beautifully</em> in order.</h1>
-      <p class="lead">Tab Butler quietly sorts every tab into colour groups, puts idle tabs to sleep so Chrome stops eating your memory, and shows where your day goes. No servers. No accounts. Nothing leaves your computer.</p>
+      <p class="lead">Open Chrome and ElevenTabs greets you with exactly where you left off. Then it quietly sorts tabs into colour groups, puts idle ones to sleep, and dresses everything in a theme you love. No servers. No accounts. Nothing leaves your computer.</p>
       <div class="cta">
-        <a class="btn btn-gold" href="/tab-butler.zip" download><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>Download for Chrome</a>
+        <a class="btn btn-gold dl" href="/eleventabs-latest.zip" download><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>Download for Chrome · <span class="v">v2.0.0</span></a>
         <a class="btn" href="#install">Install in 2 minutes</a>
       </div>
       <div class="frame">
-        <div class="frame-bar"><i></i><i></i><i></i><span>Tab Butler — Dashboard</span></div>
-        <img src="/img/overview.png" alt="Tab Butler dashboard: time by category, daily rhythm and top sites" width="1800" height="1125">
+        <div class="frame-bar"><i></i><i></i><i></i><span>ElevenTabs — Welcome back</span></div>
+        <img src="/img/start.png" alt="ElevenTabs Welcome back page: greeting, search, where you left off and today's stats" width="1800" height="1266">
       </div>
       <div class="groups" aria-label="Default categories">
         <span style="--c:#e5675a">Mail &amp; Chat</span><span style="--c:#5b8def">Work &amp; Docs</span><span style="--c:#8a8f98">Dev</span><span style="--c:#9b7bea">AI</span><span style="--c:#4caf7d">Jobs</span><span style="--c:#d96ba8">Social</span><span style="--c:#e8894a">Video &amp; Music</span><span style="--c:#e8b931">Shopping</span><span style="--c:#3fb5c1">Money</span>
@@ -46,8 +46,8 @@
       <div class="wrap stats">
         <div><b>0</b><span>network requests</span></div>
         <div><b>0</b><span>servers or accounts</span></div>
-        <div><b>6</b><span>install-time permissions</span></div>
-        <div><b>100%</b><span>yours to customise</span></div>
+        <div><b>9</b><span>theme packs</span></div>
+        <div><b>1</b><span>click to pick up where you left off</span></div>
       </div>
     </section>
 
@@ -57,11 +57,11 @@
       <div class="bento">
         <article class="tile big">
           <div class="txt"><span class="ic"><svg viewBox="0 0 24 24"><path d="M13 13.74a2 2 0 0 1-2 0L2.5 8.87a1 1 0 0 1 0-1.74L11 2.26a2 2 0 0 1 2 0l8.5 4.87a1 1 0 0 1 0 1.74z"/><path d="m20 14.285 1.5.845a1 1 0 0 1 0 1.74L13 21.74a2 2 0 0 1-2 0l-8.5-4.87a1 1 0 0 1 0-1.74l1.5-.845"/></svg></span>
-          <h3>Auto tab groups</h3><p>Open a tab and it lands in the right colour group: Mail, Work, Dev, AI, Jobs, Social, Shopping. Groups follow the order you choose. Any group you make yourself is never touched.</p></div>
-          <img src="/img/tabs.png" alt="Open tabs arranged by category" loading="lazy">
+          <h3>Welcome back, every time</h3><p>Each time Chrome starts, ElevenTabs shows what you had open, grouped the way you left it. Restore everything, one group or a single tab. You also get a search bar, your top sites, today's numbers, a streak and yesterday's recap.</p></div>
+          <img src="/img/start-aurora.png" alt="Welcome back page in the Aurora theme" loading="lazy">
         </article>
+        <article class="tile"><span class="ic"><svg viewBox="0 0 24 24"><path d="M13 13.74a2 2 0 0 1-2 0L2.5 8.87a1 1 0 0 1 0-1.74L11 2.26a2 2 0 0 1 2 0l8.5 4.87a1 1 0 0 1 0 1.74z"/><path d="m20 14.285 1.5.845a1 1 0 0 1 0 1.74L13 21.74a2 2 0 0 1-2 0l-8.5-4.87a1 1 0 0 1 0-1.74l1.5-.845"/></svg></span><h3>Auto tab groups</h3><p>Every tab lands in the right colour group: Mail, Work, Dev, AI, Jobs, Social. Groups you make yourself are never touched.</p></article>
         <article class="tile"><span class="ic"><svg viewBox="0 0 24 24"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span><h3>Sleeping tabs</h3><p>Tabs idle for 30 minutes release their memory and wake when you click them. Calls, music and chat stay awake.</p></article>
-        <article class="tile"><span class="ic"><svg viewBox="0 0 24 24"><path d="m12 12 6 6"/><path d="m12 18 6-6"/><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></span><h3>No more duplicates</h3><p>One click closes repeat copies of the same page, or have Tab Butler stop them from opening at all.</p></article>
         <article class="tile"><span class="ic"><svg viewBox="0 0 24 24"><rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h2"/><path d="M20 8v11a2 2 0 0 1-2 2h-2"/><path d="m9 15 3-3 3 3"/><path d="M12 12v9"/></svg></span><h3>Sessions</h3><p>Park a whole window as "Job hunt" or "Client work" and bring it back later, groups included.</p></article>
         <article class="tile"><span class="ic"><svg viewBox="0 0 24 24"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg></span><h3>A private dashboard</h3><p>Time by category, your daily rhythm and top sites, computed on your machine and never uploaded.</p></article>
         <article class="tile"><span class="ic"><svg viewBox="0 0 24 24"><path d="M14 17H5"/><path d="M19 7h-9"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg></span><h3>Yours to shape</h3><p>Rename categories, pick colours, add your own sites and reorder groups. Export your setup and share it with your team.</p></article>
@@ -69,30 +69,43 @@
       </div>
     </section>
 
+    <section id="themes" class="wrap">
+      <span class="eyebrow">Theme engine</span>
+      <h2>Nine moods. <em>One click.</em></h2>
+      <p class="lead small">Pick a theme pack, let it change with the time of day (Paper in the morning, Sunset in the evening, Gold at night), or set your own accent colour. Every ElevenTabs page switches instantly.</p>
+      <div class="swatches">
+        <span style="--a:#f0b93f;--b:#0b0b0f">Eleven Gold</span><span style="--a:#6d9bff;--b:#090c14">Midnight</span><span style="--a:#4fd1b5;--b:#081011">Aurora</span><span style="--a:#ff8a5c;--b:#120c0d">Sunset</span><span style="--a:#86c983;--b:#0a100c">Forest</span><span style="--a:#d4d4d8;--b:#0c0c0d">Graphite</span><span style="--a:#e7a92f;--b:#f3f0e8">Paper</span><span style="--a:#e0718d;--b:#f7f0ef">Rosé</span><span style="--a:#5b9cf0;--b:#eef3f8">Sky</span>
+      </div>
+      <div class="theme-shots">
+        <div class="frame"><img src="/img/overview-aurora.png" alt="Dashboard in Aurora theme" loading="lazy"></div>
+        <div class="frame"><img src="/img/start-paper.png" alt="Welcome back in Paper theme" loading="lazy"></div>
+      </div>
+    </section>
+
     <section id="security" class="wrap security">
       <div class="sec-copy">
         <span class="eyebrow">Built for work profiles</span>
         <h2>Secure by <em>construction</em>, not by promise.</h2>
-        <p class="lead small">Tab Butler is built so it can't leak your work data. These limits are enforced by Chrome itself.</p>
+        <p class="lead small">ElevenTabs is built so it can't leak your work data. These limits are enforced by Chrome itself.</p>
         <ul class="checks">
           <li><b>No network access at all.</b> A strict security policy blocks every outgoing request, so there's nowhere for data to go.</li>
           <li><b>Can't read web pages.</b> There are no content scripts and no site access, so it never sees email text, documents, forms, passwords or cookies.</li>
-          <li><b>Minimal permissions.</b> History and bookmarks are off by default. Chrome asks you before Tab Butler can use them, and you can switch them off at any time.</li>
+          <li><b>Minimal permissions.</b> History and bookmarks are off by default. Chrome asks you before ElevenTabs can use them, and you can switch them off at any time.</li>
           <li><b>Private sites list.</b> Add your company's internal tools and they are never timed or shown in stats.</li>
           <li><b>Profile-isolated.</b> Work and personal Chrome profiles keep separate data. It never runs in Incognito.</li>
           <li><b>Open source.</b> Every line is on GitHub for you or your IT team to review.</li>
         </ul>
       </div>
-      <div class="frame small-frame"><div class="frame-bar"><i></i><i></i><i></i><span>Privacy &amp; security</span></div><img src="/img/privacy.png" alt="Privacy and security page in Tab Butler" loading="lazy"></div>
+      <div class="frame small-frame"><div class="frame-bar"><i></i><i></i><i></i><span>Privacy &amp; security</span></div><img src="/img/privacy.png" alt="Privacy and security page in ElevenTabs" loading="lazy"></div>
     </section>
 
     <section class="wrap duo">
-      <div class="frame popup-frame"><img src="/img/popup.png" alt="Tab Butler toolbar popup" loading="lazy"></div>
+      <div class="frame popup-frame"><img src="/img/popup.png" alt="ElevenTabs toolbar popup" loading="lazy"></div>
       <div>
         <span class="eyebrow">One click away</span>
-        <h2>A butler in your <em>toolbar</em>.</h2>
+        <h2>Eleven, in your <em>toolbar</em>.</h2>
         <p class="lead small">Live counts of tabs, sleeping tabs and duplicates, with one gold button that tidies everything. Shortcuts too:</p>
-        <div class="kbds"><span><kbd>⌥</kbd><kbd>⇧</kbd><kbd>G</kbd> Tidy tabs</span><span><kbd>⌥</kbd><kbd>⇧</kbd><kbd>D</kbd> Close duplicates</span><span><kbd>⌥</kbd><kbd>⇧</kbd><kbd>S</kbd> Sleep tabs</span></div>
+        <div class="kbds"><span><kbd>⌥</kbd><kbd>⇧</kbd><kbd>W</kbd> Welcome back</span><span><kbd>⌥</kbd><kbd>⇧</kbd><kbd>G</kbd> Tidy tabs</span><span><kbd>⌥</kbd><kbd>⇧</kbd><kbd>D</kbd> Close duplicates</span><span><kbd>⌥</kbd><kbd>⇧</kbd><kbd>S</kbd> Sleep tabs</span></div>
         <p class="muted tiny">On Windows use Alt + Shift.</p>
       </div>
     </section>
@@ -100,37 +113,50 @@
     <section id="install" class="wrap">
       <span class="eyebrow">Install</span>
       <h2>Ready in <em>two minutes</em>.</h2>
-      <p class="lead small">Tab Butler isn't on the Chrome Web Store yet, so it's added in developer mode. That's safe and takes four steps.</p>
+      <p class="lead small">ElevenTabs isn't on the Chrome Web Store yet, so it's added in developer mode. That's safe and takes four steps. <span class="ver-line">Latest: <b class="v">v2.0.0</b> · <a href="/changelog.html">all versions &amp; what changed</a></span></p>
       <ol class="steps">
-        <li><b>Download</b><span>Get <a href="/tab-butler.zip" download>tab-butler.zip</a> and unzip it. Move the <code>tab-butler</code> folder somewhere it can stay, like Documents.</span></li>
+        <li><b>Download</b><span>Get <a class="dl-file" href="/eleventabs-latest.zip" download>eleventabs-v2.0.0.zip</a> and unzip it. Move the <code>eleventabs</code> folder somewhere it can stay, like Documents.</span></li>
         <li><b>Open extensions</b><span>Paste <code>chrome://extensions</code> into the address bar.</span></li>
         <li><b>Developer mode</b><span>Turn on the <em>Developer mode</em> switch, top right.</span></li>
-        <li><b>Load unpacked</b><span>Choose the <code>tab-butler</code> folder, then pin it from the puzzle icon.</span></li>
+        <li><b>Load unpacked</b><span>Choose the <code>eleventabs</code> folder, then pin it from the puzzle icon.</span></li>
       </ol>
+      <div class="update-note">
+        <b>Updating?</b> Download the new zip, replace your <code>eleventabs</code> folder with the new one, then press ↻ on ElevenTabs in <code>chrome://extensions</code>. Your settings, sessions and stats stay. To check your version, look at the bottom of the popup or go to Dashboard → What's new.
+        <br><b>Coming from Tab Butler?</b> Remove Tab Butler first, then install ElevenTabs. It's the same extension under a new name.
+      </div>
     </section>
 
     <section id="faq" class="wrap faq">
       <span class="eyebrow">Questions</span>
       <h2>Good to <em>know</em>.</h2>
       <details><summary>Can I use it in my work Chrome profile?</summary><p>Yes. It can't read pages and has no network access, so work content can't leave your computer. Each profile keeps its own data. If your company manages Chrome, IT may block extensions installed in developer mode. In that case, ask them to allow it (the code is open for review), or wait for the Chrome Web Store listing.</p></details>
+      <details><summary>Does Welcome back replace my new-tab page?</summary><p>No. It opens once when Chrome starts, and from the popup or ⌥⇧W. Your normal new-tab page stays. Switch it off from the page itself or in Settings.</p></details>
       <details><summary>Will it close my tabs or lose my work?</summary><p>No. Sorting only moves tabs into groups. A sleeping tab stays in place and reloads when you click it, the same as Chrome's Memory Saver. Tabs are only closed when you press "Close duplicates" or "Close all" yourself.</p></details>
-      <details><summary>Will it mess up the tab groups I already have?</summary><p>Never. Tab Butler only manages groups named after its own categories. Groups you create are left exactly as they are.</p></details>
-      <details><summary>What data does it store?</summary><p>Your settings, saved sessions and minutes per site name, stored in this Chrome profile only. Page titles and full addresses are never stored for stats. "Erase Tab Butler data" wipes it all in one click.</p></details>
-      <details><summary>Chrome shows "Disable developer mode extensions". Is that a problem?</summary><p>That's Chrome's standard notice for extensions installed outside the Web Store. Dismiss it and Tab Butler keeps working.</p></details>
+      <details><summary>Will it mess up the tab groups I already have?</summary><p>Never. ElevenTabs only manages groups named after its own categories. Groups you create are left exactly as they are.</p></details>
+      <details><summary>What data does it store?</summary><p>Your settings, saved sessions and minutes per site name, stored in this Chrome profile only. Page titles and full addresses are never stored for stats. "Erase ElevenTabs data" wipes it all in one click.</p></details>
+      <details><summary>Chrome shows "Disable developer mode extensions". Is that a problem?</summary><p>That's Chrome's standard notice for extensions installed outside the Web Store. Dismiss it and ElevenTabs keeps working.</p></details>
       <details><summary>How do I remove it?</summary><p>Open <code>chrome://extensions</code> and click Remove. Your tabs, bookmarks and history stay as they are.</p></details>
+      <details><summary>How do I know which version I have?</summary><p>It's shown at the bottom of the popup, on the Welcome back page and in Dashboard → What's new. Every version and its download are listed on the <a href="/changelog.html">versions page</a>.</p></details>
     </section>
 
     <section class="wrap final">
       <img src="/logo.png" alt="" width="64" height="64">
-      <h2>Give Chrome a <em>butler</em>.</h2>
+      <h2>Make Chrome feel like <em>home</em>.</h2>
       <p class="lead small">Free, private and open source.</p>
-      <div class="cta"><a class="btn btn-gold" href="/tab-butler.zip" download>Download free</a><a class="btn" href="https://github.com/NareshMuppalla/tab-butler">View source on GitHub</a></div>
+      <div class="cta"><a class="btn btn-gold dl" href="/eleventabs-latest.zip" download>Download <span class="v">v2.0.0</span></a><a class="btn" href="/changelog.html">All versions</a><a class="btn" href="https://github.com/NareshMuppalla/eleventabs">Source on GitHub</a></div>
     </section>
   </main>
 
   <footer class="wrap foot">
-    <span>© 2026 Tab Butler · Built with Hermes Agent by Naresh Muppalla, Bengaluru.</span>
-    <span><a href="/privacy.html">Privacy</a><a href="https://github.com/NareshMuppalla/tab-butler">GitHub</a><a href="https://github.com/NareshMuppalla/tab-butler/issues">Support</a></span>
+    <span>© 2026 ElevenTabs by YourElevens · Made by Naresh Muppalla, Bengaluru · <span class="v">v2.0.0</span></span>
+    <span><a href="/changelog.html">Versions</a><a href="/privacy.html">Privacy</a><a href="https://github.com/NareshMuppalla/eleventabs">GitHub</a><a href="https://github.com/NareshMuppalla/eleventabs/issues">Support</a></span>
   </footer>
+  <script>
+    // Keep every version label and download link in sync with /version.json.
+    fetch('/version.json').then(r => r.json()).then(v => {
+      document.querySelectorAll('.v').forEach(e => e.textContent = 'v' + v.version);
+      document.querySelectorAll('a.dl, a.dl-file').forEach(a => { a.href = v.download; if (a.classList.contains('dl-file')) a.textContent = v.download.split('/').pop(); });
+    }).catch(() => {});
+  </script>
 </body>
 </html>

@@ -1,5 +1,6 @@
 import { getConfig, saveConfig } from './lib/config.js';
 import { hydrateIcons, icon } from './lib/icons.js';
+import { applyTheme } from './lib/themes.js';
 
 hydrateIcons();
 const $ = id => document.getElementById(id);
@@ -39,10 +40,14 @@ $('save').onclick = async e => {
 $('sess-name').onkeydown = e => { if (e.key === 'Enter') $('save').click(); };
 const openPage = hash => { chrome.tabs.create({ url: chrome.runtime.getURL('dashboard.html' + hash) }); window.close(); };
 $('open-dash').onclick = () => openPage('#overview');
+$('welcome').onclick = async () => { await send('openStart'); window.close(); };
+$('open-new').textContent = 'v' + chrome.runtime.getManifest().version;
+$('open-new').onclick = e => { e.preventDefault(); openPage('#whatsnew'); };
 $('open-settings').onclick = e => { e.preventDefault(); openPage('#settings'); };
 
 (async () => {
   const { settings } = await getConfig();
+  applyTheme(settings);
   $('t-auto').checked = settings.autoGroup;
   $('t-sleep').checked = settings.sleepEnabled;
   $('t-min').textContent = settings.sleepMinutes;
@@ -51,3 +56,8 @@ $('open-settings').onclick = e => { e.preventDefault(); openPage('#settings'); }
   $('t-sleep').onchange = flip('sleepEnabled', $('t-sleep'), 'Auto-sleep is on', 'Auto-sleep is off');
   refresh();
 })();
+
+// Keep every open ElevenTabs page in sync when the theme changes anywhere.
+chrome.storage.onChanged.addListener(async (ch, area) => {
+  if (area === 'local' && ch.settings) { const { settings } = await getConfig(); applyTheme(settings); }
+});

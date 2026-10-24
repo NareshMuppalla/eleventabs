@@ -32,7 +32,7 @@
 <div class="wrap">
   <header>
     <img class="mark" src="icons/128.png" alt="">
-    <div class="grow"><div class="brand"><b>Tab Butler</b></div><div class="brand"><span class="by">Built with Hermes</span></div></div>
+    <div class="grow"><div class="brand"><b>ElevenTabs</b></div><div class="brand"><span class="by">by YourElevens</span></div></div>
     <button class="btn btn-sm" id="open-dash" title="Open dashboard"><i data-icon="layout-dashboard" data-size="15"></i>Dashboard</button>
   </header>
 
@@ -46,6 +46,7 @@
   <button class="btn btn-gold hero-btn" id="group"><i data-icon="sparkles" data-size="17"></i>Tidy my tabs</button>
 
   <div class="actions">
+    <button class="action" id="welcome"><span class="tile"><i data-icon="sun" data-size="16"></i></span><span class="grow"><div class="t">Welcome back</div><div class="s">Pick up where you left off</div></span><kbd class="kbd" data-k="W">⌥⇧W</kbd></button>
     <button class="action" id="dupes"><span class="tile"><i data-icon="copy-x" data-size="16"></i></span><span class="grow"><div class="t">Close duplicates</div><div class="s" id="dupes-sub">Keep one copy of each page</div></span><kbd class="kbd" data-k="D">⌥⇧D</kbd></button>
     <button class="action" id="sleep"><span class="tile"><i data-icon="moon" data-size="16"></i></span><span class="grow"><div class="t">Sleep background tabs</div><div class="s">Free memory now · wakes on click</div></span><kbd class="kbd" data-k="S">⌥⇧S</kbd></button>
     <button class="action" id="ungroup"><span class="tile"><i data-icon="undo-2" data-size="16"></i></span><span class="grow"><div class="t">Undo grouping</div><div class="s">Your own groups stay untouched</div></span></button>
@@ -65,7 +66,7 @@
     <div class="tog"><span>Auto-sleep after <span class="mono" id="t-min">30</span> min idle</span><span class="switch"><input type="checkbox" id="t-sleep" aria-label="Auto-sleep idle tabs"></span></div>
     <div class="foot">
       <span class="chip chip-ok"><i data-icon="shield-check" data-size="12"></i>Local only · no network</span>
-      <a href="#" id="open-settings" class="small muted row" style="gap:6px"><i data-icon="settings-2" data-size="14"></i>Settings</a>
+      <span class="row" style="gap:12px"><a href="#" id="open-new" class="mono tiny muted" title="What's new"></a><a href="#" id="open-settings" class="small muted row" style="gap:6px"><i data-icon="settings-2" data-size="14"></i>Settings</a></span>
     </div>
   </footer>
 </div>

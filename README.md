@@ -1,6 +1,8 @@
-# Tab Butler
+# ElevenTabs
 
-A free, private Chrome extension that keeps your browser tidy.
+By YourElevens. Formerly "Tab Butler".
+
+A free, private Chrome extension: pick up where you left off, sorted tab groups, sleeping tabs and a theme engine.
 
 - **Auto tab groups.** New tabs go into colour groups: Mail & Chat, Work & Docs, Dev, AI, Jobs, Social, Video & Music, Shopping, Money, News. Groups you make yourself are left alone.
 - **Sleep idle tabs.** Tabs you haven't opened for 30 minutes are put to sleep to free memory. You can list sites that should never sleep.
@@ -23,7 +25,7 @@ Everything is stored in `chrome.storage.local` inside the current Chrome profile
 
 ## Install (unpacked)
 
-1. Download `tab-butler.zip` from the website, or use the `extension/` folder from this repo.
+1. Download `eleventabs-latest.zip` (or a specific `downloads/eleventabs-vX.Y.Z.zip`) from the website, or use the `extension/` folder from this repo.
 2. Open `chrome://extensions` and turn on **Developer mode**.
 3. Click **Load unpacked** and select the folder.
 
@@ -36,7 +38,7 @@ node gate.js         # real build: optional-permission gates, minimal manifest, 
 node make-icon-set.js # regenerates lib/icons.js from lucide-static
 node site-shots.js   # regenerates website screenshots
 node make-icons.js   # regenerates icons
-../scripts/build.sh  # builds site/tab-butler.zip
+../scripts/build.sh  # builds site/downloads/eleventabs-v<version>.zip + latest + version.json
 ```
 
 ## Layout
@@ -46,3 +48,13 @@ node make-icons.js   # regenerates icons
 - `test/` contains the Playwright end-to-end tests and the screenshot scripts.
 
 MIT licensed.
+
+## Releasing a new version
+
+1. Bump `version` (and `version_name`) in `extension/manifest.json`, using semver: patch = fixes, minor = features, major = big changes.
+2. Add an entry at the top of `extension/lib/changelog.js`. The build fails if it doesn't match the manifest.
+3. Run `scripts/build.sh` to create `site/downloads/eleventabs-vX.Y.Z.zip`, `eleventabs-latest.zip`, `version.json` and `changelog.json`.
+4. Run the tests: `node test/e2e.js && node test/gate.js && node test/restart.js`.
+5. Commit and push, then `cd site && vercel deploy --prod`.
+
+Users see their version in the popup footer, on the Welcome back page and under Dashboard → What's new. The What's new page opens automatically after a minor or major update.

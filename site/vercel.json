@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    { "source": "/tab-butler.zip", "destination": "/eleventabs-latest.zip", "permanent": false }
+  ],
+  "headers": [
+    { "source": "/(version|changelog).json", "headers": [{ "key": "Cache-Control", "value": "no-cache" }] },
+    { "source": "/eleventabs-latest.zip", "headers": [{ "key": "Cache-Control", "value": "no-cache" }] }
+  ]
+}

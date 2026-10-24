@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Tab Butler</title>
+  <title>ElevenTabs</title>
   <link rel="icon" href="icons/32.png">
   <script src="lib/theme-boot.js"></script>
   <link rel="stylesheet" href="ui.css">
@@ -65,13 +65,26 @@
     .feat b { display: block; margin-bottom: 4px; }
     .trust { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
     .trust > div { display: flex; gap: 10px; align-items: flex-start; } .trust .ic { color: var(--ok); margin-top: 2px; }
+    .theme-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .tcard { border-radius: 16px; border: 1px solid var(--line); overflow: hidden; cursor: pointer; background: var(--card); transition: border-color .2s, transform .2s var(--ease); text-align: left; padding: 0; font: inherit; color: var(--text); }
+    .tcard:hover { transform: translateY(-2px); border-color: var(--gold-line); }
+    .tcard.on { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold); }
+    .tprev { height: 112px; padding: 14px; display: grid; grid-template-columns: 34px 1fr; gap: 10px; }
+    .tprev .side { border-radius: 8px; opacity: .9; }
+    .tprev .main { display: grid; gap: 7px; align-content: start; }
+    .tprev .bar { height: 8px; border-radius: 99px; }
+    .tprev .btnp { width: 64px; height: 18px; border-radius: 6px; margin-top: 6px; }
+    .tmeta { display: flex; align-items: center; gap: 8px; padding: 11px 14px; border-top: 1px solid var(--line); }
+    .wn { position: relative; }
+    .wn ul { margin: 10px 0 0; padding-left: 18px; color: var(--text-2); } .wn li { margin: 6px 0; }
     @media (max-width: 980px) { .layout { grid-template-columns: 1fr; } nav { position: static; height: auto; flex-direction: row; flex-wrap: wrap; } nav .bottom, nav .group-label { display: none; } main { padding: 24px; } .kpis, .grid2, .feat, .trust { grid-template-columns: 1fr 1fr; } }
   </style>
 </head>
 <body>
 <div class="layout">
   <nav>
-    <div class="brand"><img class="mark" src="icons/128.png" alt=""><div><b>Tab Butler</b><div class="by">Built with Hermes</div></div></div>
+    <div class="brand"><img class="mark" src="icons/128.png" alt=""><div><b>ElevenTabs</b><div class="by">by YourElevens</div></div></div>
+    <a href="start.html" id="nav-start"><i data-icon="sun" data-size="17"></i>Welcome back</a>
     <a href="#overview" data-s="overview"><i data-icon="chart-column" data-size="17"></i>Overview</a>
     <a href="#tabs" data-s="tabs"><i data-icon="layers-2" data-size="17"></i>Open tabs</a>
     <a href="#sessions" data-s="sessions"><i data-icon="archive-restore" data-size="17"></i>Sessions</a>
@@ -79,11 +92,14 @@
     <a href="#bookmarks" data-s="bookmarks"><i data-icon="bookmark" data-size="17"></i>Bookmarks</a>
     <a href="#history" data-s="history"><i data-icon="history" data-size="17"></i>History</a>
     <span class="eyebrow group-label">Preferences</span>
+    <a href="#appearance" data-s="appearance"><i data-icon="sparkles" data-size="17"></i>Appearance</a>
     <a href="#settings" data-s="settings"><i data-icon="settings-2" data-size="17"></i>Settings</a>
     <a href="#privacy" data-s="privacy"><i data-icon="shield-check" data-size="17"></i>Privacy &amp; security</a>
+    <a href="#whatsnew" data-s="whatsnew"><i data-icon="zap" data-size="17"></i>What's new</a>
     <div class="bottom">
       <div class="row" style="gap:8px;color:var(--ok)"><i data-icon="shield-check" data-size="15"></i><b style="font-size:12.5px">Local only</b></div>
       <p class="tiny muted" style="margin:6px 0 0">No servers, no accounts, no network access. Your data never leaves this browser profile.</p>
+      <div class="row tiny" style="margin-top:10px;justify-content:space-between"><span class="mono muted" id="nav-ver"></span><a href="#whatsnew" style="white-space:nowrap">What's new</a></div>
     </div>
   </nav>
 
@@ -94,15 +110,20 @@
         <span class="chip chip-gold"><i data-icon="sparkles" data-size="12"></i>Installed · ready</span>
         <h1>Your tabs, <em class="gold">beautifully</em> in order.</h1>
         <p class="muted" style="max-width:600px;font-size:15.5px">From now on, new tabs drop into colour groups by themselves, idle tabs fall asleep to save memory, and this dashboard shows where your day goes. Nothing leaves your computer.</p>
+        <div class="card" style="margin-top:22px;padding:16px;max-width:620px;background:var(--card-2)">
+          <div class="setting" style="padding-top:0"><div class="grow"><div class="label">What should we call you?</div><div class="hint">Used only for the greeting on your Welcome back page</div></div><input type="text" id="w-name" placeholder="Your first name" maxlength="40" style="width:200px"></div>
+          <div class="setting"><div><div class="label">Open Welcome back when Chrome starts</div><div class="hint">See where you left off, every time. Turn off any time.</div></div><span class="switch"><input type="checkbox" id="w-launch" checked></span></div>
+        </div>
         <div class="row wrap" style="margin-top:24px">
           <button class="btn btn-gold" id="w-sort" style="padding:12px 18px;font-size:14.5px"><i data-icon="sparkles" data-size="17"></i>Tidy my tabs now</button>
-          <a class="btn" href="#settings"><i data-icon="settings-2" data-size="16"></i>Customise categories</a>
+          <a class="btn" href="start.html"><i data-icon="sun" data-size="16"></i>See Welcome back</a>
+          <a class="btn" href="#appearance"><i data-icon="sparkles" data-size="16"></i>Pick a theme</a>
           <a class="btn btn-quiet" href="#privacy"><i data-icon="shield-check" data-size="16"></i>How your data is protected</a>
         </div>
         <div class="feat">
           <div class="card"><i data-icon="layers-2" data-size="20"></i><b>Auto groups</b><span class="small muted">Mail, Work, Dev, AI, Jobs, Social and more. Your own groups are never touched.</span></div>
           <div class="card"><i data-icon="moon" data-size="20"></i><b>Sleeping tabs</b><span class="small muted">Tabs idle for 30 minutes release their memory and wake up when you click them.</span></div>
-          <div class="card"><i data-icon="pin" data-size="20"></i><b>Pin the butler</b><span class="small muted">Click the puzzle icon in Chrome's toolbar and pin Tab Butler for one-click access.</span></div>
+          <div class="card"><i data-icon="pin" data-size="20"></i><b>Pin ElevenTabs</b><span class="small muted">Click the puzzle icon in Chrome's toolbar and pin ElevenTabs for one-click access.</span></div>
         </div>
       </div>
     </section>
@@ -147,7 +168,7 @@
     <!-- BOOKMARKS -->
     <section id="bookmarks">
       <div class="page-head">
-        <div class="grow"><span class="eyebrow">Clean up</span><h1>Bookmarks, <em class="gold">sorted</em></h1><p>Tab Butler never moves or deletes your bookmarks. It builds a tidy <b>copy</b> in a new folder, arranged by category.</p></div>
+        <div class="grow"><span class="eyebrow">Clean up</span><h1>Bookmarks, <em class="gold">sorted</em></h1><p>ElevenTabs never moves or deletes your bookmarks. It builds a tidy <b>copy</b> in a new folder, arranged by category.</p></div>
         <button class="btn" id="b-backup"><i data-icon="download" data-size="16"></i>Download backup</button>
         <button class="btn btn-gold" id="b-sort"><i data-icon="folder-tree" data-size="16"></i>Create sorted copy</button>
       </div>
@@ -202,11 +223,13 @@
           <div class="setting"><div><div class="label">Block duplicate tabs</div><div class="hint">Jump to the open copy instead</div></div><span class="switch"><input type="checkbox" data-k="dedupeOnOpen"></span></div>
         </div>
         <div class="card">
-          <div class="card-head"><i data-icon="moon" data-size="16"></i><h3>Sleep &amp; appearance</h3></div>
+          <div class="card-head"><i data-icon="moon" data-size="16"></i><h3>Sleep &amp; start page</h3></div>
           <div class="setting"><div><div class="label">Auto-sleep idle tabs</div><div class="hint">Frees memory; tabs reload on click</div></div><span class="switch"><input type="checkbox" data-k="sleepEnabled"></span></div>
           <div class="setting"><div><div class="label">Sleep after</div><div class="hint">Minutes without looking at a tab</div></div><input type="number" min="1" max="1440" data-k="sleepMinutes" style="width:76px"></div>
           <div class="setting" style="align-items:flex-start"><div class="grow"><div class="label">Never sleep</div><div class="hint">One site per line: calls, music, chat</div><textarea data-k="neverSleep" data-list="1" rows="3" style="margin-top:8px"></textarea></div></div>
-          <div class="setting"><div><div class="label">Theme</div></div><div class="seg" id="theme-seg"><button data-t="system"><i data-icon="monitor" data-size="14"></i>Auto</button><button data-t="dark"><i data-icon="moon" data-size="14"></i>Dark</button><button data-t="light"><i data-icon="sun" data-size="14"></i>Light</button></div></div>
+          <div class="setting"><div><div class="label">Open Welcome back when Chrome starts</div><div class="hint">Your start page with where you left off</div></div><span class="switch"><input type="checkbox" data-k="startOnLaunch"></span></div>
+          <div class="setting"><div><div class="label">Your name</div><div class="hint">For the greeting</div></div><input type="text" data-k="userName" maxlength="40" style="width:150px"></div>
+          <div class="setting"><div><div class="label">Remember open tabs</div><div class="hint">Needed for "pick up where you left off"</div></div><span class="switch"><input type="checkbox" data-k="snapshot"></span></div>
         </div>
       </div>
       <div class="card">
@@ -216,9 +239,34 @@
       </div>
     </section>
 
+    <!-- APPEARANCE -->
+    <section id="appearance">
+      <div class="page-head"><div class="grow"><span class="eyebrow">Theme engine</span><h1>Colour it <em class="gold">your way</em></h1><p>Pick a theme pack, let it change with the time of day, or make your own. Every ElevenTabs page follows it.</p></div></div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="setting" id="mode-row" style="padding-top:0"><div><div class="label">Mode</div><div class="hint" id="mode-hint"></div></div>
+          <div class="seg" id="mode-seg"><button data-m="system"><i data-icon="monitor" data-size="14"></i>Follow system</button><button data-m="auto"><i data-icon="clock" data-size="14"></i>Time of day</button><button data-m="fixed"><i data-icon="pin" data-size="14"></i>Always one theme</button></div></div>
+        <div id="auto-sched" class="row wrap" style="gap:8px;padding-top:12px"></div>
+      </div>
+      <div class="theme-grid" id="theme-grid"></div>
+      <div class="card" style="margin-top:14px">
+        <div class="card-head"><i data-icon="pencil" data-size="16"></i><h3>Custom theme</h3><span class="grow"></span><button class="btn btn-sm btn-gold" id="custom-use">Use custom</button></div>
+        <div class="row wrap" style="gap:18px">
+          <div class="seg" id="custom-base"><button data-b="dark"><i data-icon="moon" data-size="14"></i>Dark</button><button data-b="light"><i data-icon="sun" data-size="14"></i>Light</button></div>
+          <label class="row small" style="gap:10px">Accent colour <input type="color" id="custom-accent" style="width:46px;height:34px;padding:2px;border-radius:8px;border:1px solid var(--line-2);background:var(--bg-2)"></label>
+          <div class="row wrap" style="gap:6px" id="custom-presets"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHAT'S NEW -->
+    <section id="whatsnew">
+      <div class="page-head"><div class="grow"><span class="eyebrow" id="wn-ver"></span><h1>What's <em class="gold">new</em></h1><p>Every version, newest first. Your installed version is marked.</p></div></div>
+      <div id="wn-list" class="col" style="gap:14px"></div>
+    </section>
+
     <!-- PRIVACY -->
     <section id="privacy">
-      <div class="page-head"><div class="grow"><span class="eyebrow">Trust</span><h1>Privacy &amp; <em class="gold">security</em></h1><p>Safe for work profiles. Tab Butler can't read web pages, can't make network requests, and keeps everything inside this Chrome profile.</p></div></div>
+      <div class="page-head"><div class="grow"><span class="eyebrow">Trust</span><h1>Privacy &amp; <em class="gold">security</em></h1><p>Safe for work profiles. ElevenTabs can't read web pages, can't make network requests, and keeps everything inside this Chrome profile.</p></div></div>
       <div class="card" style="margin-bottom:14px">
         <div class="trust">
           <div><i data-icon="globe" data-size="17"></i><div><b>No network access</b><div class="small muted">A locked-down security policy blocks every outgoing request. There are no servers or analytics.</div></div></div>
@@ -239,7 +287,7 @@
           <div class="setting" style="align-items:flex-start"><div class="grow"><div class="label">Private sites</div><div class="hint">Never timed, never shown in stats. Add your company's internal tools, for example <span class="mono">intranet.company.com</span>.</div><textarea data-k="privateSites" data-list="1" data-autosave="1" rows="3" style="margin-top:8px" placeholder="one site per line"></textarea></div></div>
           <div class="setting"><div><div class="label">Junk history patterns</div><div class="hint">What the history clean-up looks for</div></div><button class="btn btn-sm" id="p-junk-edit"><i data-icon="pencil" data-size="14"></i>Edit</button></div>
           <div id="p-junk-wrap" hidden><textarea data-k="junkPatterns" data-list="1" data-autosave="1" rows="5"></textarea></div>
-          <div class="setting"><div><div class="label">Erase Tab Butler data</div><div class="hint">Deletes stats, sessions and settings. Your tabs, bookmarks and history are not affected.</div></div><button class="btn btn-sm btn-danger" id="p-wipe"><i data-icon="trash-2" data-size="14"></i>Erase</button></div>
+          <div class="setting"><div><div class="label">Erase ElevenTabs data</div><div class="hint">Deletes stats, sessions and settings. Your tabs, bookmarks and history are not affected.</div></div><button class="btn btn-sm btn-danger" id="p-wipe"><i data-icon="trash-2" data-size="14"></i>Erase</button></div>
         </div>
       </div>
     </section>

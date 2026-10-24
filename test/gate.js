@@ -24,7 +24,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   await ctx.route(/^https?:\/\//, r => r.fulfill({ contentType: 'text/html', body: '<title>x</title>' }));
   const w = await ctx.newPage(); await w.goto('https://evil.test/');
   const reach = await w.evaluate((id) => { try { return typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.sendMessage ? 'api-present' : 'no-api'; } catch { return 'no-api'; } }, id);
-  ok(reach === 'no-api', 'web pages have no way to message Tab Butler: ' + reach);
+  ok(reach === 'no-api', 'web pages have no way to message ElevenTabs: ' + reach);
   ok(errors.length === 0, 'no page errors ' + errors.join(' | '));
   await ctx.close(); console.log(fails ? fails + ' FAILED' : 'ALL PASSED'); process.exit(fails ? 1 : 0);
 })().catch(e => { console.error(e); process.exit(1); });

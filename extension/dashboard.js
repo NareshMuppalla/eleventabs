@@ -1,5 +1,7 @@
 import { getConfig, saveConfig, sanitizeConfig, categorize, hostOf, isWebUrl, normUrl, isPrivate, faviconUrl, COLORS, DEFAULT_CATEGORIES, todayKey } from './lib/config.js';
 import { hydrateIcons, icon } from './lib/icons.js';
+import { THEMES, AUTO_SCHEDULE, applyTheme, resolveTheme, customTheme } from './lib/themes.js';
+import { CHANGELOG } from './lib/changelog.js';
 
 hydrateIcons();
 const $ = id => document.getElementById(id);
@@ -161,7 +163,7 @@ function flatten(nodes, path = [], out = { links: [], folders: 0 }) {
 }
 loaders.bookmarks = async () => {
   const ok = await has('bookmarks');
-  $('b-gate').innerHTML = ok ? '' : gateHtml('bookmarks', 'Needed to read your bookmarks and build the sorted copy. Tab Butler never deletes or moves them.');
+  $('b-gate').innerHTML = ok ? '' : gateHtml('bookmarks', 'Needed to read your bookmarks and build the sorted copy. ElevenTabs never deletes or moves them.');
   $('b-body').hidden = !ok; $('b-backup').disabled = !ok; $('b-sort').disabled = !ok;
   if (!ok) return;
   const { categories } = await getConfig();
@@ -190,10 +192,10 @@ $('b-backup').onclick = async () => {
 $('b-sort').onclick = async () => {
   const { categories } = await getConfig();
   const { links } = flatten(await chrome.bookmarks.getTree());
-  if (!confirm(`Create a new folder "Tab Butler – Sorted" in Other bookmarks with copies of your ${links.length} bookmarks, arranged by category?\n\nYour existing bookmarks stay exactly where they are.`)) return;
+  if (!confirm(`Create a new folder "ElevenTabs – Sorted" in Other bookmarks with copies of your ${links.length} bookmarks, arranged by category?\n\nYour existing bookmarks stay exactly where they are.`)) return;
   const tree = await chrome.bookmarks.getTree();
   const other = tree[0].children.find(c => c.id === '2') || tree[0].children[tree[0].children.length - 1];
-  const root = await chrome.bookmarks.create({ parentId: other.id, title: `Tab Butler – Sorted ${todayKey()}` });
+  const root = await chrome.bookmarks.create({ parentId: other.id, title: `ElevenTabs – Sorted ${todayKey()}` });
   const folders = {}; const seen = new Set(); let n = 0;
   for (const b of links) {
     const k = normUrl(b.url); if (seen.has(k)) continue; seen.add(k);
@@ -258,7 +260,6 @@ async function fillSettings() {
     else if (el.dataset.list) el.value = (v || []).join('\n');
     else el.value = v ?? '';
   });
-  document.querySelectorAll('#theme-seg button').forEach(b => b.classList.toggle('on', b.dataset.t === draft.settings.theme));
 }
 function readSettings() {
   document.querySelectorAll('[data-k]').forEach(el => {
@@ -274,17 +275,10 @@ async function persist(msg = 'Saved') {
   const clean = sanitizeConfig(draft);
   await saveConfig(clean);
   draft = clean;
-  localStorage.setItem('tb-theme', clean.settings.theme);
+  applyTheme(clean.settings);
   toast(msg);
 }
 document.querySelectorAll('[data-k]').forEach(el => el.addEventListener('change', () => persist()));
-document.querySelectorAll('#theme-seg button').forEach(b => b.onclick = async () => {
-  draft.settings.theme = b.dataset.t;
-  localStorage.setItem('tb-theme', b.dataset.t);
-  document.documentElement.dataset.theme = b.dataset.t === 'system' ? (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark') : b.dataset.t;
-  document.querySelectorAll('#theme-seg button').forEach(x => x.classList.toggle('on', x === b));
-  await saveConfig({ settings: draft.settings });
-});
 loaders.settings = async () => { await fillSettings(); renderCats(); };
 function renderCats() {
   $('c-list').innerHTML = draft.categories.map((c, i) => `<div class="catedit" data-i="${i}">
@@ -319,8 +313,8 @@ $('c-save').onclick = () => persist('Settings saved');
 $('c-export').onclick = async () => {
   const cfg = await getConfig();
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([JSON.stringify({ app: 'tab-butler', version: 1, ...cfg }, null, 2)], { type: 'application/json' }));
-  a.download = 'tab-butler-settings.json'; a.click();
+  a.href = URL.createObjectURL(new Blob([JSON.stringify({ app: 'eleventabs', version: 2, ...cfg }, null, 2)], { type: 'application/json' }));
+  a.download = 'eleventabs-settings.json'; a.click();
   toast('Settings exported', 'download');
 };
 $('c-import').onchange = async e => {
@@ -349,9 +343,67 @@ document.addEventListener('click', async e => {
 });
 $('p-junk-edit').onclick = () => { $('p-junk-wrap').hidden = !$('p-junk-wrap').hidden; };
 $('p-wipe').onclick = async () => {
-  if (!confirm('Erase all Tab Butler data (time stats, sessions, settings)?\n\nYour tabs, bookmarks and Chrome history are NOT affected.')) return;
-  await send('wipe'); localStorage.removeItem('tb-theme');
-  toast('Tab Butler data erased', 'trash-2'); route();
+  if (!confirm('Erase all ElevenTabs data (time stats, sessions, settings)?\n\nYour tabs, bookmarks and Chrome history are NOT affected.')) return;
+  await send('wipe'); localStorage.removeItem('et-theme'); draft = await getConfig(); applyTheme(draft.settings);
+  toast('ElevenTabs data erased', 'trash-2'); route();
 };
 
-(async () => { draft = await getConfig(); route(); })();
+// ---------- appearance ----------
+const MODE_HINT = { system: 'Eleven Gold when your computer is in dark mode, Paper in light mode', auto: 'Changes through the day, see the schedule below', fixed: 'Pick one theme below' };
+const PRESETS = ['#f0b93f', '#6d9bff', '#4fd1b5', '#ff8a5c', '#86c983', '#e0718d', '#a78bfa', '#22d3ee', '#f43f5e'];
+async function saveTheme(patch) {
+  draft = await getConfig();
+  Object.assign(draft.settings, patch);
+  await saveConfig({ settings: draft.settings });
+  applyTheme(draft.settings);
+  loaders.appearance();
+}
+loaders.appearance = async () => {
+  draft = await getConfig();
+  const st = draft.settings, cur = resolveTheme(st).id;
+  document.querySelectorAll('#mode-seg button').forEach(b => b.classList.toggle('on', b.dataset.m === st.themeMode));
+  $('mode-hint').textContent = MODE_HINT[st.themeMode] || '';
+  $('auto-sched').hidden = st.themeMode !== 'auto';
+  $('mode-row').style.borderBottom = st.themeMode === 'auto' ? '' : '0';
+  $('mode-row').style.paddingBottom = st.themeMode === 'auto' ? '' : '0';
+  $('auto-sched').innerHTML = st.themeMode === 'auto' ? AUTO_SCHEDULE.map(x => `<span class="chip ${x.id === cur ? 'chip-gold' : ''}">${esc(x.label)} · ${String(x.from).padStart(2, '0')}:00 → ${esc(THEMES[x.id].name)}</span>`).join('') : '';
+  const card = (id, t) => `<button class="tcard ${st.themeMode === 'fixed' && st.themeId === id ? 'on' : ''}" data-theme-id="${id}">
+      <div class="tprev" style="background:${t.bg}"><div class="side" style="background:${t.base === 'dark' ? 'rgba(255,255,255,.05)' : 'rgba(0,0,0,.04)'}"></div>
+        <div class="main"><div class="bar" style="width:70%;background:${t.base === 'dark' ? 'rgba(255,255,255,.14)' : 'rgba(0,0,0,.12)'}"></div><div class="bar" style="width:45%;background:${t.base === 'dark' ? 'rgba(255,255,255,.08)' : 'rgba(0,0,0,.07)'}"></div>
+        <div class="bar" style="width:85%;background:linear-gradient(90deg, ${t.accent[0]}, ${t.accent[1]}, ${t.accent[2]})"></div><div class="btnp" style="background:linear-gradient(135deg, ${t.accent[0]}, ${t.accent[1]} 45%, ${t.accent[2]})"></div></div></div>
+      <div class="tmeta"><b>${esc(t.name)}</b><span class="grow"></span><span class="chip">${t.base}</span>${cur === id && st.themeMode !== 'system' ? `<span class="chip chip-gold">${icon('check', 11)}On</span>` : ''}</div></button>`;
+  $('theme-grid').innerHTML = Object.entries(THEMES).map(([id, t]) => card(id, t)).join('');
+  const ct = st.customTheme || { base: 'dark', accent: '#f0b93f' };
+  document.querySelectorAll('#custom-base button').forEach(b => b.classList.toggle('on', b.dataset.b === ct.base));
+  $('custom-accent').value = ct.accent;
+  $('custom-presets').innerHTML = PRESETS.map(c => `<span class="sw" data-c="${c}" title="${c}" style="width:22px;height:22px;border-radius:50%;background:${c};cursor:pointer;display:inline-block;box-shadow:0 0 0 ${c === ct.accent ? 2 : 1}px ${c === ct.accent ? 'var(--text)' : 'var(--line-2)'}"></span>`).join('');
+  $('custom-use').textContent = st.themeMode === 'fixed' && st.themeId === 'custom' ? 'Using custom' : 'Use custom';
+};
+$('mode-seg').onclick = e => { const b = e.target.closest('[data-m]'); if (b) saveTheme({ themeMode: b.dataset.m }); };
+$('theme-grid').onclick = e => { const c = e.target.closest('[data-theme-id]'); if (c) { saveTheme({ themeMode: 'fixed', themeId: c.dataset.themeId }); toast(THEMES[c.dataset.themeId].name + ' applied', 'sparkles'); } };
+const setCustom = patch => { const ct = { ...(draft.settings.customTheme || {}), ...patch }; saveTheme({ customTheme: ct, themeMode: 'fixed', themeId: 'custom' }); };
+$('custom-base').onclick = e => { const b = e.target.closest('[data-b]'); if (b) setCustom({ base: b.dataset.b }); };
+$('custom-accent').onchange = e => setCustom({ accent: e.target.value });
+$('custom-presets').onclick = e => { const c = e.target.closest('[data-c]'); if (c) setCustom({ accent: c.dataset.c }); };
+$('custom-use').onclick = () => setCustom({});
+
+// ---------- what's new ----------
+const VERSION = chrome.runtime.getManifest().version;
+$('nav-ver').textContent = 'ElevenTabs v' + VERSION;
+loaders.whatsnew = () => {
+  $('wn-ver').textContent = 'You have v' + VERSION;
+  $('wn-list').innerHTML = CHANGELOG.map(r => `<div class="card wn"><div class="row"><span class="chip ${r.version === VERSION ? 'chip-gold' : ''} mono">v${esc(r.version)}</span>${r.version === VERSION ? '<span class="chip chip-ok">Installed</span>' : ''}<span class="grow"></span><span class="mono tiny muted">${esc(new Date(r.date + 'T12:00:00').toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }))}</span></div>
+    <h3 style="margin-top:12px;font:400 26px/1.1 var(--serif)">${esc(r.title)}</h3><ul>${r.notes.map(n => `<li>${esc(n)}</li>`).join('')}</ul></div>`).join('');
+};
+
+// ---------- welcome onboarding ----------
+loaders.welcome = async () => { draft = await getConfig(); $('w-name').value = draft.settings.userName; $('w-launch').checked = draft.settings.startOnLaunch; };
+$('w-name').onchange = async () => { draft = await getConfig(); draft.settings.userName = $('w-name').value.trim().slice(0, 40); await saveConfig({ settings: draft.settings }); toast('Nice to meet you' + (draft.settings.userName ? ', ' + draft.settings.userName : '')); };
+$('w-launch').onchange = async () => { draft = await getConfig(); draft.settings.startOnLaunch = $('w-launch').checked; await saveConfig({ settings: draft.settings }); toast('Saved'); };
+
+(async () => { draft = await getConfig(); applyTheme(draft.settings); route(); })();
+
+// Keep every open ElevenTabs page in sync when the theme changes anywhere.
+chrome.storage.onChanged.addListener(async (ch, area) => {
+  if (area === 'local' && ch.settings) { const { settings } = await getConfig(); applyTheme(settings); }
+});

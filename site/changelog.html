@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Versions &amp; what's new — ElevenTabs</title><link rel="icon" href="/icon.svg"><link rel="stylesheet" href="/site.css"></head>
+<body>
+<div class="aura" aria-hidden="true"></div>
+<header class="nav"><div class="wrap row"><a href="/" class="brand"><img src="/logo.png" alt="" width="30" height="30"><span><b>ElevenTabs</b><small>by YourElevens</small></span></a><a class="btn btn-sm" style="margin-left:auto" href="/">← Home</a><a class="btn btn-gold btn-sm dl" href="/eleventabs-latest.zip" download>Download latest</a></div></header>
+<main class="wrap" style="max-width:860px;padding-top:70px">
+  <span class="eyebrow">Versions</span>
+  <h2 style="font-size:clamp(44px,6vw,72px)">What's <em>new</em>.</h2>
+  <p class="lead small">Every release, newest first, each with its own download. To see which version you have, check the bottom of the ElevenTabs popup, or open Dashboard → What's new.</p>
+  <div id="rels" style="margin-top:30px"><p class="muted">Loading…</p></div>
+  <div class="update-note"><b>How to update:</b> download the new zip and replace your <code>eleventabs</code> folder with the new one. Then press ↻ on ElevenTabs in <code>chrome://extensions</code>. Your settings, sessions and stats are kept.</div>
+</main>
+<footer class="wrap foot"><span>© 2026 ElevenTabs by YourElevens</span><span><a href="/">Home</a><a href="/privacy.html">Privacy</a><a href="https://github.com/NareshMuppalla/eleventabs">GitHub</a></span></footer>
+<script>
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  fetch('/changelog.json').then(r => r.json()).then(list => {
+    document.getElementById('rels').innerHTML = list.map((r, i) => `<article class="rel ${i ? '' : 'latest'}"><div class="rel-head"><span class="tag ${i ? '' : 'gold'}">v${esc(r.version)}</span>${i ? '' : '<span class="tag gold">Latest</span>'}<span class="muted" style="font:500 13px var(--mono)">${esc(new Date(r.date + 'T12:00:00').toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' }))}</span><span style="flex:1"></span>${r.file ? `<a class="btn btn-sm ${i ? '' : 'btn-gold'}" href="${esc(r.file)}" download>Download v${esc(r.version)}</a>` : ''}</div>
+      <h3>${esc(r.title)}</h3><ul>${r.notes.map(n => `<li>${esc(n)}</li>`).join('')}</ul></article>`).join('');
+  });
+  fetch('/version.json').then(r => r.json()).then(v => document.querySelectorAll('a.dl').forEach(a => a.href = v.download));
+</script>
+</body></html>

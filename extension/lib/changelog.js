@@ -1,0 +1,33 @@
+// Release notes. Shown on the What's new page; build.sh copies them to the website.
+export const CHANGELOG = [
+  {
+    "version": "2.0.0",
+    "date": "2026-10-24",
+    "title": "ElevenTabs: Welcome back, themes and a new name",
+    "notes": [
+      "New name: Tab Butler is now ElevenTabs, by YourElevens.",
+      "Welcome back page: pick up exactly where you left off, with a greeting, search, a daily recap, streaks and quick links. Opens when Chrome starts; switch it off any time. Shortcut ⌥⇧W.",
+      "Theme engine: 9 theme packs (Eleven Gold, Midnight, Aurora, Sunset, Forest, Graphite, Paper, Rosé, Sky), Auto mode that changes with the time of day, and your own custom accent colour.",
+      "Version number shown in the popup, dashboard and Welcome back page, plus this What's new page after every update.",
+      "Memory freed by sleeping tabs is now counted."
+    ]
+  },
+  {
+    "version": "1.1.0",
+    "date": "2026-10-24",
+    "title": "Premium redesign and work-safe security",
+    "notes": [
+      "Gold-on-ink redesign with new icons, fonts and light/dark themes.",
+      "History and bookmarks became optional permissions, asked only when used.",
+      "No network access at all (strict security policy); private sites list; Erase data button."
+    ]
+  },
+  {
+    "version": "1.0.0",
+    "date": "2026-10-24",
+    "title": "First release (as Tab Butler)",
+    "notes": [
+      "Auto tab groups, sleeping tabs, duplicate closer, sessions, bookmark tidy-up, history clean-up and a browsing dashboard."
+    ]
+  }
+];
