@@ -2,6 +2,7 @@ import { getConfig, saveConfig, sanitizeConfig, categorize, hostOf, isWebUrl, no
 import { hydrateIcons, icon } from './lib/icons.js';
 import { THEMES, AUTO_SCHEDULE, applyTheme, resolveTheme, customTheme } from './lib/themes.js';
 import { CHANGELOG } from './lib/changelog.js';
+import { initLibrary } from './lib/library-page.js';
 
 hydrateIcons();
 const $ = id => document.getElementById(id);
@@ -152,6 +153,8 @@ $('s-list').onclick = async e => {
   if (n) { const s = sessions.find(s => s.id === id); const name = prompt('Session name', s.name); if (name) { s.name = name.slice(0, 60); await chrome.storage.local.set({ sessions }); } }
   loaders.sessions();
 };
+
+initLibrary({ loaders, $, esc, toast, has, ask, gateHtml, route });
 
 // ---------- bookmarks ----------
 function flatten(nodes, path = [], out = { links: [], folders: 0 }) {

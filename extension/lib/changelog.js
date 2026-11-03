@@ -1,6 +1,20 @@
 // Release notes. Shown on the What's new page; build.sh copies them to the website.
 export const CHANGELOG = [
   {
+    "version": "2.1.0",
+    "date": "2026-11-04",
+    "title": "Saved: your own categorised bookmarks, and a new popup",
+    "notes": [
+      "New Saved library: save any page from the popup in one click. It picks a category for you (Dev, AI, Jobs, Shopping and more) and you can change it, add a note or star it.",
+      "Library page in the dashboard: search, grid or list view, favourites, bulk move and delete, drag a card onto a category to re-file it, and your own categories with colours and auto-match sites.",
+      "Save every tab in a window at once, each into its own category.",
+      "Import your Chrome bookmarks into the library (a copy; originals are never changed), and export as a .html file Chrome can import, or a .json backup.",
+      "Optional: also add new saves to Chrome's own bookmarks, in an ElevenTabs folder with one subfolder per category.",
+      "Redesigned popup with Tabs and Saved tabs, tile actions and an at-a-glance search of what you saved. Saved pages also appear on the Welcome back page.",
+      "No new permissions: Saved lives in this browser profile only. Optional shortcut: assign a key to 'Save this page' at chrome://extensions/shortcuts."
+    ]
+  },
+  {
     "version": "2.0.0",
     "date": "2026-10-24",
     "title": "ElevenTabs: Welcome back, themes and a new name",

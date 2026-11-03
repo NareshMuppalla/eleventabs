@@ -1,6 +1,7 @@
 import { getConfig, saveConfig, categorize, hostOf, isWebUrl, isPrivate, faviconUrl, normUrl, todayKey, COLORS } from './lib/config.js';
 import { THEMES, applyTheme, resolveTheme } from './lib/themes.js';
 import { hydrateIcons, icon } from './lib/icons.js';
+import { loadLib } from './lib/library.js';
 
 hydrateIcons();
 const $ = id => document.getElementById(id);
@@ -104,6 +105,14 @@ async function today() {
     : `<p class="small muted" style="margin:0">No browsing recorded yesterday.</p>`;
 }
 
+// ---------- saved for later (library) ----------
+async function savedLater() {
+  const lib = await loadLib();
+  const items = [...lib.items.filter(i => i.fav), ...lib.items.filter(i => !i.fav)].slice(0, 6);
+  $('saved-card').hidden = !items.length;
+  $('saved-grid').innerHTML = items.map(i => { const c = lib.cats.find(x => x.id === i.cat); return `<a class="sv" href="${esc(i.url)}"><img src="${esc(faviconUrl(i.url))}" alt=""><span class="grow" style="min-width:0"><div class="tt ellipsis">${esc(i.title)}</div><div class="hh">${c ? `<span class="dot d-${col(c.color)}"></span>${esc(c.name)}` : esc(hostOf(i.url))}${i.fav ? ' ★' : ''}</div></span></a>`; }).join('');
+}
+
 // ---------- saved sessions ----------
 async function sessions() {
   const { sessions = [] } = await chrome.storage.local.get('sessions');
@@ -136,7 +145,7 @@ function themes() {
   $('on-launch').checked = cfg.settings.startOnLaunch;
   $('on-launch').onchange = async () => { cfg.settings.startOnLaunch = $('on-launch').checked; await saveConfig({ settings: cfg.settings }); toast(cfg.settings.startOnLaunch ? 'Will open when Chrome starts' : "Won't open on start"); };
   themes();
-  await Promise.all([quick(), resume(), today(), sessions()]);
+  await Promise.all([quick(), resume(), today(), sessions(), savedLater()]);
   $('q').focus();
 })();
 

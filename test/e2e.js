@@ -167,6 +167,78 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   await start.reload(); await sleep(1200);
   ok((await start.textContent('#resume')).includes('caught up'), 'after restore: "You\'re all caught up"');
   await start.screenshot({ path: path.join(OUT, 'start.png'), fullPage: true });
+
+  // ---------- v2.1: Saved library ----------
+  await sw.evaluate(async () => { await chrome.storage.local.remove('library'); });
+  const pop2 = await ctx.newPage(); await pop2.setViewportSize({ width: 380, height: 760 });
+  pop2.on('pageerror', e => errors.push('popup2: ' + e.message));
+  await pop2.goto(`chrome-extension://${id}/popup.html`); await sleep(500);
+  await pop2.evaluate(async () => { const t = (await chrome.tabs.query({})).find(x => /github\.com\/b/.test(x.url)); const o = chrome.tabs.query.bind(chrome.tabs); chrome.tabs.query = async q => (q && q.active ? [t] : o(q)); });
+  await pop2.click('#tab-saved'); await sleep(700);
+  ok((await pop2.textContent('#cur-host')).includes('github.com'), 'Saved pane shows the current page');
+  ok((await pop2.$$('.cc.sug')).length === 1 && (await pop2.textContent('.cc.sug')).includes('Dev'), 'auto-picks category Dev for github.com');
+  await pop2.fill('#note', 'read this later');
+  await pop2.click('#save-page'); await sleep(700);
+  let lib = await sw.evaluate(async () => (await chrome.storage.local.get('library')).library);
+  ok(lib.items.length === 1 && lib.items[0].cat === 'dev' && lib.items[0].note === 'read this later', 'save page stores item in Dev with note');
+  ok((await pop2.textContent('#save-label')) === 'Update', 'popup knows the page is already saved');
+  await pop2.click('#save-page'); await sleep(500);
+  lib = await sw.evaluate(async () => (await chrome.storage.local.get('library')).library);
+  ok(lib.items.length === 1, 'saving the same page twice does not duplicate');
+  for (const u of ['https://claude.ai/chat', 'https://www.linkedin.com/jobs/view/9', 'https://www.amazon.in/dp/Z', 'https://stripe.com/docs']) { const np = await ctx.newPage(); await np.goto(u); }
+  await pop2.bringToFront(); await pop2.evaluate(async () => { const o = chrome.tabs.query.bind(chrome.tabs); chrome.tabs.query = async q => { const r = await o({}); return q && q.currentWindow ? r.filter(t => /^https?:/.test(t.url)) : o(q); }; });
+  await pop2.click('#save-all'); await sleep(1200);
+  lib = await sw.evaluate(async () => (await chrome.storage.local.get('library')).library);
+  ok(lib.items.length >= 6 && lib.items.some(i => i.cat === 'ai') && lib.items.every(i => /^https?:/.test(i.url)), `save all tabs: ${lib.items.length} saved, categorised (${[...new Set(lib.items.map(i => i.cat))].join(',')})`);
+  // never touches Chrome bookmarks unless asked
+  const bmBefore = await sw.evaluate(async () => JSON.stringify(await chrome.bookmarks.getTree()).length);
+  await pop2.fill('#find', 'github'); await sleep(300);
+  ok((await pop2.$$('#hits .hit')).length >= 1, 'popup search finds saved page');
+  const lp = await ctx.newPage(); lp.on('dialog', d => d.accept()); lp.on('pageerror', e => errors.push('library: ' + e.message));
+  await lp.setViewportSize({ width: 1280, height: 900 });
+  await lp.goto(`chrome-extension://${id}/dashboard.html#library`); await sleep(1000);
+  const nCards = (await lp.$$('.lcard')).length;
+  ok(nCards === lib.items.length, `library shows all ${nCards} saved pages`);
+  await lp.fill('#l-q', 'later'); await sleep(300);
+  ok((await lp.$$('.lcard')).length === 1, 'library search matches notes');
+  await lp.fill('#l-q', ''); await sleep(200);
+  await lp.click('#rail [data-v="ai"]'); await sleep(400);
+  ok((await lp.$$('.lcard')).length >= 1 && (await lp.textContent('#l-eyebrow')).includes('AI'), 'category filter works');
+  await lp.click('#rail [data-v="all"]'); await sleep(200);
+  // favourite + move via bulk
+  await lp.click('.lcard [data-fav]'); await sleep(500);
+  lib = await sw.evaluate(async () => (await chrome.storage.local.get('library')).library);
+  ok(lib.items.some(i => i.fav), 'favourite toggles');
+  await lp.click('.lcard .pick input', { force: true }); await sleep(200);
+  await lp.selectOption('#bulk-cat', 'later'); await sleep(600);
+  lib = await sw.evaluate(async () => (await chrome.storage.local.get('library')).library);
+  ok(lib.items.some(i => i.cat === 'later'), 'bulk move to Read later');
+  // new category with auto-match pattern
+  await lp.click('#r-new'); await lp.fill('#c-name', 'Recipes'); await lp.fill('#c-pat', 'recipes.example'); await lp.click('#m-ok'); await sleep(600);
+  await lp.evaluate(async () => { const m = await import('./lib/library.js'); await m.saveItem({ url: 'https://food.recipes.example/dal', title: 'Dal' }); });
+  lib = await sw.evaluate(async () => (await chrome.storage.local.get('library')).library);
+  const rc = lib.cats.find(c => c.name === 'Recipes');
+  ok(rc && lib.items.find(i => i.url.includes('recipes.example')).cat === rc.id, 'custom category auto-matches its sites');
+  // export
+  await lp.click('#l-export'); const [dl2] = await Promise.all([lp.waitForEvent('download'), lp.click('#x-html')]);
+  const xp = path.join(OUT, 'saved-export.html'); await dl2.saveAs(xp);
+  ok(fs.readFileSync(xp, 'utf8').includes('NETSCAPE-Bookmark-file-1') && fs.readFileSync(xp, 'utf8').includes('<H3>Dev</H3>'), 'export is a Chrome-importable file with category folders');
+  // import from Chrome (copy only)
+  await lp.click('#l-import'); await sleep(1500);
+  lib = await sw.evaluate(async () => (await chrome.storage.local.get('library')).library);
+  ok(lib.items.some(i => i.url.includes('unknown.example')), 'import from Chrome copies bookmarks into the library');
+  const bmAfter = await sw.evaluate(async () => JSON.stringify(await chrome.bookmarks.getTree()).length);
+  ok(bmAfter === bmBefore, 'Chrome bookmarks unchanged by saving, sorting and importing');
+  // delete category keeps pages
+  const cnt = lib.items.length;
+  await lp.click('#r-edit'); await lp.click(`[data-dc="${rc.id}"]`); await sleep(600);
+  lib = await sw.evaluate(async () => (await chrome.storage.local.get('library')).library);
+  ok(lib.items.length === cnt && !lib.cats.some(c => c.id === rc.id) && lib.items.find(i => i.url.includes('recipes.example')).cat === '', 'deleting a category keeps its pages (moves to Unsorted)');
+  await lp.screenshot({ path: path.join(OUT, 'library.png'), fullPage: true });
+  await pop2.screenshot({ path: path.join(OUT, 'popup-saved.png'), fullPage: true });
+  // shortcut command path
+  await start.reload(); await sleep(900);
+  ok(!(await start.$eval('#saved-card', e => e.hidden)), 'Welcome back shows Saved for later');
   // theme switch from Welcome back
   await start.click('#themes [data-t="aurora"]'); await sleep(500);
   const bg = await start.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--bg').trim());

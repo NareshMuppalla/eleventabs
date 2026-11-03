@@ -23,6 +23,48 @@
     .action .s { color: var(--muted); font-size: 11.5px; margin-top: 1px; }
     .save { margin-top: 10px; border: 1px solid var(--line); border-radius: 14px; background: var(--card); padding: 12px; }
     .save .row input[type=text] { padding: 8px 10px; }
+    .tabbar { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; border: 1px solid var(--line); border-radius: 13px; background: var(--bg-2); margin-bottom: 14px; }
+    .tabbar button { border: 0; background: transparent; color: var(--muted); font: 600 13px var(--sans); padding: 9px 10px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background .2s, color .2s; }
+    .tabbar button:hover { color: var(--text); }
+    .tabbar button.on { background: var(--card); color: var(--text); box-shadow: 0 1px 2px rgba(0,0,0,.25), inset 0 0 0 1px var(--line-2); }
+    .tabbar button.on .ic { color: var(--gold); }
+    .tabbar .cnt { font: 500 10.5px var(--mono); padding: 2px 6px; border-radius: 99px; background: var(--gold-soft); color: var(--gold-ink); }
+    .pane { display: none; animation: rise .35s var(--ease); } .pane.on { display: block; }
+    @keyframes rise { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+    .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+    .tilebtn { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; padding: 12px; border: 1px solid var(--line); border-radius: 14px; background: var(--card); color: var(--text); cursor: pointer; text-align: left; font: inherit; transition: transform .2s var(--ease), border-color .2s, background .2s; }
+    .tilebtn:hover:not(:disabled) { transform: translateY(-2px); border-color: var(--gold-line); background: var(--card-2); }
+    .tilebtn:disabled { opacity: .45; cursor: default; }
+    .tilebtn .tile { width: 32px; height: 32px; border-radius: 10px; display: grid; place-items: center; background: var(--gold-soft); color: var(--gold-ink); }
+    .tilebtn .t { font-weight: 650; font-size: 13px; } .tilebtn .s { color: var(--muted); font-size: 11px; margin-top: 2px; line-height: 1.3; }
+    .cur { display: flex; align-items: center; gap: 11px; padding: 12px; border: 1px solid var(--line); border-radius: 14px; background: var(--card); }
+    .cur .fv { width: 36px; height: 36px; border-radius: 10px; background: var(--card-2); display: grid; place-items: center; flex: none; border: 1px solid var(--line); }
+    .cur .fv img { width: 20px; height: 20px; border-radius: 5px; }
+    .cur .tt { font-weight: 650; font-size: 13.5px; } .cur .hh { font: 500 11px var(--mono); color: var(--muted); margin-top: 2px; }
+    .star { border: 0; background: transparent; color: var(--faint); cursor: pointer; padding: 6px; border-radius: 8px; transition: color .2s, background .2s, transform .2s var(--ease); }
+    .star:hover { background: var(--hover); color: var(--gold-ink); } .star.on { color: var(--gold); } .star.on svg { fill: currentColor; }
+    .already { display: none; align-items: center; gap: 8px; margin-top: 10px; padding: 8px 11px; border-radius: 10px; background: var(--gold-soft); border: 1px solid var(--gold-line); color: var(--gold-ink); font-size: 12px; font-weight: 600; }
+    .already.on { display: flex; }
+    .lab { margin: 14px 2px 8px; display: flex; align-items: center; justify-content: space-between; }
+    .cats { display: flex; flex-wrap: wrap; gap: 6px; padding: 1px; }
+    .cc { display: inline-flex; align-items: center; gap: 7px; padding: 6px 10px; border-radius: 99px; border: 1px solid var(--line-2); background: var(--card); color: var(--text-2); font: 550 12px var(--sans); cursor: pointer; transition: all .2s var(--ease); }
+    .cc:hover { border-color: var(--gold-line); color: var(--text); }
+    .cc.on { background: var(--gold-soft); border-color: var(--gold); color: var(--text); box-shadow: 0 0 0 1px var(--gold) inset; }
+    .cc.sug::after { content: "suggested"; font: 500 9px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--gold-ink); margin-left: 2px; }
+    .cc.add { border-style: dashed; color: var(--muted); }
+    .newcat { display: none; gap: 6px; margin-top: 8px; } .newcat.on { display: flex; }
+    .savebar { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 12px; }
+    .savebar .btn-gold { justify-content: center; padding: 12px; font-size: 14px; border-radius: 12px; }
+    .quietrow { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
+    .found { margin-top: 12px; border: 1px solid var(--line); border-radius: 14px; background: var(--card); padding: 5px; }
+    .found .s { display: flex; align-items: center; gap: 9px; padding: 6px 8px 5px; }
+    .found .s input { border: 0; background: transparent; padding: 6px 0; box-shadow: none !important; }
+    .found .s .ic { color: var(--muted); }
+    .hit { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 9px; cursor: pointer; color: var(--text); text-decoration: none; }
+    .hit:hover { background: var(--hover); } .hit img { width: 16px; height: 16px; border-radius: 4px; flex: none; }
+    .hit .tt { font-size: 12.5px; font-weight: 550; } .hit .hh { font: 500 10.5px var(--mono); color: var(--muted); }
+    .hit .dot { margin-left: auto; }
+    .libbtn { width: 100%; justify-content: center; margin-top: 10px; }
     footer { margin-top: 12px; display: grid; gap: 2px; }
     .tog { display: flex; align-items: center; justify-content: space-between; padding: 7px 4px; font-size: 13px; color: var(--text-2); }
     .foot { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; padding-top: 10px; border-top: 1px solid var(--line); }
@@ -36,6 +78,12 @@
     <button class="btn btn-sm" id="open-dash" title="Open dashboard"><i data-icon="layout-dashboard" data-size="15"></i>Dashboard</button>
   </header>
 
+  <div class="tabbar" role="tablist">
+    <button class="on" id="tab-tabs" role="tab" data-p="tabs"><i data-icon="layers-2" data-size="16"></i>Tabs</button>
+    <button id="tab-saved" role="tab" data-p="saved"><i data-icon="bookmark" data-size="16"></i>Saved<span class="cnt" id="saved-cnt">0</span></button>
+  </div>
+
+  <div class="pane on" id="pane-tabs">
   <div class="stats">
     <div class="stat"><span class="eyebrow">Tabs</span><b id="s-tabs">–</b></div>
     <div class="stat"><span class="eyebrow">Windows</span><b id="s-wins">–</b></div>
@@ -45,11 +93,11 @@
 
   <button class="btn btn-gold hero-btn" id="group"><i data-icon="sparkles" data-size="17"></i>Tidy my tabs</button>
 
-  <div class="actions">
-    <button class="action" id="welcome"><span class="tile"><i data-icon="sun" data-size="16"></i></span><span class="grow"><div class="t">Welcome back</div><div class="s">Pick up where you left off</div></span><kbd class="kbd" data-k="W">⌥⇧W</kbd></button>
-    <button class="action" id="dupes"><span class="tile"><i data-icon="copy-x" data-size="16"></i></span><span class="grow"><div class="t">Close duplicates</div><div class="s" id="dupes-sub">Keep one copy of each page</div></span><kbd class="kbd" data-k="D">⌥⇧D</kbd></button>
-    <button class="action" id="sleep"><span class="tile"><i data-icon="moon" data-size="16"></i></span><span class="grow"><div class="t">Sleep background tabs</div><div class="s">Free memory now · wakes on click</div></span><kbd class="kbd" data-k="S">⌥⇧S</kbd></button>
-    <button class="action" id="ungroup"><span class="tile"><i data-icon="undo-2" data-size="16"></i></span><span class="grow"><div class="t">Undo grouping</div><div class="s">Your own groups stay untouched</div></span></button>
+  <div class="tiles">
+    <button class="tilebtn" id="welcome"><span class="tile"><i data-icon="sun" data-size="16"></i></span><span><div class="t">Welcome back</div><div class="s">Pick up where you left off</div></span></button>
+    <button class="tilebtn" id="dupes"><span class="tile"><i data-icon="copy-x" data-size="16"></i></span><span><div class="t">Close duplicates</div><div class="s" id="dupes-sub">Keep one copy of each page</div></span></button>
+    <button class="tilebtn" id="sleep"><span class="tile"><i data-icon="moon" data-size="16"></i></span><span><div class="t">Sleep background tabs</div><div class="s">Free memory now · wakes on click</div></span></button>
+    <button class="tilebtn" id="ungroup"><span class="tile"><i data-icon="undo-2" data-size="16"></i></span><span><div class="t">Undo grouping</div><div class="s">Your own groups stay untouched</div></span></button>
   </div>
 
   <div class="save">
@@ -59,6 +107,27 @@
       <button class="btn btn-icon" id="save" title="Save session"><i data-icon="check" data-size="16"></i></button>
     </div>
     <label class="check" style="margin-top:9px"><input type="checkbox" id="sess-close">Close the tabs after saving</label>
+  </div>
+  </div>
+
+  <div class="pane" id="pane-saved">
+    <div class="cur">
+      <span class="fv"><img id="cur-fav" alt=""></span>
+      <div class="grow"><div class="tt ellipsis" id="cur-title">This page</div><div class="hh ellipsis" id="cur-host"></div></div>
+      <button class="star" id="cur-star" title="Mark as favourite" aria-label="Favourite"><i data-icon="star" data-size="18"></i></button>
+    </div>
+    <div class="already" id="already"><i data-icon="bookmark-check" data-size="15"></i><span id="already-t">Already saved</span></div>
+    <div class="lab"><span class="eyebrow">Category</span><span class="tiny muted" id="cat-hint"></span></div>
+    <div class="cats" id="cats"></div>
+    <div class="newcat" id="newcat"><input type="text" id="newcat-in" placeholder="New category name" maxlength="40"><button class="btn btn-icon" id="newcat-ok" title="Add"><i data-icon="check" data-size="16"></i></button></div>
+    <input type="text" id="note" placeholder="Add a note (optional)" maxlength="300" style="margin-top:12px">
+    <div class="savebar"><button class="btn btn-gold" id="save-page"><i data-icon="bookmark-plus" data-size="17"></i><span id="save-label">Save this page</span></button><button class="btn" id="save-all" title="Save every tab in this window, each into its own category"><i data-icon="layers-2" data-size="16"></i>All tabs</button></div>
+    <div class="quietrow"><label class="check"><input type="checkbox" id="mirror">Also add to Chrome bookmarks</label><button class="btn btn-quiet btn-sm" id="remove-saved" hidden><i data-icon="trash-2" data-size="14"></i>Remove</button></div>
+    <div class="found">
+      <label class="s"><i data-icon="search" data-size="15"></i><input type="text" id="find" placeholder="Search your saved pages" aria-label="Search saved"></label>
+      <div id="hits"></div>
+    </div>
+    <button class="btn btn-quiet libbtn" id="open-lib"><i data-icon="library" data-size="16"></i>Open library<span class="cnt chip chip-gold" id="lib-n">0</span></button>
   </div>
 
   <footer>

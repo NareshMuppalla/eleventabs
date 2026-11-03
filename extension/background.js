@@ -1,4 +1,5 @@
 // ElevenTabs service worker: grouping, duplicates, sleeping, sessions, time tracking.
+import { saveItem } from './lib/library.js';
 import { getConfig, categorize, isWebUrl, hostOf, normUrl, todayKey, isPrivate } from './lib/config.js';
 
 const SLEEP_ALARM = 'tb-sleep';
@@ -383,7 +384,22 @@ chrome.commands.onCommand.addListener(cmd => {
   if (cmd === 'close-duplicates') closeDuplicates();
   if (cmd === 'sleep-now') sleepIdle(true);
   if (cmd === 'welcome-back') openStart();
+  if (cmd === 'save-page') quickSave();
 });
+
+// Save the current tab to the library (shortcut / right-click free; assign a key at chrome://extensions/shortcuts).
+async function quickSave() {
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  const { settings } = await getConfig();
+  let ok = false;
+  if (tab && isWebUrl(tab.url)) {
+    const mirror = settings.mirrorChrome && await chrome.permissions.contains({ permissions: ['bookmarks'] });
+    await saveItem({ url: tab.url, title: tab.title }, { mirror }).then(() => { ok = true; }).catch(() => {});
+  }
+  await chrome.action.setBadgeBackgroundColor({ color: ok ? '#4caf7d' : '#e5675a' });
+  await chrome.action.setBadgeText({ text: ok ? '✓' : '!' });
+  setTimeout(() => chrome.action.setBadgeText({ text: '' }), 1800);
+}
 
 // ---------- messages from popup / dashboard ----------
 const serial = fn => (...a) => (queue = queue.then(() => fn(...a))).catch(e => { throw e; });

@@ -46,6 +46,12 @@
     .sw { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--card); box-shadow: 0 0 0 1px var(--line-2); cursor: pointer; transition: transform .2s var(--ease); }
     .sw:hover { transform: scale(1.12); }
     .sw.on { box-shadow: 0 0 0 2px var(--gold); }
+    .sgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .sv { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 12px; border: 1px solid var(--line); background: var(--card-2); color: var(--text); text-decoration: none; transition: transform .2s var(--ease), border-color .2s; min-width: 0; }
+    .sv:hover { transform: translateY(-2px); border-color: var(--gold-line); }
+    .sv img { width: 20px; height: 20px; border-radius: 5px; flex: none; }
+    .sv .tt { font-size: 12.5px; font-weight: 600; line-height: 1.25; } .sv .hh { display: flex; align-items: center; gap: 6px; font: 500 10.5px var(--mono); color: var(--muted); margin-top: 2px; }
+    @media (max-width: 560px) { .sgrid { grid-template-columns: 1fr; } }
     .foot { display: flex; align-items: center; gap: 14px; margin-top: 26px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12.5px; flex-wrap: wrap; }
     .done { display: flex; align-items: center; gap: 10px; color: var(--ok); font-weight: 550; margin-top: 14px; }
     @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } .shell, .top { padding-left: 18px; padding-right: 18px; } }
@@ -74,6 +80,10 @@
     <div class="grid">
       <div class="stack">
         <div class="card resume" id="resume"></div>
+        <div class="card" id="saved-card" hidden>
+          <div class="card-head"><i data-icon="bookmark" data-size="16"></i><h3>Saved for later</h3><span class="grow"></span><a class="small" href="dashboard.html#library">Open library</a></div>
+          <div id="saved-grid" class="sgrid"></div>
+        </div>
         <div class="card" id="sessions-card" hidden>
           <div class="card-head"><i data-icon="archive-restore" data-size="16"></i><h3>Saved sessions</h3><span class="grow"></span><a class="small" href="dashboard.html#sessions">All sessions</a></div>
           <div id="sessions"></div>

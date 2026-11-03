@@ -29,6 +29,7 @@ export const DEFAULT_SETTINGS = {
   themeId: 'gold',          // see lib/themes.js, or 'custom'
   customTheme: { base: 'dark', accent: '#f0b93f' },
   userName: '',             // for the greeting on the Welcome back page
+  mirrorChrome: false,      // also add new saves to Chrome's own bookmarks (needs the optional bookmarks permission)
   startOnLaunch: true,      // open Welcome back when Chrome starts
   snapshot: true,           // keep a rolling snapshot of open tabs so you can pick up where you left off
   otherGroupName: '',       // '' = leave unmatched tabs ungrouped
@@ -59,7 +60,7 @@ export function sanitizeConfig(cfg = {}) {
   }));
   const s = { ...DEFAULT_SETTINGS };
   const src = cfg.settings || {};
-  for (const k of ['autoGroup', 'collapseOtherGroups', 'dedupeOnOpen', 'sleepEnabled', 'trackTime', 'startOnLaunch', 'snapshot']) if (typeof src[k] === 'boolean') s[k] = src[k];
+  for (const k of ['autoGroup', 'collapseOtherGroups', 'dedupeOnOpen', 'sleepEnabled', 'trackTime', 'startOnLaunch', 'snapshot', 'mirrorChrome']) if (typeof src[k] === 'boolean') s[k] = src[k];
   for (const [k, lo, hi] of [['minTabsForGroup', 1, 10], ['sleepMinutes', 1, 1440]]) if (Number.isFinite(+src[k])) s[k] = Math.min(hi, Math.max(lo, Math.round(+src[k])));
   for (const k of ['neverSleep', 'junkPatterns', 'privateSites']) if (Array.isArray(src[k])) s[k] = list(src[k]);
   if (typeof src.otherGroupName === 'string') s.otherGroupName = str(src.otherGroupName, 40).trim();

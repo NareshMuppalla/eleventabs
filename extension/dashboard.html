@@ -55,6 +55,49 @@
     .seg { display: inline-flex; padding: 3px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg-2); }
     .seg button { border: 0; background: transparent; color: var(--muted); font: 550 12.5px var(--sans); padding: 6px 11px; border-radius: 7px; cursor: pointer; display: inline-flex; gap: 6px; align-items: center; }
     .seg button.on { background: var(--card); color: var(--text); box-shadow: 0 1px 2px rgba(0,0,0,.2), inset 0 0 0 1px var(--line-2); }
+
+    .navcount { margin-left: auto; font: 500 10.5px var(--mono); color: var(--gold-ink); background: var(--gold-soft); border-radius: 99px; padding: 2px 7px; } .navcount:empty { display: none; }
+    .lib-wrap { display: grid; grid-template-columns: 230px 1fr; gap: 18px; align-items: start; }
+    .rail { position: sticky; top: 20px; padding: 10px; }
+    .rail .ri { display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 10px; border-radius: 10px; border: 0; background: transparent; color: var(--text-2); font: 550 13px var(--sans); cursor: pointer; text-align: left; transition: background .15s, color .15s; }
+    .rail .ri:hover { background: var(--hover); color: var(--text); }
+    .rail .ri.on { background: var(--card-2); color: var(--text); box-shadow: inset 0 0 0 1px var(--line-2); }
+    .rail .ri.drop { background: var(--gold-soft); box-shadow: inset 0 0 0 1px var(--gold); }
+    .rail .ri .n { margin-left: auto; font: 500 11px var(--mono); color: var(--muted); }
+    .rail .ri .ic { color: var(--muted); } .rail .ri.on .ic { color: var(--gold); }
+    .rail .sep { height: 1px; background: var(--line); margin: 8px 6px; }
+    .rail .cat-actions { display: flex; gap: 6px; padding: 6px 4px 2px; flex-wrap: wrap; }
+    .rail .edit { display: none; gap: 4px; margin-left: 6px; } .rail.editing .edit { display: flex; } .rail.editing .n { display: none; }
+    .rail .edit button { border: 0; background: transparent; color: var(--muted); padding: 3px; border-radius: 6px; cursor: pointer; } .rail .edit button:hover { color: var(--text); background: var(--hover); }
+    .toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+    .toolbar .sbox { position: relative; flex: 1; min-width: 220px; } .toolbar .sbox .ic { position: absolute; left: 12px; top: 11px; color: var(--muted); } .toolbar .sbox input { padding-left: 38px; }
+    .toolbar select { width: auto; padding-right: 28px; }
+    .bulk { display: none; align-items: center; gap: 10px; padding: 10px 14px; border: 1px solid var(--gold-line); background: var(--gold-soft); border-radius: 12px; margin-bottom: 14px; flex-wrap: wrap; } .bulk.on { display: flex; }
+    .lgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
+    .lgrid.list { grid-template-columns: 1fr; gap: 6px; }
+    .lcard { position: relative; display: flex; flex-direction: column; gap: 10px; padding: 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--card); box-shadow: var(--shadow); transition: transform .25s var(--ease), border-color .2s; cursor: default; }
+    .lcard:hover { transform: translateY(-2px); border-color: var(--gold-line); }
+    .lcard.sel { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold), var(--shadow); }
+    .lcard .top { display: flex; align-items: center; gap: 9px; }
+    .lcard .fv { width: 30px; height: 30px; border-radius: 9px; background: var(--card-2); border: 1px solid var(--line); display: grid; place-items: center; flex: none; } .lcard .fv img { width: 18px; height: 18px; border-radius: 4px; }
+    .lcard .host { font: 500 11px var(--mono); color: var(--muted); } 
+    .lcard .ttl { font-weight: 650; font-size: 14px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; color: var(--text); text-decoration: none; }
+    .lcard .ttl:hover { color: var(--gold-ink); }
+    .lcard .note { color: var(--muted); font-size: 12.5px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .lcard .bot { display: flex; align-items: center; gap: 8px; margin-top: auto; min-height: 28px; }
+    .lcard .acts { position: absolute; right: 8px; bottom: 8px; display: flex; gap: 2px; padding-left: 14px; background: linear-gradient(90deg, transparent, var(--card) 30%); opacity: 0; transition: opacity .2s; } .lcard:hover .acts, .lcard.sel .acts { opacity: 1; }
+    .lcard .acts button, .lcard .favb { border: 0; background: transparent; color: var(--muted); padding: 5px; border-radius: 7px; cursor: pointer; } .lcard .acts button:hover, .lcard .favb:hover { background: var(--hover); color: var(--text); }
+    .lcard .favb.on { color: var(--gold); } .lcard .favb.on svg { fill: currentColor; }
+    .lcard .pick { position: absolute; left: 8px; top: 8px; opacity: 0; transition: opacity .15s; } .lcard:hover .pick, .selecting .lcard .pick { opacity: 1; }
+    .lgrid.list .lcard { flex-direction: row; align-items: center; padding: 9px 12px; gap: 14px; } .lgrid.list .lcard .top { width: 230px; } .lgrid.list .lcard .ttl { -webkit-line-clamp: 1; flex: 1; } .lgrid.list .lcard .note { display: none; } .lgrid.list .lcard .bot { margin: 0; min-width: 260px; } .lgrid.list .lcard .acts { position: static; background: none; padding: 0; } .lgrid.list .lcard .pick { left: -22px; }
+    .lgrid.list .lcard .body { flex: 1; min-width: 0; } 
+    .catchip { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 62%; display: inline-flex; align-items: center; gap: 6px; padding: 3px 9px; border-radius: 99px; background: var(--bg-2); border: 1px solid var(--line); font: 550 11.5px var(--sans); color: var(--text-2); }
+    .when { font: 500 11px var(--mono); color: var(--faint); }
+    .modal { position: fixed; inset: 0; z-index: 50; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,.55); backdrop-filter: blur(4px); } .modal.on { display: flex; }
+    .modal .card { width: min(520px, 92vw); padding: 22px; animation: rise .3s var(--ease); }
+    .modal label.f { display: block; margin-top: 12px; } .modal label.f > span { display: block; margin-bottom: 5px; }
+    .colors { display: flex; gap: 6px; } .colors i { width: 18px; height: 18px; border-radius: 50%; cursor: pointer; border: 2px solid var(--card); box-shadow: 0 0 0 1px var(--line-2); } .colors i.on { box-shadow: 0 0 0 2px var(--gold); }
+    @media (max-width: 980px) { .lib-wrap { grid-template-columns: 1fr; } .rail { position: static; } }
     .hist-row input { accent-color: var(--gold); }
     .scroll { max-height: 520px; overflow: auto; margin: 0 -6px; padding: 0 6px; }
     .welcome { position: relative; overflow: hidden; padding: 46px; }
@@ -88,6 +131,7 @@
     <a href="#overview" data-s="overview"><i data-icon="chart-column" data-size="17"></i>Overview</a>
     <a href="#tabs" data-s="tabs"><i data-icon="layers-2" data-size="17"></i>Open tabs</a>
     <a href="#sessions" data-s="sessions"><i data-icon="archive-restore" data-size="17"></i>Sessions</a>
+    <a href="#library" data-s="library"><i data-icon="library" data-size="17"></i>Saved<span class="navcount" id="nav-saved"></span></a>
     <span class="eyebrow group-label">Clean up</span>
     <a href="#bookmarks" data-s="bookmarks"><i data-icon="bookmark" data-size="17"></i>Bookmarks</a>
     <a href="#history" data-s="history"><i data-icon="history" data-size="17"></i>History</a>
@@ -163,6 +207,29 @@
     <section id="sessions">
       <div class="page-head"><div class="grow"><span class="eyebrow">Saved windows</span><h1>Sessions</h1><p>Park a set of tabs and bring it back later, groups included. Save one from the toolbar popup.</p></div></div>
       <div id="s-list" class="col" style="gap:10px"></div>
+    </section>
+
+    <!-- LIBRARY (Saved) -->
+    <section id="library">
+      <div class="page-head">
+        <div class="grow"><span class="eyebrow" id="l-eyebrow">Your collection</span><h1>Saved, <em class="gold">and sorted</em></h1><p>Pages you saved from the ElevenTabs popup, organised into categories. Kept on this device only.</p></div>
+        <button class="btn" id="l-add"><i data-icon="plus" data-size="16"></i>Add link</button>
+        <button class="btn" id="l-import"><i data-icon="download" data-size="16"></i>Import from Chrome</button>
+        <button class="btn" id="l-export"><i data-icon="upload" data-size="16"></i>Export</button>
+      </div>
+      <div class="lib-wrap">
+        <aside class="card rail" id="rail"></aside>
+        <div>
+          <div class="toolbar">
+            <label class="sbox"><i data-icon="search" data-size="16"></i><input type="text" id="l-q" placeholder="Search title, site or note" aria-label="Search saved"></label>
+            <select id="l-sort" aria-label="Sort"><option value="new">Newest first</option><option value="old">Oldest first</option><option value="az">A to Z</option><option value="site">By site</option></select>
+            <span class="seg"><button id="v-grid" class="on" title="Grid"><i data-icon="layout-grid" data-size="15"></i></button><button id="v-list" title="List"><i data-icon="layout-list" data-size="15"></i></button></span>
+          </div>
+          <div class="bulk" id="bulk"><b id="bulk-n"></b><span class="muted small">Move to</span><select id="bulk-cat" style="width:auto"></select><button class="btn btn-sm" id="bulk-fav"><i data-icon="star" data-size="14"></i>Favourite</button><button class="btn btn-sm btn-danger" id="bulk-del"><i data-icon="trash-2" data-size="14"></i>Delete</button><button class="btn btn-sm btn-quiet" id="bulk-x">Clear</button></div>
+          <div id="l-body"></div>
+        </div>
+      </div>
+      <div class="modal" id="modal"><div class="card" id="modal-card"></div></div>
     </section>
 
     <!-- BOOKMARKS -->
