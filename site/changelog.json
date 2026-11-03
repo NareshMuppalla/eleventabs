@@ -1,5 +1,18 @@
 [
   {
+    "version": "2.2.0",
+    "date": "2026-11-04",
+    "title": "A new look, and every bookmark in one sorted place",
+    "notes": [
+      "New Iris design: lighter, cleaner, with a floating sidebar, bolder type and a fresh default theme (Iris, plus Iris Night for dark mode). Your other 9 themes are still there.",
+      "Saved is now the home of the dashboard: stats, a By category view with one section per category, favourites on top, and grid or list views.",
+      "Bring in all your Chrome bookmarks with one click (copies only). Turn on Auto-add and every bookmark you make in Chrome from then on appears in Saved, in the right category.",
+      "Popup and Welcome back page refreshed to match.",
+      "If you were on the old Eleven Gold look, you are moved to Iris once. Pick Gold again any time in Appearance."
+    ],
+    "file": "/downloads/eleventabs-v2.2.0.zip"
+  },
+  {
     "version": "2.1.0",
     "date": "2026-11-04",
     "title": "Saved: your own categorised bookmarks, and a new popup",

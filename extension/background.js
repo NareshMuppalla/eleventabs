@@ -387,6 +387,21 @@ chrome.commands.onCommand.addListener(cmd => {
   if (cmd === 'save-page') quickSave();
 });
 
+// Keep Saved in step with Chrome: a bookmark you add (Ctrl+D) also appears in Saved, in the right category.
+let followBound = false;
+function bindFollow() {
+  if (followBound || !chrome.bookmarks?.onCreated) return;
+  followBound = true;
+  chrome.bookmarks.onCreated.addListener(async (_id, node) => {
+    if (!node.url || !isWebUrl(node.url)) return;
+    const { settings } = await getConfig();
+    if (!settings.followChrome) return;
+    await saveItem({ url: node.url, title: node.title }).catch(() => {});
+  });
+}
+bindFollow();
+chrome.permissions.onAdded.addListener(bindFollow);
+
 // Save the current tab to the library (shortcut / right-click free; assign a key at chrome://extensions/shortcuts).
 async function quickSave() {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });

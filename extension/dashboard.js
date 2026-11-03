@@ -36,7 +36,7 @@ document.addEventListener('click', async e => {
 // ---------- routing ----------
 const loaders = {};
 function route() {
-  const id = (location.hash || '#overview').slice(1) || 'overview';
+  const id = (location.hash || '#library').slice(1) || 'library';
   document.querySelectorAll('main > section').forEach(s => s.classList.toggle('active', s.id === id));
   document.querySelectorAll('nav a').forEach(a => a.classList.toggle('active', a.dataset.s === id));
   window.scrollTo(0, 0);
@@ -396,7 +396,7 @@ $('nav-ver').textContent = 'ElevenTabs v' + VERSION;
 loaders.whatsnew = () => {
   $('wn-ver').textContent = 'You have v' + VERSION;
   $('wn-list').innerHTML = CHANGELOG.map(r => `<div class="card wn"><div class="row"><span class="chip ${r.version === VERSION ? 'chip-gold' : ''} mono">v${esc(r.version)}</span>${r.version === VERSION ? '<span class="chip chip-ok">Installed</span>' : ''}<span class="grow"></span><span class="mono tiny muted">${esc(new Date(r.date + 'T12:00:00').toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }))}</span></div>
-    <h3 style="margin-top:12px;font:400 26px/1.1 var(--serif)">${esc(r.title)}</h3><ul>${r.notes.map(n => `<li>${esc(n)}</li>`).join('')}</ul></div>`).join('');
+    <h3 style="margin-top:12px;font:800 22px/1.15 var(--sans);letter-spacing:-.02em">${esc(r.title)}</h3><ul>${r.notes.map(n => `<li>${esc(n)}</li>`).join('')}</ul></div>`).join('');
 };
 
 // ---------- welcome onboarding ----------

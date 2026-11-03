@@ -28,7 +28,7 @@
   --serif: "Instrument Serif", ui-serif, Georgia, serif;
   --sans: "Satoshi", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-  --r: 14px; --r-sm: 10px; --ease: cubic-bezier(.22, 1, .36, 1);
+  --r: 20px; --r-sm: 12px; --ease: cubic-bezier(.22, 1, .36, 1);
   --g-grey: #8a8f98; --g-blue: #5b8def; --g-red: #e5675a; --g-yellow: #e8b931; --g-green: #4caf7d; --g-pink: #d96ba8; --g-purple: #9b7bea; --g-cyan: #3fb5c1; --g-orange: #e8894a;
 }
 * { box-sizing: border-box; }
@@ -38,7 +38,7 @@ body { margin: 0; background: var(--bg); color: var(--text); font: 450 14px/1.5 
 a { color: var(--gold-ink); text-decoration: none; }
 h1, h2, h3 { margin: 0; font-weight: 600; letter-spacing: -.01em; }
 .serif { font-family: var(--serif); font-weight: 400; letter-spacing: -.01em; }
-.serif em, em.gold { font-style: italic; color: var(--gold-ink); }
+.serif em, em.gold { font-style: normal; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .eyebrow { font: 500 10.5px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
 .mono { font-family: var(--mono); font-feature-settings: "tnum"; }
 .muted { color: var(--muted); } .small { font-size: 12.5px; } .tiny { font-size: 11.5px; }
@@ -105,8 +105,18 @@ input:focus, textarea:focus, select:focus { border-color: var(--gold-line); box-
 
 .mark { width: 30px; height: 30px; border-radius: 9px; flex: none; box-shadow: 0 6px 18px -8px rgba(240,185,63,.9); }
 .brand { display: flex; align-items: center; gap: 10px; }
-.brand b { font: 400 22px/1 var(--serif); letter-spacing: -.01em; font-weight: 400; }
+.brand b { font: 800 19px/1 var(--sans); letter-spacing: -.035em; }
 .brand .by { font: 500 9px/1 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin-top: 5px; }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 [data-theme="light"] .kpi.gold b { background: none; color: var(--gold-ink); }
+
+/* ---- v3 "Iris" refinements ---- */
+.card { border-radius: var(--r); box-shadow: var(--shadow); }
+.btn { border-radius: 12px; padding: 10px 15px; }
+.btn-gold { box-shadow: 0 10px 26px -12px color-mix(in srgb, var(--gold) 80%, transparent), inset 0 1px 0 rgba(255,255,255,.3); color: var(--on-gold); }
+.chip { border-radius: 99px; }
+input[type=text], input[type=number], textarea, select { border-radius: 12px; }
+.mark { border-radius: 10px; box-shadow: 0 6px 18px -8px color-mix(in srgb, var(--gold) 80%, transparent); }
+:root[data-theme="light"] body { background-image: radial-gradient(900px 420px at 80% -10%, color-mix(in srgb, var(--gold) 12%, transparent), transparent 60%), radial-gradient(700px 400px at -5% 40%, rgba(91, 156, 240, .08), transparent 60%); }
+[hidden] { display: none !important; }

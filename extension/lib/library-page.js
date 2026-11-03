@@ -1,6 +1,7 @@
 // Dashboard "Saved" page: categorised library of your own saved pages.
 import { COLORS, faviconUrl, hostOf } from './config.js';
 import { icon } from './icons.js';
+import { getConfig, saveConfig } from './config.js';
 import { loadLib, saveItem, patchItems, removeItems, addCat, editCat, deleteCat, autoSort, importChrome, exportJson, exportHtml } from './library.js';
 import { todayKey } from './config.js';
 
@@ -8,7 +9,9 @@ export function initLibrary({ loaders, $, esc, toast, has, ask }) {
   const col = c => COLORS.includes(c) ? c : 'grey';
   const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
   let lib = { cats: [], items: [] };
-  let view = 'all', q = '', sort = 'new', mode = 'grid', editing = false;
+  let view = 'all', q = '', sort = 'new', mode = 'board', editing = false;
+  const closed = new Set();
+  let followOn = false, hasBm = false;
   const sel = new Set();
 
   const ago = t => {
@@ -21,7 +24,19 @@ export function initLibrary({ loaders, $, esc, toast, has, ask }) {
   const count = pred => lib.items.filter(pred).length;
   const catOf = id => lib.cats.find(c => c.id === id);
 
-  async function reload() { lib = await loadLib(); $('nav-saved').textContent = lib.items.length || ''; render(); }
+  async function chromeState() {
+    hasBm = await has('bookmarks');
+    const { settings } = await getConfig(); followOn = !!settings.followChrome && hasBm;
+  }
+  function renderTop() {
+    const week = count(i => Date.now() - i.added < 7 * 864e5);
+    $('l-stats').innerHTML = `<div class="lstat hot"><span class="eyebrow">Saved pages</span><b>${lib.items.length}</b></div><div class="lstat"><span class="eyebrow">Categories in use</span><b>${new Set(lib.items.filter(i => i.cat).map(i => i.cat)).size}</b></div><div class="lstat"><span class="eyebrow">Favourites</span><b>${count(i => i.fav)}</b></div><div class="lstat"><span class="eyebrow">Added this week</span><b>${week}</b></div>`;
+    const s = $('l-sync'); s.className = 'syncbar' + (followOn ? ' ok' : '');
+    s.innerHTML = followOn
+      ? `${icon('check-check', 18)}<span class="grow"><b>Chrome bookmarks are kept in sync.</b> <span class="muted small">Anything you bookmark in Chrome appears here, in the right category.</span></span><label class="check"><input type="checkbox" id="s-follow" checked>Auto-add</label><button class="btn btn-sm" id="s-import">${icon('download', 14)}Re-import now</button>`
+      : `${icon('bookmark-plus', 18)}<span class="grow"><b>See every bookmark in one place.</b> <span class="muted small">Bring in your Chrome bookmarks (copies only, originals untouched) and keep new ones coming in automatically.</span></span><button class="btn btn-gold btn-sm" id="s-go">${icon('download', 14)}Bring in my bookmarks</button>`;
+  }
+  async function reload() { await chromeState(); lib = await loadLib(); $('nav-saved').textContent = lib.items.length || ''; render(); }
   loaders.library = reload;
   chrome.storage.local.get('library').then(() => loadLib().then(l => { $('nav-saved').textContent = l.items.length || ''; }));
   chrome.storage.onChanged.addListener((ch, area) => { if (area === 'local' && ch.library && document.getElementById('library').classList.contains('active')) reload(); });
@@ -64,6 +79,7 @@ export function initLibrary({ loaders, $, esc, toast, has, ask }) {
   }
 
   function render() {
+    renderTop();
     renderRail();
     const list = visible();
     const title = view === 'all' ? 'All saved' : view === 'fav' ? 'Favourites' : view === 'none' ? 'Unsorted' : catOf(view)?.name || 'Saved';
@@ -77,6 +93,14 @@ export function initLibrary({ loaders, $, esc, toast, has, ask }) {
       return;
     }
     if (!list.length) { $('l-body').innerHTML = `<div class="empty">${icon('search', 22)}Nothing here${q ? ' matches your search' : ' yet'}.</div>`; return; }
+    if (mode === 'board' && view === 'all' && !q) {
+      const groups = [];
+      const favs = list.filter(i => i.fav); if (favs.length) groups.push({ id: '__fav', name: 'Favourites', color: 'yellow', items: favs, star: true });
+      for (const c of lib.cats) { const its = list.filter(i => i.cat === c.id); if (its.length) groups.push({ id: c.id, name: c.name, color: c.color, items: its }); }
+      const un = list.filter(i => !i.cat); if (un.length) groups.push({ id: '', name: 'Unsorted', color: 'grey', items: un });
+      $('l-body').innerHTML = groups.map(g => `<div class="bsec ${closed.has(g.id) ? 'closed' : ''}" data-g="${esc(g.id)}" style="--bc:${g.star ? 'var(--gold)' : `var(--g-${col(g.color)})`}"><div class="bsec-h" data-toggle="${esc(g.id)}">${g.star ? icon('star', 16) : `<span class="dot d-${col(g.color)}"></span>`}<h3>${esc(g.name)}</h3><span class="cnt">${g.items.length}</span><span class="line"></span>${g.id === '__fav' ? '' : `<button class="all" data-open-cat="${esc(g.id === '' ? 'none' : g.id)}">Open</button>`}<span class="chev">${icon('chevron-down', 16)}</span></div><div class="lgrid">${g.items.map(card).join('')}</div></div>`).join('');
+      return;
+    }
     $('l-body').innerHTML = `<div class="lgrid ${mode === 'list' ? 'list' : ''}">${list.map(card).join('')}</div>`;
   }
 
@@ -130,8 +154,13 @@ export function initLibrary({ loaders, $, esc, toast, has, ask }) {
   $('l-add').onclick = () => itemModal(null);
   $('l-q').oninput = e => { q = e.target.value.trim(); render(); };
   $('l-sort').onchange = e => { sort = e.target.value; render(); };
-  $('v-grid').onclick = () => { mode = 'grid'; $('v-grid').classList.add('on'); $('v-list').classList.remove('on'); render(); };
-  $('v-list').onclick = () => { mode = 'list'; $('v-list').classList.add('on'); $('v-grid').classList.remove('on'); render(); };
+  const setMode = m => { mode = m; for (const k of ['board', 'grid', 'list']) $('v-' + k).classList.toggle('on', k === m); render(); };
+  $('v-board').onclick = () => setMode('board'); $('v-grid').onclick = () => setMode('grid'); $('v-list').onclick = () => setMode('list');
+  $('l-sync').addEventListener('click', async e => {
+    if (e.target.closest('#s-go')) { if (!(await has('bookmarks')) && !(await ask('bookmarks'))) return; const r = await importChrome(); const c = await getConfig(); c.settings.followChrome = true; await saveConfig({ settings: c.settings }); toast(`Brought in ${plural(r.added, 'bookmark')}. New ones will appear automatically.`, 'check-check'); reload(); }
+    if (e.target.closest('#s-import')) { const r = await importChrome(); toast(`${plural(r.added, 'new bookmark')} added`, 'download'); reload(); }
+  });
+  $('l-sync').addEventListener('change', async e => { if (e.target.id !== 's-follow') return; const c = await getConfig(); c.settings.followChrome = e.target.checked; await saveConfig({ settings: c.settings }); toast(e.target.checked ? 'New Chrome bookmarks will appear here' : 'Auto-add is off'); reload(); });
 
   const doImport = async () => {
     if (!(await has('bookmarks')) && !(await ask('bookmarks'))) return;
@@ -176,6 +205,8 @@ export function initLibrary({ loaders, $, esc, toast, has, ask }) {
   });
 
   $('l-body').addEventListener('click', async e => {
+    const oc = e.target.closest('[data-open-cat]'); if (oc) { view = oc.dataset.openCat; render(); return; }
+    const tg = e.target.closest('[data-toggle]'); if (tg && !e.target.closest('button')) { const g = tg.dataset.toggle; closed.has(g) ? closed.delete(g) : closed.add(g); render(); return; }
     const pick = e.target.closest('[data-pick]'); if (pick) { pick.checked ? sel.add(pick.dataset.pick) : sel.delete(pick.dataset.pick); render(); return; }
     const fav = e.target.closest('[data-fav]'); if (fav) { const i = lib.items.find(x => x.id === fav.dataset.fav); await patchItems([i.id], { fav: !i.fav }); reload(); return; }
     const del = e.target.closest('[data-del]'); if (del) { await removeItems([del.dataset.del]); sel.delete(del.dataset.del); toast('Removed from Saved'); reload(); return; }

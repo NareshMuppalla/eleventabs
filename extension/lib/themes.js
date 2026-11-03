@@ -13,6 +13,8 @@ const lum = h => { const [r, g, b] = hexToRgb(h).map(v => { v /= 255; return v <
 
 // Each theme = base (dark/light), background tint and a 3-stop accent gradient.
 export const THEMES = {
+  iris:     { name: 'Iris',        base: 'light', bg: '#f4f4fb', accent: ['#a89bff', '#6a5cff', '#4636e0'], text: '#13132b' },
+  irisnight:{ name: 'Iris Night',  base: 'dark',  bg: '#0c0c1d', accent: ['#c3baff', '#8b7cff', '#5b4bff'], text: '#ececff' },
   gold:     { name: 'Eleven Gold', base: 'dark',  bg: '#0b0b0f', accent: ['#f8dc7c', '#f0b93f', '#c98a3b'], text: '#f3ecda' },
   midnight: { name: 'Midnight',    base: 'dark',  bg: '#090c14', accent: ['#b9d0ff', '#6d9bff', '#4a6fe0'], text: '#e8eefc' },
   aurora:   { name: 'Aurora',      base: 'dark',  bg: '#081011', accent: ['#a6f4dc', '#4fd1b5', '#3a8fd6'], text: '#e6f6f2' },
@@ -26,20 +28,20 @@ export const THEMES = {
 
 // Auto mode: theme follows the time of day.
 export const AUTO_SCHEDULE = [
-  { from: 6, to: 11, id: 'paper', label: 'Morning' },
+  { from: 6, to: 11, id: 'iris', label: 'Morning' },
   { from: 11, to: 17, id: 'sky', label: 'Afternoon' },
   { from: 17, to: 20, id: 'sunset', label: 'Evening' },
-  { from: 20, to: 6, id: 'gold', label: 'Night' }
+  { from: 20, to: 6, id: 'irisnight', label: 'Night' }
 ];
 export function autoThemeId(d = new Date()) {
   const h = d.getHours();
   const slot = AUTO_SCHEDULE.find(s => s.from < s.to ? h >= s.from && h < s.to : h >= s.from || h < s.to);
-  return slot ? slot.id : 'gold';
+  return slot ? slot.id : 'irisnight';
 }
 
 export function customTheme(c = {}) {
   const base = c.base === 'light' ? 'light' : 'dark';
-  const a = /^#[0-9a-f]{6}$/i.test(c.accent || '') ? c.accent : '#f0b93f';
+  const a = /^#[0-9a-f]{6}$/i.test(c.accent || '') ? c.accent : '#6a5cff';
   return { name: 'Custom', base, bg: base === 'dark' ? mix('#0b0b0f', a, .04) : mix('#f5f3ee', a, .05), accent: [mix(a, '#ffffff', .45), a, mix(a, '#000000', .28)], text: base === 'dark' ? mix('#f5f3ee', a, .06) : '#111110' };
 }
 
@@ -72,10 +74,10 @@ export function buildVars(t) {
 // settings: { themeMode: 'fixed'|'auto'|'system', themeId, customTheme }
 export function resolveTheme(settings = {}) {
   const mode = settings.themeMode || 'system';
-  let id = settings.themeId || 'gold';
+  let id = settings.themeId || 'iris';
   if (mode === 'auto') id = autoThemeId();
-  if (mode === 'system') id = matchMedia('(prefers-color-scheme: light)').matches ? 'paper' : 'gold';
-  const t = id === 'custom' ? customTheme(settings.customTheme) : (THEMES[id] || THEMES.gold);
+  if (mode === 'system') id = matchMedia('(prefers-color-scheme: light)').matches ? 'iris' : 'irisnight';
+  const t = id === 'custom' ? customTheme(settings.customTheme) : (THEMES[id] || THEMES.iris);
   return { id, theme: t, vars: buildVars(t) };
 }
 

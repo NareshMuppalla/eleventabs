@@ -40,7 +40,7 @@ $('save').onclick = async e => {
 };
 $('sess-name').onkeydown = e => { if (e.key === 'Enter') $('save').click(); };
 const openPage = hash => { chrome.tabs.create({ url: chrome.runtime.getURL('dashboard.html' + hash) }); window.close(); };
-$('open-dash').onclick = () => openPage('#overview');
+$('open-dash').onclick = () => openPage('#library');
 $('welcome').onclick = async () => { await send('openStart'); window.close(); };
 $('open-new').textContent = 'v' + chrome.runtime.getManifest().version;
 $('open-new').onclick = e => { e.preventDefault(); openPage('#whatsnew'); };

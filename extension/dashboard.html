@@ -8,21 +8,22 @@
   <link rel="stylesheet" href="ui.css">
   <style>
     body { background-image: var(--glow); background-attachment: fixed; }
-    .layout { display: grid; grid-template-columns: 236px 1fr; min-height: 100vh; }
-    nav { position: sticky; top: 0; height: 100vh; padding: 22px 14px; border-right: 1px solid var(--line); display: flex; flex-direction: column; gap: 2px; background: color-mix(in srgb, var(--bg) 70%, transparent); backdrop-filter: blur(12px); }
+    .layout { display: grid; grid-template-columns: 262px 1fr; min-height: 100vh; }
+    nav { position: sticky; top: 14px; height: calc(100vh - 28px); margin: 14px 0 14px 14px; padding: 20px 12px 14px; border: 1px solid var(--line); border-radius: 26px; display: flex; flex-direction: column; gap: 2px; background: var(--card); box-shadow: var(--shadow); overflow: auto; }
     nav .brand { padding: 0 8px 22px; }
-    nav a { display: flex; align-items: center; gap: 11px; padding: 9px 11px; border-radius: 10px; color: var(--text-2); font-weight: 550; font-size: 13.5px; transition: background .2s, color .2s; }
+    nav a { display: flex; align-items: center; gap: 11px; padding: 10px 12px; border-radius: 13px; color: var(--text-2); font-weight: 550; font-size: 13.5px; transition: background .2s, color .2s; }
     nav a .ic { color: var(--muted); transition: color .2s; }
     nav a:hover { background: var(--hover); color: var(--text); }
-    nav a.active { background: var(--card-2); color: var(--text); box-shadow: inset 0 0 0 1px var(--line-2); }
-    nav a.active .ic { color: var(--gold); }
+    nav a.active { background: var(--grad); color: var(--on-gold); box-shadow: 0 10px 24px -14px color-mix(in srgb, var(--gold) 90%, transparent); }
+    nav a.active .ic { color: var(--on-gold); }
+    nav a.active .navcount { background: rgba(255,255,255,.22); color: inherit; }
     nav .group-label { margin: 16px 11px 6px; }
-    nav .bottom { margin-top: auto; padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); }
-    main { padding: 34px 44px 60px; max-width: 1180px; width: 100%; }
+    nav .bottom { margin-top: auto; padding: 12px; border: 1px solid var(--line); border-radius: 16px; background: var(--bg-2); }
+    main { padding: 34px 44px 60px; max-width: 1240px; width: 100%; }
     section { display: none; animation: rise .45s var(--ease); } section.active { display: block; }
     @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
     .page-head { display: flex; align-items: flex-end; gap: 16px; margin-bottom: 26px; }
-    .page-head h1 { font: 400 44px/1.02 var(--serif); letter-spacing: -.02em; margin-top: 10px; }
+    .page-head h1 { font: 800 38px/1.05 var(--sans); letter-spacing: -.035em; margin-top: 10px; }
     .page-head p { color: var(--muted); margin: 8px 0 0; max-width: 620px; }
     .kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-bottom: 14px; }
     .kpi b { display: block; font: 500 32px/1 var(--mono); letter-spacing: -.03em; margin-top: 14px; }
@@ -57,6 +58,22 @@
     .seg button.on { background: var(--card); color: var(--text); box-shadow: 0 1px 2px rgba(0,0,0,.2), inset 0 0 0 1px var(--line-2); }
 
     .navcount { margin-left: auto; font: 500 10.5px var(--mono); color: var(--gold-ink); background: var(--gold-soft); border-radius: 99px; padding: 2px 7px; } .navcount:empty { display: none; }
+    .lstats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 14px; }
+    .lstat { padding: 16px 18px; border: 1px solid var(--line); border-radius: 18px; background: var(--card); box-shadow: var(--shadow); }
+    .lstat b { display: block; font: 800 30px/1 var(--sans); letter-spacing: -.04em; margin-top: 10px; }
+    .lstat.hot { background: var(--grad); border-color: transparent; color: var(--on-gold); } .lstat.hot .eyebrow { color: inherit; opacity: .8; }
+    .syncbar { display: flex; align-items: center; gap: 14px; padding: 12px 16px; border: 1px dashed var(--gold-line); background: var(--gold-soft); border-radius: 16px; margin-bottom: 14px; flex-wrap: wrap; }
+    .syncbar .ic { color: var(--gold); } .syncbar b { font-weight: 650; }
+    .syncbar.ok { border-style: solid; background: var(--card); border-color: var(--line); }
+    .bsec { margin-bottom: 26px; }
+    .bsec-h { display: flex; align-items: center; gap: 10px; margin: 0 0 12px; cursor: pointer; user-select: none; }
+    .bsec-h h3 { font: 800 18px/1 var(--sans); letter-spacing: -.02em; }
+    .bsec-h .cnt { font: 500 11.5px var(--mono); color: var(--muted); padding: 3px 9px; border-radius: 99px; background: var(--bg-2); border: 1px solid var(--line); }
+    .bsec-h .line { flex: 1; height: 1px; background: var(--line); }
+    .bsec-h .chev { color: var(--muted); transition: transform .25s var(--ease); } .bsec.closed .chev { transform: rotate(-90deg); } .bsec.closed .lgrid { display: none; }
+    .bsec-h .all { font-size: 12px; font-weight: 600; color: var(--gold-ink); border: 0; background: transparent; cursor: pointer; padding: 4px 8px; border-radius: 8px; } .bsec-h .all:hover { background: var(--hover); }
+    .bsec .lcard::before { content: ""; position: absolute; left: 0; top: 14px; bottom: 14px; width: 3px; border-radius: 0 3px 3px 0; background: var(--bc, var(--line-2)); }
+    @media (max-width: 760px) { .lstats { grid-template-columns: 1fr 1fr; } }
     .lib-wrap { display: grid; grid-template-columns: 230px 1fr; gap: 18px; align-items: start; }
     .rail { position: sticky; top: 20px; padding: 10px; }
     .rail .ri { display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 10px; border-radius: 10px; border: 0; background: transparent; color: var(--text-2); font: 550 13px var(--sans); cursor: pointer; text-align: left; transition: background .15s, color .15s; }
@@ -102,7 +119,7 @@
     .scroll { max-height: 520px; overflow: auto; margin: 0 -6px; padding: 0 6px; }
     .welcome { position: relative; overflow: hidden; padding: 46px; }
     .welcome::after { content: ""; position: absolute; right: -120px; top: -120px; width: 420px; height: 420px; border-radius: 50%; background: radial-gradient(circle, rgba(242,193,78,.18), transparent 65%); pointer-events: none; }
-    .welcome h1 { font: 400 56px/1 var(--serif); letter-spacing: -.02em; margin: 14px 0 14px; max-width: 700px; }
+    .welcome h1 { font: 800 52px/1.02 var(--sans); letter-spacing: -.04em; margin: 14px 0 14px; max-width: 700px; }
     .feat { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 26px; }
     .feat .card { padding: 16px; } .feat .ic { color: var(--gold); margin-bottom: 10px; }
     .feat b { display: block; margin-bottom: 4px; }
@@ -128,10 +145,10 @@
   <nav>
     <div class="brand"><img class="mark" src="icons/128.png" alt=""><div><b>ElevenTabs</b><div class="by">by YourElevens</div></div></div>
     <a href="start.html" id="nav-start"><i data-icon="sun" data-size="17"></i>Welcome back</a>
+    <a href="#library" data-s="library"><i data-icon="library" data-size="17"></i>Saved<span class="navcount" id="nav-saved"></span></a>
     <a href="#overview" data-s="overview"><i data-icon="chart-column" data-size="17"></i>Overview</a>
     <a href="#tabs" data-s="tabs"><i data-icon="layers-2" data-size="17"></i>Open tabs</a>
     <a href="#sessions" data-s="sessions"><i data-icon="archive-restore" data-size="17"></i>Sessions</a>
-    <a href="#library" data-s="library"><i data-icon="library" data-size="17"></i>Saved<span class="navcount" id="nav-saved"></span></a>
     <span class="eyebrow group-label">Clean up</span>
     <a href="#bookmarks" data-s="bookmarks"><i data-icon="bookmark" data-size="17"></i>Bookmarks</a>
     <a href="#history" data-s="history"><i data-icon="history" data-size="17"></i>History</a>
@@ -217,13 +234,15 @@
         <button class="btn" id="l-import"><i data-icon="download" data-size="16"></i>Import from Chrome</button>
         <button class="btn" id="l-export"><i data-icon="upload" data-size="16"></i>Export</button>
       </div>
+      <div class="lstats" id="l-stats"></div>
+      <div class="syncbar" id="l-sync"></div>
       <div class="lib-wrap">
         <aside class="card rail" id="rail"></aside>
         <div>
           <div class="toolbar">
             <label class="sbox"><i data-icon="search" data-size="16"></i><input type="text" id="l-q" placeholder="Search title, site or note" aria-label="Search saved"></label>
             <select id="l-sort" aria-label="Sort"><option value="new">Newest first</option><option value="old">Oldest first</option><option value="az">A to Z</option><option value="site">By site</option></select>
-            <span class="seg"><button id="v-grid" class="on" title="Grid"><i data-icon="layout-grid" data-size="15"></i></button><button id="v-list" title="List"><i data-icon="layout-list" data-size="15"></i></button></span>
+            <span class="seg"><button id="v-board" class="on" title="Grouped by category"><i data-icon="folder-tree" data-size="15"></i>By category</button><button id="v-grid" title="Grid"><i data-icon="layout-grid" data-size="15"></i></button><button id="v-list" title="List"><i data-icon="layout-list" data-size="15"></i></button></span>
           </div>
           <div class="bulk" id="bulk"><b id="bulk-n"></b><span class="muted small">Move to</span><select id="bulk-cat" style="width:auto"></select><button class="btn btn-sm" id="bulk-fav"><i data-icon="star" data-size="14"></i>Favourite</button><button class="btn btn-sm btn-danger" id="bulk-del"><i data-icon="trash-2" data-size="14"></i>Delete</button><button class="btn btn-sm btn-quiet" id="bulk-x">Clear</button></div>
           <div id="l-body"></div>

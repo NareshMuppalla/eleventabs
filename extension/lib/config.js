@@ -26,9 +26,11 @@ export const DEFAULT_SETTINGS = {
   trackTime: true,
   privateSites: [],         // never tracked, never shown in stats (e.g. your company's internal tools)
   themeMode: 'system',      // 'system' | 'auto' (time of day) | 'fixed'
-  themeId: 'gold',          // see lib/themes.js, or 'custom'
-  customTheme: { base: 'dark', accent: '#f0b93f' },
+  themeId: 'iris',
+  uiV: 3,                   // interface generation; older settings are moved to the Iris look once          // see lib/themes.js, or 'custom'
+  customTheme: { base: 'light', accent: '#6a5cff' },
   userName: '',             // for the greeting on the Welcome back page
+  followChrome: false,      // new Chrome bookmarks (Ctrl+D) are also added to Saved, sorted automatically (needs the optional bookmarks permission)
   mirrorChrome: false,      // also add new saves to Chrome's own bookmarks (needs the optional bookmarks permission)
   startOnLaunch: true,      // open Welcome back when Chrome starts
   snapshot: true,           // keep a rolling snapshot of open tabs so you can pick up where you left off
@@ -60,7 +62,7 @@ export function sanitizeConfig(cfg = {}) {
   }));
   const s = { ...DEFAULT_SETTINGS };
   const src = cfg.settings || {};
-  for (const k of ['autoGroup', 'collapseOtherGroups', 'dedupeOnOpen', 'sleepEnabled', 'trackTime', 'startOnLaunch', 'snapshot', 'mirrorChrome']) if (typeof src[k] === 'boolean') s[k] = src[k];
+  for (const k of ['autoGroup', 'collapseOtherGroups', 'dedupeOnOpen', 'sleepEnabled', 'trackTime', 'startOnLaunch', 'snapshot', 'mirrorChrome', 'followChrome']) if (typeof src[k] === 'boolean') s[k] = src[k];
   for (const [k, lo, hi] of [['minTabsForGroup', 1, 10], ['sleepMinutes', 1, 1440]]) if (Number.isFinite(+src[k])) s[k] = Math.min(hi, Math.max(lo, Math.round(+src[k])));
   for (const k of ['neverSleep', 'junkPatterns', 'privateSites']) if (Array.isArray(src[k])) s[k] = list(src[k]);
   if (typeof src.otherGroupName === 'string') s.otherGroupName = str(src.otherGroupName, 40).trim();
@@ -68,6 +70,8 @@ export function sanitizeConfig(cfg = {}) {
   else if (src.theme === 'dark' || src.theme === 'light') { s.themeMode = 'fixed'; s.themeId = src.theme === 'dark' ? 'gold' : 'paper'; } // v1 settings
   if (typeof src.themeId === 'string' && /^[a-z]{2,20}$/.test(src.themeId)) s.themeId = src.themeId;
   if (src.customTheme && typeof src.customTheme === 'object') s.customTheme = { base: src.customTheme.base === 'light' ? 'light' : 'dark', accent: /^#[0-9a-f]{6}$/i.test(src.customTheme.accent || '') ? src.customTheme.accent : '#f0b93f' };
+  if ((+src.uiV || 0) < 3 && src.themeMode !== 'fixed') { s.themeMode = 'system'; s.themeId = 'iris'; }
+  if ((+src.uiV || 0) < 3 && src.themeMode === 'fixed' && src.themeId === 'gold') { s.themeMode = 'system'; s.themeId = 'iris'; }
   if (typeof src.userName === 'string') s.userName = str(src.userName, 40).trim();
   return { categories: cats.length ? cats : structuredClone(DEFAULT_CATEGORIES), settings: s };
 }

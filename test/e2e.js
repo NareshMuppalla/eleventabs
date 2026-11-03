@@ -229,6 +229,15 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   ok(lib.items.some(i => i.url.includes('unknown.example')), 'import from Chrome copies bookmarks into the library');
   const bmAfter = await sw.evaluate(async () => JSON.stringify(await chrome.bookmarks.getTree()).length);
   ok(bmAfter === bmBefore, 'Chrome bookmarks unchanged by saving, sorting and importing');
+  // board view groups by category; Chrome bookmark follow adds new bookmarks automatically
+  await lp.click('#rail [data-v="all"]'); await lp.click('#v-board'); await sleep(300);
+  ok((await lp.$$('.bsec')).length >= 3, 'By-category view shows a section per category');
+  await sw.evaluate(async () => { const { settings } = await chrome.storage.local.get('settings'); await chrome.storage.local.set({ settings: { ...settings, followChrome: true } }); });
+  await sw.evaluate(async () => { await chrome.bookmarks.create({ parentId: '1', title: 'Fresh bookmark', url: 'https://claude.ai/followed' }); });
+  await sleep(1200);
+  lib = await sw.evaluate(async () => (await chrome.storage.local.get('library')).library);
+  const fol = lib.items.find(i => i.url === 'https://claude.ai/followed');
+  ok(fol && fol.cat === 'ai', 'a new Chrome bookmark appears in Saved, sorted into AI');
   // delete category keeps pages
   const cnt = lib.items.length;
   await lp.click('#r-edit'); await lp.click(`[data-dc="${rc.id}"]`); await sleep(600);
@@ -246,7 +255,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   ok(bg === '#081011' && stTheme.themeMode === 'fixed' && stTheme.themeId === 'aurora', 'theme switch applies instantly and is saved (' + bg + ')');
   await dash.goto(`chrome-extension://${id}/dashboard.html#appearance`); await sleep(900);
   ok((await dash.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--bg').trim())) === '#081011', 'other pages follow the theme');
-  ok((await dash.$$('#theme-grid .tcard')).length === 9, '9 theme packs listed');
+  ok((await dash.$$('#theme-grid .tcard')).length === 11, '11 theme packs listed');
   await dash.click('#mode-seg [data-m="auto"]'); await sleep(600);
   ok((await dash.textContent('#auto-sched')).includes('Evening'), 'Auto (time of day) shows its schedule');
   await dash.click('#custom-presets [data-c="#e0718d"]'); await sleep(600);
