@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ElevenTabs: every bookmark you save, sorted for you</title>
-  <meta name="description" content="Free Chrome extension. Save any page in one click and ElevenTabs sorts it into a category. Bring in all your Chrome bookmarks, see them in one place, plus auto tab groups, sleeping tabs and themes. No servers, no accounts.">
-  <meta property="og:title" content="ElevenTabs by YourElevens: every bookmark you save, sorted for you">
-  <meta property="og:description" content="Save any page in one click, auto-sorted into categories. See all your Chrome bookmarks in one place. Free, private, no account.">
+  <title>ElevenTabs: bookmark any page, keep it in a folder</title>
+  <meta name="description" content="Free Chrome extension. Bookmark any page in one click and keep it in a folder. Bring in all your Chrome bookmarks, see them in one place, plus auto tab groups, sleeping tabs and themes. No servers, no accounts.">
+  <meta property="og:title" content="ElevenTabs by YourElevens: every bookmark, in the right folder">
+  <meta property="og:description" content="Bookmark any page in one click into a folder. See all your Chrome bookmarks in one place. Free, private, no account.">
   <meta property="og:image" content="https://eleventabs.vercel.app/img/og.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#f4f4fb">
@@ -17,9 +17,9 @@
 <body>
   <header class="nav">
     <div class="wrap row">
-      <a href="/" class="brand"><img src="/logo.png" alt="" width="32" height="32"><span><b>ElevenTabs</b><small>by YourElevens</small></span></a>
-      <nav><a href="#saved">Saved</a><a href="#features">Features</a><a href="#themes">Themes</a><a href="#security">Security</a><a href="#install">Install</a><a href="/changelog.html">Versions</a></nav>
-      <a class="btn btn-gold btn-sm dl" href="/eleventabs-latest.zip" download>Download <span class="v">v2.2.0</span></a>
+      <a href="/" class="brand"><img src="/logo.png" alt=""><span><b>ElevenTabs</b><small>by YourElevens</small></span></a>
+      <nav><a href="#saved">Bookmarks</a><a href="#features">Features</a><a href="#themes">Themes</a><a href="#security">Security</a><a href="#install">Install</a><a href="/changelog.html">Versions</a></nav>
+      <a class="btn btn-gold btn-sm dl" href="/eleventabs-latest.zip" download>Download <span class="v">v2.3.0</span></a>
     </div>
   </header>
 
@@ -27,11 +27,11 @@
     <section class="hero">
       <div class="hero-grid">
         <div>
-          <a class="pill" href="/changelog.html"><span>New look, and all your bookmarks in one place</span><span class="v">v2.2.0</span></a>
-          <h1>Every bookmark you save,<br><em>sorted for you.</em></h1>
-          <p class="lead">Save any page in one click and ElevenTabs files it in the right category. Bring in your Chrome bookmarks and see everything in one clean place. Plus tab groups, sleeping tabs and a calm Welcome back page.</p>
+          <a class="pill" href="/changelog.html"><span>Bookmarks first: folders, right-click, new dashboard</span><span class="v">v2.3.0</span></a>
+          <h1>Bookmark any page.<br><em>Keep it in a folder.</em></h1>
+          <p class="lead">Click the ElevenTabs icon on any page, choose a folder (or make a new one) and save. Right-click works too. Bring in your Chrome bookmarks and see everything in one clean place. Plus tab groups, sleeping tabs and a calm Welcome back page.</p>
           <div class="cta">
-            <a class="btn btn-gold dl" href="/eleventabs-latest.zip" download><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg>Download for Chrome <span class="v">v2.2.0</span></a>
+            <a class="btn btn-gold dl" href="/eleventabs-latest.zip" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg>Download for Chrome <span class="v">v2.3.0</span></a>
             <a class="btn" href="#install">Install in 2 minutes</a>
           </div>
           <div class="proof">
@@ -45,42 +45,42 @@
           <span class="floatchip fc1"><i style="background:#6b7280"></i>Dev</span>
           <span class="floatchip fc3"><i style="background:#9b7bea"></i>AI</span>
           <span class="floatchip fc2"><i style="background:#4caf7d"></i>Jobs</span>
-          <div class="frame"><div class="frame-bar"><i></i><i></i><i></i><span>ElevenTabs · Saved</span></div><img src="/img/lib-light.webp" alt="ElevenTabs Saved page: bookmarks grouped by category with counts, favourites and search" width="1440" height="900"></div>
-          <div class="popup"><img src="/img/popup-saved.webp" alt="ElevenTabs popup with category picker" width="380" height="917"></div>
+          <div class="frame"><div class="frame-bar"><i></i><i></i><i></i><span>ElevenTabs · Bookmarks</span></div><img src="/img/lib-light.webp" alt="ElevenTabs bookmarks page: bookmarks grouped by folder, with a paste-a-link bar"></div>
+          <div class="popup"><img src="/img/popup-saved.webp" alt="ElevenTabs popup with folder picker"></div>
         </div>
       </div>
     </section>
 
     <div class="strip">
       <div class="wrap">
-        <div><b>1 click</b><span>to save and sort a page</span></div>
-        <div><b>12</b><span>ready-made categories</span></div>
+        <div><b>1 click</b><span>to bookmark into a folder</span></div>
+        <div><b>12</b><span>ready-made folders</span></div>
         <div><b>0</b><span>servers, accounts or trackers</span></div>
         <div><b>11</b><span>themes, light and dark</span></div>
       </div>
     </div>
 
     <section id="saved" class="wrap">
-      <div class="sec-head"><span class="eyebrow">Saved</span><h2>See all your bookmarks.<br><em>Sorted the way you think.</em></h2><p class="lead small">No more digging through folders you made three years ago. Everything you save lands in a category automatically, and you can search, star and move things around in seconds.</p></div>
+      <div class="sec-head"><span class="eyebrow">Bookmarks</span><h2>See all your bookmarks.<br><em>Organised in folders.</em></h2><p class="lead small">No more digging through folders you made three years ago. Everything you bookmark lands in a folder, picked for you or chosen by you, and you can search, star and move things around in seconds.</p></div>
       <div class="flow">
-        <div class="step reveal"><span class="n">01 · SAVE</span><h3>One click, any page</h3><p>Open the popup, press Save this page. Or save every tab in a window at once.</p>
+        <div class="step reveal"><span class="n">01 · SAVE</span><h3>One click, any page</h3><p>Click the icon on any page, choose a folder or create a new one, press Save bookmark. Or right-click any page or link. Shortcut: Alt+Shift+B.</p>
           <div class="cats"><span class="cat"><i style="background:#6b7280"></i>Dev</span><span class="cat"><i style="background:#9b7bea"></i>AI</span><span class="cat"><i style="background:#4caf7d"></i>Jobs</span></div></div>
-        <div class="step reveal"><span class="n">02 · SORTED</span><h3>It picks the category</h3><p>GitHub goes to Dev, LinkedIn Jobs to Jobs, Myntra to Shopping. Change it in one tap, or make your own, like Recipes.</p>
+        <div class="step reveal"><span class="n">02 · SORTED</span><h3>It suggests the folder</h3><p>GitHub goes to Dev, LinkedIn Jobs to Jobs, Myntra to Shopping. Change it in one tap, or make your own folder, like Recipes.</p>
           <div class="cats"><span class="cat on"><i style="background:#e8b931"></i>Shopping</span><span class="cat"><i style="background:#3fb5c1"></i>Money</span><span class="cat"><i style="background:#e8894a"></i>Read later</span></div></div>
         <div class="step reveal"><span class="n">03 · FIND</span><h3>Everything in one place</h3><p>Bring in your Chrome bookmarks once. From then on, every new bookmark you make shows up here, sorted.</p>
           <div class="cats"><span class="cat"><i style="background:#d96ba8"></i>Ideas</span><span class="cat"><i style="background:#5b8def"></i>Work</span><span class="cat"><i style="background:#8a8f98"></i>News</span></div></div>
       </div>
       <div class="showcase">
-        <div class="frame reveal"><div class="frame-bar"><i></i><i></i><i></i><span>ElevenTabs · Saved · Dev</span></div><img src="/img/lib-dev.webp" alt="One category opened in the Saved library" loading="lazy" width="1440" height="900"></div>
+        <div class="frame reveal"><div class="frame-bar"><i></i><i></i><i></i><span>ElevenTabs · Bookmarks · Dev</span></div><img src="/img/lib-dev.webp" alt="One category opened in the Saved library" loading="lazy"></div>
         <div class="sidecard reveal">
           <h3>Your library, your rules</h3>
           <p>A proper home for the pages you want to keep.</p>
           <ul>
-            <li><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>By category, grid or list view</li>
+            <li><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>By folder, grid or list view</li>
             <li><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Search titles, sites and your own notes</li>
             <li><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Favourites pinned to the top</li>
-            <li><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Drag a card onto a category to re-file it</li>
-            <li><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Your own categories with colours and auto-match sites</li>
+            <li><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Drag a bookmark onto a folder to move it</li>
+            <li><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Your own folders with colours and auto-match sites</li>
             <li><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Import from Chrome, export back out as a Chrome file</li>
           </ul>
         </div>
@@ -90,8 +90,8 @@
     <section id="features" class="wrap">
       <div class="sec-head"><span class="eyebrow">Everything else</span><h2>A calmer browser,<br><em>without lifting a finger.</em></h2></div>
       <div class="bento">
-        <div class="tile t-a reveal"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg></div><h3>Welcome back, every time</h3><p>When Chrome starts you see where you left off, one click to restore missing tabs, your daily recap, streaks and your saved pages.</p><div class="shot"><img src="/img/start-light.webp" alt="Welcome back page" loading="lazy" width="1440" height="900"></div></div>
-        <div class="tile t-b dark reveal"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12.1 2.9a9 9 0 1 0 9 9 6 6 0 0 1-9-9z"/></svg></div><h3>Dark mode that feels designed</h3><p>Iris Night comes with the new look, and Auto mode changes the theme with the time of day.</p><div class="shot"><img src="/img/lib-dark.webp" alt="Dark theme" loading="lazy" width="1440" height="900"></div></div>
+        <div class="tile t-a reveal"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg></div><h3>Welcome back, every time</h3><p>When Chrome starts you see where you left off, one click to restore missing tabs, your daily recap, streaks and your saved pages.</p><div class="shot"><img src="/img/start-light.webp" alt="Welcome back page" loading="lazy"></div></div>
+        <div class="tile t-b dark reveal"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12.1 2.9a9 9 0 1 0 9 9 6 6 0 0 1-9-9z"/></svg></div><h3>Dark mode that feels designed</h3><p>Iris Night comes with the new look, and Auto mode changes the theme with the time of day.</p><div class="shot"><img src="/img/lib-dark.webp" alt="Dark theme" loading="lazy"></div></div>
         <div class="tile t-c reveal"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5 9-5zM3 13l9 5 9-5"/></svg></div><h3>Auto tab groups</h3><p>New tabs drop into colour groups: Mail, Work, Dev, AI, Jobs and more. Your own groups are never touched.</p></div>
         <div class="tile t-d reveal"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12.1 2.9a9 9 0 1 0 9 9 6 6 0 0 1-9-9z"/></svg></div><h3>Sleeping tabs</h3><p>Idle tabs release their memory and wake when you click them. Your Chrome stays fast.</p></div>
         <div class="tile t-e reveal"><div class="ic"><svg viewBox="0 0 24 24"><path d="M3 4h18v4H3zM5 8v12h14V8M10 12h4"/></svg></div><h3>Sessions</h3><p>Save a window as a named session, like Job hunt or Client work, and reopen it with its groups.</p></div>
@@ -109,8 +109,8 @@
           </div>
         </div>
         <div class="duo-img">
-          <div class="frame"><div class="frame-bar"><i></i><i></i><i></i><span>Overview</span></div><img src="/img/overview.webp" alt="Overview page" loading="lazy" width="1440" height="900"></div>
-          <div class="frame b"><img src="/img/popup-tabs.webp" alt="Popup" loading="lazy" width="380" height="785"></div>
+          <div class="frame"><div class="frame-bar"><i></i><i></i><i></i><span>Iris Night</span></div><img src="/img/lib-dark.webp" alt="Dark theme: bookmarks page" loading="lazy"></div>
+          <div class="frame b"><img src="/img/popup-tabs.webp" alt="Popup" loading="lazy"></div>
         </div>
       </div>
     </section>
@@ -120,7 +120,7 @@
       <div class="sec-grid">
         <div class="tile reveal"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/><path d="M9 12l2 2 4-4"/></svg></div><h3>No network access</h3><p>A strict security policy blocks every network request from ElevenTabs pages. There is nowhere for data to go.</p></div>
         <div class="tile reveal"><div class="ic"><svg viewBox="0 0 24 24"><path d="M3 12s3.5-7 9-7 9 7 9 7-3.5 7-9 7-9-7-9-7z"/><circle cx="12" cy="12" r="3"/></svg></div><h3>Can't read web pages</h3><p>No content scripts and no site permissions. It never sees page text, forms, passwords or cookies.</p></div>
-        <div class="tile reveal"><div class="ic"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div><h3>Permissions only when used</h3><p>Importing Chrome bookmarks asks you first, and you can turn it off again at any time. Saving needs no extra permission.</p></div>
+        <div class="tile reveal"><div class="ic"><svg viewBox="0 0 24 24"><rect x="5" y="11" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div><h3>Permissions only when used</h3><p>Importing Chrome bookmarks asks you first, and you can turn it off again at any time. Saving needs no extra permission.</p></div>
         <div class="tile reveal"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></div><h3>Your data, your delete button</h3><p>Everything is stored in this Chrome profile. Export it any time, or erase it in one click. Your Chrome bookmarks are never changed.</p></div>
       </div>
     </section>
@@ -128,9 +128,9 @@
     <section id="install" class="wrap">
       <span class="eyebrow">Install</span>
       <h2 style="margin-top:16px">Ready in <em>two minutes.</em></h2>
-      <p class="lead small">ElevenTabs isn't on the Chrome Web Store yet, so it's added in developer mode. That's safe and takes four steps. Latest: <b class="v">v2.2.0</b> · <a href="/changelog.html">all versions and what changed</a></p>
+      <p class="lead small">ElevenTabs isn't on the Chrome Web Store yet, so it's added in developer mode. That's safe and takes four steps. Latest: <b class="v">v2.3.0</b> · <a href="/changelog.html">all versions and what changed</a></p>
       <ol class="steps">
-        <li><b>Download</b><span>Get <a class="dl-file" href="/eleventabs-latest.zip" download>eleventabs-v2.2.0.zip</a> and unzip it. Keep the <code>eleventabs</code> folder somewhere it can stay.</span></li>
+        <li><b>Download</b><span>Get <a class="dl-file" href="/eleventabs-latest.zip" download>eleventabs-v2.3.0.zip</a> and unzip it. Keep the <code>eleventabs</code> folder somewhere it can stay.</span></li>
         <li><b>Open extensions</b><span>Paste <code>chrome://extensions</code> into the address bar.</span></li>
         <li><b>Developer mode</b><span>Turn on the Developer mode switch, top right.</span></li>
         <li><b>Load unpacked</b><span>Choose the <code>eleventabs</code> folder, then pin it from the puzzle icon.</span></li>
@@ -142,14 +142,14 @@
       <span class="eyebrow">Questions</span>
       <h2 style="margin-top:16px;margin-bottom:10px">Good to <em>know.</em></h2>
       <details><summary>Does it change my Chrome bookmarks?</summary><p>No. Saved is its own library. Importing makes a copy. If you switch on "Also add to Chrome bookmarks", new saves are added to a separate ElevenTabs folder, and nothing you already have is moved or deleted.</p></details>
-      <details><summary>How do I see all my bookmarks in one place?</summary><p>Open the dashboard, go to Saved and press "Bring in my bookmarks". Chrome asks once for permission. Turn on Auto-add and every bookmark you make in Chrome afterwards appears there too, in the right category.</p></details>
-      <details><summary>How does it choose a category?</summary><p>By the site address, using rules you can edit: github.com is Dev, claude.ai is AI, naukri.com is Jobs. You can add your own categories and tell them which sites to catch. Anything it doesn't recognise stays in Unsorted until you decide.</p></details>
+      <details><summary>How do I see all my bookmarks in one place?</summary><p>Open the dashboard, go to Bookmarks and press "Bring in my bookmarks". Chrome asks once for permission. Turn on Auto-add and every bookmark you make in Chrome afterwards appears there too, in the right category.</p></details>
+      <details><summary>How does it choose a folder?</summary><p>By the site address, using rules you can edit: github.com is Dev, claude.ai is AI, naukri.com is Jobs. Anything it doesn't recognise stays in Unsorted until you decide. You can add your own folders and tell them which sites to catch.</p></details>
       <details><summary>Can I use it in my work Chrome profile?</summary><p>Yes. It can't read pages and has no network access, so work content can't leave your computer. Each profile keeps its own data. If your company manages Chrome, IT may block extensions installed this way.</p></details>
       <details><summary>Will it close my tabs or lose my work?</summary><p>No. Sorting only moves tabs into groups. A sleeping tab stays in place and reloads when you click it. Tabs are only closed when you press "Close duplicates".</p></details>
       <details><summary>Is it free? How do I remove it?</summary><p>It's free. Open <code>chrome://extensions</code> and click Remove. Your tabs, bookmarks and history stay as they are.</p></details>
     </section>
 
-    <div class="final"><div class="final-card"><h2>Stop losing the pages<br>you meant to keep.</h2><p>Free, private and ready in two minutes.</p><a class="btn dl" href="/eleventabs-latest.zip" download>Download ElevenTabs <span class="v">v2.2.0</span></a></div></div>
+    <div class="final"><div class="final-card"><h2>Stop losing the pages<br>you meant to keep.</h2><p>Free, private and ready in two minutes.</p><a class="btn dl" href="/eleventabs-latest.zip" download>Download ElevenTabs <span class="v">v2.3.0</span></a></div></div>
   </main>
 
   <footer class="wrap foot"><span>© 2026 ElevenTabs by YourElevens</span><span><a href="/changelog.html">Versions</a><a href="/privacy.html">Privacy</a><a href="https://github.com/NareshMuppalla/eleventabs">GitHub</a><a href="https://www.yourelevens.com">YourElevens</a></span></footer>

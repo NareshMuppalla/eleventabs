@@ -71,7 +71,6 @@ let showAllCats = false, cur = null, lib = null, chosen = '', suggested = '', fa
 function showPane(name) {
   document.querySelectorAll('.tabbar button').forEach(b => b.classList.toggle('on', b.dataset.p === name));
   $('pane-tabs').classList.toggle('on', name === 'tabs'); $('pane-saved').classList.toggle('on', name === 'saved');
-  chrome.storage.local.set({ popupPane: name });
   if (name === 'saved') loadSaved();
 }
 document.querySelector('.tabbar').onclick = e => { const b = e.target.closest('button'); if (b) showPane(b.dataset.p); };
@@ -84,12 +83,12 @@ function renderCats() {
   const chips = shown.map(c => `<button class="cc ${chosen === c.id ? 'on' : ''} ${suggested === c.id && !existing ? 'sug' : ''}" data-c="${esc(c.id)}"><span class="dot d-${col(c.color)}"></span>${esc(c.name)}</button>`).join('');
   const more = ranked.length > 6 ? `<button class="cc add" id="cc-more">${showAllCats ? 'Fewer' : `+${ranked.length - 6} more`}</button>` : '';
   $('cats').innerHTML = chips + `<button class="cc ${chosen === '' ? 'on' : ''}" data-c=""><span class="dot" style="background:var(--faint)"></span>Unsorted</button>` + more + `<button class="cc add" id="cc-add">${icon('plus', 12)}New</button>`;
-  $('cat-hint').textContent = suggested && !existing ? 'auto-picked for this site' : '';
+  $('cat-hint').textContent = suggested && !existing ? 'folder picked for this site' : '';
 }
 function renderSaveState() {
   $('already').classList.toggle('on', !!existing);
-  if (existing) { const c = lib.cats.find(x => x.id === existing.cat); $('already-t').textContent = 'Saved' + (c ? ' in ' + c.name : '') + ' · you can change it below'; }
-  $('save-label').textContent = existing ? 'Update' : 'Save this page';
+  if (existing) { const c = lib.cats.find(x => x.id === existing.cat); $('already-t').textContent = 'Saved' + (c ? ' in folder ' + c.name : '') + ' · change it below'; }
+  $('save-label').textContent = existing ? 'Update bookmark' : 'Save bookmark';
   $('remove-saved').hidden = !existing;
   $('cur-star').classList.toggle('on', fav);
   $('cur-star').innerHTML = icon('star', 18);
@@ -138,22 +137,22 @@ $('save-page').onclick = async () => {
   if (!cur) return;
   const r = await saveItem({ url: cur.url, title: cur.title, cat: chosen, note: $('note').value.trim(), fav }, { mirror: $('mirror').checked });
   const name = lib.cats.find(c => c.id === chosen)?.name || 'Unsorted';
-  toast(r.status === 'added' ? `Saved to ${name}` : 'Updated'); loadSaved();
+  toast(r.status === 'added' ? `Bookmarked in ${name}` : 'Updated'); loadSaved();
 };
 $('save-all').onclick = async () => {
   const tabs = await chrome.tabs.query({ currentWindow: true });
   const r = await saveMany(tabs, { mirror: $('mirror').checked });
-  toast(r.added ? `Saved ${plural(r.added, 'page')}${r.existed ? ` · ${r.existed} already saved` : ''}` : 'Everything here is already saved'); loadSaved();
+  toast(r.added ? `Bookmarked ${plural(r.added, 'page')}${r.existed ? ` · ${r.existed} already saved` : ''}` : 'Everything here is already saved'); loadSaved();
 };
-$('remove-saved').onclick = async () => { if (existing) { await removeItems([existing.id]); toast('Removed from Saved'); loadSaved(); } };
+$('remove-saved').onclick = async () => { if (existing) { await removeItems([existing.id]); toast('Bookmark removed'); loadSaved(); } };
 $('note').onkeydown = e => { if (e.key === 'Enter') $('save-page').click(); };
 async function search() {
   const q = $('find').value.trim().toLowerCase();
   const items = (q ? lib.items.filter(i => (i.title + ' ' + i.url + ' ' + i.note).toLowerCase().includes(q)) : [...lib.items.filter(i => i.fav), ...lib.items.filter(i => !i.fav)]).slice(0, 4);
-  $('hits').innerHTML = items.length ? items.map(i => { const c = lib.cats.find(x => x.id === i.cat); return `<a class="hit" href="${esc(i.url)}" data-u="${esc(i.url)}"><img src="${esc(faviconUrl(i.url))}" alt=""><span class="grow"><div class="tt ellipsis">${esc(i.title)}</div><div class="hh ellipsis">${esc(hostOf(i.url))}${i.fav ? ' · ★' : ''}</div></span>${c ? `<span class="dot d-${col(c.color)}" title="${esc(c.name)}"></span>` : ''}</a>`; }).join('') : `<div class="tiny muted" style="padding:10px 8px">${q ? 'Nothing matches.' : 'Nothing saved yet. Save this page to start.'}</div>`;
+  $('hits').innerHTML = items.length ? items.map(i => { const c = lib.cats.find(x => x.id === i.cat); return `<a class="hit" href="${esc(i.url)}" data-u="${esc(i.url)}"><img src="${esc(faviconUrl(i.url))}" alt=""><span class="grow"><div class="tt ellipsis">${esc(i.title)}</div><div class="hh ellipsis">${esc(hostOf(i.url))}${i.fav ? ' · ★' : ''}</div></span>${c ? `<span class="dot d-${col(c.color)}" title="${esc(c.name)}"></span>` : ''}</a>`; }).join('') : `<div class="tiny muted" style="padding:10px 8px">${q ? 'Nothing matches.' : 'No bookmarks yet. Save this page to start.'}</div>`;
 }
 $('find').oninput = search;
 $('hits').onclick = e => { const a = e.target.closest('.hit'); if (!a) return; e.preventDefault(); chrome.tabs.create({ url: a.dataset.u }); window.close(); };
 $('open-lib').onclick = () => openPage('#library');
-chrome.storage.local.get('popupPane').then(({ popupPane }) => { lib0(); if (popupPane === 'saved') showPane('saved'); });
+lib0(); showPane('saved');
 async function lib0() { const l = await loadLib(); $('saved-cnt').textContent = l.items.length; }

@@ -1,4 +1,4 @@
-// Dashboard "Saved" page: categorised library of your own saved pages.
+// Dashboard bookmarks page: your own bookmarks, in folders.
 import { COLORS, faviconUrl, hostOf } from './config.js';
 import { icon } from './icons.js';
 import { getConfig, saveConfig } from './config.js';
@@ -30,7 +30,6 @@ export function initLibrary({ loaders, $, esc, toast, has, ask }) {
   }
   function renderTop() {
     const week = count(i => Date.now() - i.added < 7 * 864e5);
-    $('l-stats').innerHTML = `<div class="lstat hot"><span class="eyebrow">Saved pages</span><b>${lib.items.length}</b></div><div class="lstat"><span class="eyebrow">Categories in use</span><b>${new Set(lib.items.filter(i => i.cat).map(i => i.cat)).size}</b></div><div class="lstat"><span class="eyebrow">Favourites</span><b>${count(i => i.fav)}</b></div><div class="lstat"><span class="eyebrow">Added this week</span><b>${week}</b></div>`;
     const s = $('l-sync'); s.className = 'syncbar' + (followOn ? ' ok' : '');
     s.innerHTML = followOn
       ? `${icon('check-check', 18)}<span class="grow"><b>Chrome bookmarks are kept in sync.</b> <span class="muted small">Anything you bookmark in Chrome appears here, in the right category.</span></span><label class="check"><input type="checkbox" id="s-follow" checked>Auto-add</label><button class="btn btn-sm" id="s-import">${icon('download', 14)}Re-import now</button>`
@@ -57,14 +56,14 @@ export function initLibrary({ loaders, $, esc, toast, has, ask }) {
 
   function renderRail() {
     const it = (id, ic, name, n, extra = '') => `<button class="ri ${view === id ? 'on' : ''}" data-v="${esc(id)}" ${extra}>${ic}<span class="ellipsis">${esc(name)}</span><span class="n">${n}</span></button>`;
-    const cats = lib.cats.map(c => `<div class="row" style="gap:0"><button class="ri ${view === c.id ? 'on' : ''}" data-v="${esc(c.id)}" data-drop="${esc(c.id)}"><span class="dot d-${col(c.color)}"></span><span class="ellipsis">${esc(c.name)}</span><span class="n">${count(i => i.cat === c.id)}</span></button><span class="edit"><button data-ec="${esc(c.id)}" title="Rename / recolour">${icon('pencil', 13)}</button><button data-dc="${esc(c.id)}" title="Delete category">${icon('trash-2', 13)}</button></span></div>`).join('');
+    const cats = lib.cats.map(c => `<div class="row" style="gap:0"><button class="ri ${view === c.id ? 'on' : ''}" data-v="${esc(c.id)}" data-drop="${esc(c.id)}"><span class="dot d-${col(c.color)}"></span><span class="ellipsis">${esc(c.name)}</span><span class="n">${count(i => i.cat === c.id)}</span></button><span class="edit"><button data-ec="${esc(c.id)}" title="Rename or recolour folder">${icon('pencil', 13)}</button><button data-dc="${esc(c.id)}" title="Delete folder">${icon('trash-2', 13)}</button></span></div>`).join('');
     $('rail').classList.toggle('editing', editing);
     $('rail').innerHTML =
-      it('all', icon('inbox', 16), 'All saved', lib.items.length) +
+      `<div class="eyebrow" style="padding:6px 10px 8px">Folders</div>` + it('all', icon('inbox', 16), 'All bookmarks', lib.items.length) +
       it('fav', icon('star', 16), 'Favourites', count(i => i.fav)) +
       it('none', icon('circle-dashed', 16), 'Unsorted', count(i => !i.cat), 'data-drop=""') +
       '<div class="sep"></div>' + cats +
-      `<div class="cat-actions"><button class="btn btn-sm" id="r-new">${icon('folder-plus', 14)}New</button><button class="btn btn-sm" id="r-auto" title="Put every unsorted item into the best matching category">${icon('wand-sparkles', 14)}Auto-sort</button><button class="btn btn-sm btn-quiet" id="r-edit">${editing ? 'Done' : 'Manage'}</button></div>`;
+      `<div class="cat-actions"><button class="btn btn-sm" id="r-new">${icon('folder-plus', 14)}New folder</button><button class="btn btn-sm" id="r-auto" title="Put every unsorted bookmark into the best matching folder">${icon('wand-sparkles', 14)}Auto-sort</button><button class="btn btn-sm btn-quiet" id="r-edit">${editing ? 'Done' : 'Manage'}</button></div>`;
   }
 
   function card(i) {
@@ -79,17 +78,17 @@ export function initLibrary({ loaders, $, esc, toast, has, ask }) {
   }
 
   function render() {
-    renderTop();
+    renderTop(); fillQa();
     renderRail();
     const list = visible();
-    const title = view === 'all' ? 'All saved' : view === 'fav' ? 'Favourites' : view === 'none' ? 'Unsorted' : catOf(view)?.name || 'Saved';
+    const title = view === 'all' ? 'All bookmarks' : view === 'fav' ? 'Favourites' : view === 'none' ? 'Unsorted' : catOf(view)?.name || 'Saved';
     $('l-eyebrow').textContent = `${title} · ${plural(list.length, 'page')}`;
     $('bulk').classList.toggle('on', sel.size > 0);
     $('bulk-n').textContent = `${sel.size} selected`;
     $('bulk-cat').innerHTML = `<option value="__">Choose…</option>` + lib.cats.map(c => `<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('') + `<option value="">Unsorted</option>`;
     $('l-body').classList.toggle('selecting', sel.size > 0);
     if (!lib.items.length) {
-      $('l-body').innerHTML = `<div class="empty" style="padding:48px 26px">${icon('bookmark-plus', 26)}<b style="color:var(--text);display:block;font-size:16px;margin-bottom:6px">Nothing saved yet</b>Click the ElevenTabs icon in Chrome on any page, open <b>Saved</b> and press <b>Save this page</b>.<br>It picks a category for you. You can also bring in your Chrome bookmarks.<div class="row" style="justify-content:center;margin-top:16px"><button class="btn btn-gold" id="e-import">${icon('download', 15)}Import from Chrome</button><button class="btn" id="e-add">${icon('plus', 15)}Add a link</button></div></div>`;
+      $('l-body').innerHTML = `<div class="empty" style="padding:48px 26px">${icon('bookmark-plus', 26)}<b style="color:var(--text);display:block;font-size:16px;margin-bottom:6px">Nothing saved yet</b>Click the ElevenTabs icon in Chrome on any page, open <b>Saved</b> and press <b>Save this page</b>.<br>It picks a folder for you. You can also bring in your Chrome bookmarks.<div class="row" style="justify-content:center;margin-top:16px"><button class="btn btn-gold" id="e-import">${icon('download', 15)}Import from Chrome</button><button class="btn" id="e-add">${icon('plus', 15)}Add a link</button></div></div>`;
       return;
     }
     if (!list.length) { $('l-body').innerHTML = `<div class="empty">${icon('search', 22)}Nothing here${q ? ' matches your search' : ' yet'}.</div>`; return; }
@@ -116,7 +115,7 @@ export function initLibrary({ loaders, $, esc, toast, has, ask }) {
     modal(`<h3 style="font-size:17px">${isNew ? 'Add a link' : 'Edit saved page'}</h3>
       <label class="f"><span class="eyebrow">Address</span><input type="text" id="m-url" value="${esc(item.url)}" placeholder="https://" ${isNew ? '' : ''}></label>
       <label class="f"><span class="eyebrow">Title</span><input type="text" id="m-title" value="${esc(item.title)}" maxlength="200" placeholder="Optional, filled from the address"></label>
-      <label class="f"><span class="eyebrow">Category</span><select id="m-cat"><option value="">Unsorted (pick automatically)</option>${lib.cats.map(c => `<option value="${esc(c.id)}" ${c.id === item.cat ? 'selected' : ''}>${esc(c.name)}</option>`).join('')}</select></label>
+      <label class="f"><span class="eyebrow">Folder</span><select id="m-cat"><option value="">Unsorted (pick automatically)</option>${lib.cats.map(c => `<option value="${esc(c.id)}" ${c.id === item.cat ? 'selected' : ''}>${esc(c.name)}</option>`).join('')}</select></label>
       <label class="f"><span class="eyebrow">Note</span><textarea id="m-note" rows="3" maxlength="500" style="font-family:var(--sans)">${esc(item.note)}</textarea></label>
       <div class="row" style="margin-top:18px;justify-content:flex-end"><button class="btn btn-quiet" id="m-cancel">Cancel</button><button class="btn btn-gold" id="m-ok">${isNew ? 'Save' : 'Save changes'}</button></div>`);
     $('m-url').focus();
@@ -133,7 +132,7 @@ export function initLibrary({ loaders, $, esc, toast, has, ask }) {
   function catModal(c) {
     const isNew = !c; c = c || { name: '', color: COLORS[lib.cats.length % COLORS.length], patterns: [] };
     let color = c.color;
-    modal(`<h3 style="font-size:17px">${isNew ? 'New category' : 'Edit category'}</h3>
+    modal(`<h3 style="font-size:17px">${isNew ? 'New folder' : 'Edit folder'}</h3>
       <label class="f"><span class="eyebrow">Name</span><input type="text" id="c-name" value="${esc(c.name)}" maxlength="40" placeholder="e.g. Recipes, Client sites, Learning"></label>
       <div class="f" style="margin-top:12px"><span class="eyebrow" style="display:block;margin-bottom:8px">Colour</span><div class="colors" id="c-colors">${COLORS.map(x => `<i data-c="${x}" class="d-${x} ${x === color ? 'on' : ''}"></i>`).join('')}</div></div>
       <label class="f"><span class="eyebrow">Auto-match sites (optional)</span><textarea id="c-pat" rows="3" placeholder="One per line, e.g. cooking.com or reddit.com/r/recipes" style="font-family:var(--mono)">${esc((c.patterns || []).join('\n'))}</textarea><div class="tiny muted" style="margin-top:4px">New saves from these sites go into this category automatically.</div></label>
@@ -151,7 +150,15 @@ export function initLibrary({ loaders, $, esc, toast, has, ask }) {
   }
 
   // ----- events -----
-  $('l-add').onclick = () => itemModal(null);
+  const fillQa = () => { $('qa-folder').innerHTML = `<option value="">Folder: pick for me</option>` + lib.cats.map(c => `<option value="${esc(c.id)}" ${view === c.id ? 'selected' : ''}>${esc(c.name)}</option>`).join('') + `<option value="__new">+ New folder…</option>`; };
+  $('qa-folder').onchange = async e => { if (e.target.value !== '__new') return; const n = prompt('New folder name'); if (n && n.trim()) { const c = await addCat(n.trim()); await reload(); $('qa-folder').value = c.id; } else fillQa(); };
+  $('qa').onsubmit = async e => {
+    e.preventDefault();
+    let url = $('qa-url').value.trim(); if (!url) return; if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+    if (!/^https?:\/\/[^\s.]+\.[^\s]+/i.test(url)) { toast('Enter a valid web address', 'lock'); return; }
+    const cat = $('qa-folder').value; const r = await saveItem({ url, title: hostOf(url), cat: cat === '' ? undefined : cat });
+    $('qa-url').value = ''; toast(r.status === 'added' ? 'Bookmarked' : 'Already bookmarked · updated', 'bookmark-check'); reload();
+  };
   $('l-q').oninput = e => { q = e.target.value.trim(); render(); };
   $('l-sort').onchange = e => { sort = e.target.value; render(); };
   const setMode = m => { mode = m; for (const k of ['board', 'grid', 'list']) $('v-' + k).classList.toggle('on', k === m); render(); };
@@ -184,15 +191,15 @@ export function initLibrary({ loaders, $, esc, toast, has, ask }) {
     if (ec) { catModal(catOf(ec.dataset.ec)); return; }
     if (dc) {
       const c = catOf(dc.dataset.dc); const n = count(i => i.cat === c.id);
-      if (confirm(`Delete the category "${c.name}"?\n\n${n ? `${plural(n, 'saved page')} will move to Unsorted. ` : ''}No pages are deleted.`)) { await deleteCat(c.id); if (view === c.id) view = 'all'; reload(); }
+      if (confirm(`Delete the folder "${c.name}"?\n\n${n ? `${plural(n, 'saved page')} will move to Unsorted. ` : ''}No bookmarks are deleted.`)) { await deleteCat(c.id); if (view === c.id) view = 'all'; reload(); }
       return;
     }
     if (e.target.closest('#r-new')) { catModal(null); return; }
     if (e.target.closest('#r-edit')) { editing = !editing; render(); return; }
-    if (e.target.closest('#r-auto')) { const n = await autoSort(); toast(n ? `Sorted ${plural(n, 'page')} into categories` : 'Nothing more to sort automatically'); reload(); return; }
+    if (e.target.closest('#r-auto')) { const n = await autoSort(); toast(n ? `Sorted ${plural(n, 'bookmark')} into folders` : 'Nothing more to sort automatically'); reload(); return; }
     if (v) { view = v.dataset.v; render(); }
   });
-  // drag a card onto a category to re-file it
+  // drag a bookmark onto a folder to move it
   $('l-body').addEventListener('dragstart', e => { const c = e.target.closest('.lcard'); if (c) { e.dataTransfer.setData('text/plain', c.dataset.id); e.dataTransfer.effectAllowed = 'move'; } });
   $('rail').addEventListener('dragover', e => { const t = e.target.closest('[data-drop]'); if (t) { e.preventDefault(); t.classList.add('drop'); } });
   $('rail').addEventListener('dragleave', e => { e.target.closest('[data-drop]')?.classList.remove('drop'); });
@@ -201,7 +208,7 @@ export function initLibrary({ loaders, $, esc, toast, has, ask }) {
     const id = e.dataTransfer.getData('text/plain'); if (!id) return;
     const ids = sel.has(id) ? [...sel] : [id];
     await patchItems(ids, { cat: t.dataset.drop }); sel.clear();
-    toast(`Moved ${plural(ids.length, 'page')} to ${t.dataset.drop ? catOf(t.dataset.drop)?.name : 'Unsorted'}`, 'folder-tree'); reload();
+    toast(`Moved ${plural(ids.length, 'bookmark')} to ${t.dataset.drop ? catOf(t.dataset.drop)?.name : 'Unsorted'}`, 'folder-tree'); reload();
   });
 
   $('l-body').addEventListener('click', async e => {

@@ -79,11 +79,11 @@
   </header>
 
   <div class="tabbar" role="tablist">
-    <button class="on" id="tab-tabs" role="tab" data-p="tabs"><i data-icon="layers-2" data-size="16"></i>Tabs</button>
-    <button id="tab-saved" role="tab" data-p="saved"><i data-icon="bookmark" data-size="16"></i>Saved<span class="cnt" id="saved-cnt">0</span></button>
+    <button class="on" id="tab-saved" role="tab" data-p="saved"><i data-icon="bookmark" data-size="16"></i>Bookmark<span class="cnt" id="saved-cnt">0</span></button>
+    <button id="tab-tabs" role="tab" data-p="tabs"><i data-icon="layers-2" data-size="16"></i>Tabs</button>
   </div>
 
-  <div class="pane on" id="pane-tabs">
+  <div class="pane" id="pane-tabs">
   <div class="stats">
     <div class="stat"><span class="eyebrow">Tabs</span><b id="s-tabs">–</b></div>
     <div class="stat"><span class="eyebrow">Windows</span><b id="s-wins">–</b></div>
@@ -110,24 +110,24 @@
   </div>
   </div>
 
-  <div class="pane" id="pane-saved">
+  <div class="pane on" id="pane-saved">
     <div class="cur">
       <span class="fv"><img id="cur-fav" alt=""></span>
       <div class="grow"><div class="tt ellipsis" id="cur-title">This page</div><div class="hh ellipsis" id="cur-host"></div></div>
       <button class="star" id="cur-star" title="Mark as favourite" aria-label="Favourite"><i data-icon="star" data-size="18"></i></button>
     </div>
     <div class="already" id="already"><i data-icon="bookmark-check" data-size="15"></i><span id="already-t">Already saved</span></div>
-    <div class="lab"><span class="eyebrow">Category</span><span class="tiny muted" id="cat-hint"></span></div>
+    <div class="lab"><span class="eyebrow">Save in folder</span><span class="tiny muted" id="cat-hint"></span></div>
     <div class="cats" id="cats"></div>
-    <div class="newcat" id="newcat"><input type="text" id="newcat-in" placeholder="New category name" maxlength="40"><button class="btn btn-icon" id="newcat-ok" title="Add"><i data-icon="check" data-size="16"></i></button></div>
+    <div class="newcat" id="newcat"><input type="text" id="newcat-in" placeholder="New folder name" maxlength="40"><button class="btn btn-icon" id="newcat-ok" title="Add"><i data-icon="check" data-size="16"></i></button></div>
     <input type="text" id="note" placeholder="Add a note (optional)" maxlength="300" style="margin-top:12px">
-    <div class="savebar"><button class="btn btn-gold" id="save-page"><i data-icon="bookmark-plus" data-size="17"></i><span id="save-label">Save this page</span></button><button class="btn" id="save-all" title="Save every tab in this window, each into its own category"><i data-icon="layers-2" data-size="16"></i>All tabs</button></div>
+    <div class="savebar"><button class="btn btn-gold" id="save-page"><i data-icon="bookmark-plus" data-size="17"></i><span id="save-label">Save bookmark</span></button><button class="btn" id="save-all" title="Bookmark every tab in this window, each into its own folder"><i data-icon="layers-2" data-size="16"></i>All tabs</button></div>
     <div class="quietrow"><label class="check"><input type="checkbox" id="mirror">Also add to Chrome bookmarks</label><button class="btn btn-quiet btn-sm" id="remove-saved" hidden><i data-icon="trash-2" data-size="14"></i>Remove</button></div>
     <div class="found">
-      <label class="s"><i data-icon="search" data-size="15"></i><input type="text" id="find" placeholder="Search your saved pages" aria-label="Search saved"></label>
+      <label class="s"><i data-icon="search" data-size="15"></i><input type="text" id="find" placeholder="Search your bookmarks" aria-label="Search saved"></label>
       <div id="hits"></div>
     </div>
-    <button class="btn btn-quiet libbtn" id="open-lib"><i data-icon="library" data-size="16"></i>Open library<span class="cnt chip chip-gold" id="lib-n">0</span></button>
+    <button class="btn btn-quiet libbtn" id="open-lib"><i data-icon="library" data-size="16"></i>All bookmarks<span class="cnt chip chip-gold" id="lib-n">0</span></button>
   </div>
 
   <footer>

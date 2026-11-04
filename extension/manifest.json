@@ -2,11 +2,11 @@
   "manifest_version": 3,
   "name": "ElevenTabs — Tabs, Sleep & Welcome Back",
   "short_name": "ElevenTabs",
-  "version": "2.2.0",
-  "version_name": "2.2.0",
+  "version": "2.3.0",
+  "version_name": "2.3.0",
   "description": "Pick up where you left off, sort tabs into colour groups, save and categorise pages, sleep idle tabs and switch beautiful themes. By YourElevens. Private: no servers, no network.",
   "minimum_chrome_version": "116",
-  "permissions": ["tabs", "tabGroups", "storage", "alarms", "idle", "favicon", "search"],
+  "permissions": ["tabs", "tabGroups", "storage", "alarms", "idle", "favicon", "search", "contextMenus"],
   "optional_permissions": ["history", "bookmarks"],
   "background": { "service_worker": "background.js", "type": "module" },
   "action": {
@@ -23,8 +23,8 @@
   "commands": {
     "group-now": { "suggested_key": { "default": "Alt+Shift+G" }, "description": "Sort all tabs into groups" },
     "close-duplicates": { "suggested_key": { "default": "Alt+Shift+D" }, "description": "Close duplicate tabs" },
-    "sleep-now": { "suggested_key": { "default": "Alt+Shift+S" }, "description": "Sleep all background tabs" },
+    "sleep-now": { "description": "Sleep all background tabs" },
     "welcome-back": { "suggested_key": { "default": "Alt+Shift+W" }, "description": "Open Welcome back" },
-    "save-page": { "description": "Save this page to ElevenTabs Saved" }
+    "save-page": { "suggested_key": { "default": "Alt+Shift+B" }, "description": "Bookmark this page in ElevenTabs" }
   }
 }

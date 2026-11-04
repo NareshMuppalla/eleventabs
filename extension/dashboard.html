@@ -8,18 +8,23 @@
   <link rel="stylesheet" href="ui.css">
   <style>
     body { background-image: var(--glow); background-attachment: fixed; }
-    .layout { display: grid; grid-template-columns: 262px 1fr; min-height: 100vh; }
-    nav { position: sticky; top: 14px; height: calc(100vh - 28px); margin: 14px 0 14px 14px; padding: 20px 12px 14px; border: 1px solid var(--line); border-radius: 26px; display: flex; flex-direction: column; gap: 2px; background: var(--card); box-shadow: var(--shadow); overflow: auto; }
-    nav .brand { padding: 0 8px 22px; }
-    nav a { display: flex; align-items: center; gap: 11px; padding: 10px 12px; border-radius: 13px; color: var(--text-2); font-weight: 550; font-size: 13.5px; transition: background .2s, color .2s; }
+    .layout { display: block; min-height: 100vh; }
+    nav { position: sticky; top: 0; z-index: 30; display: flex; flex-direction: row; align-items: center; gap: 4px; height: 66px; margin: 0; padding: 0 28px; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: color-mix(in srgb, var(--bg) 84%, transparent); backdrop-filter: blur(16px) saturate(1.3); -webkit-backdrop-filter: blur(16px) saturate(1.3); box-shadow: none; overflow-x: auto; scrollbar-width: none; }
+    nav::-webkit-scrollbar { display: none; }
+    nav .brand { padding: 0 18px 0 0; margin-right: 6px; border-right: 1px solid var(--line); flex: none; }
+    nav .brand .by { display: none; }
+    nav a { display: flex; align-items: center; gap: 8px; padding: 9px 14px; border-radius: 99px; color: var(--text-2); font-weight: 600; font-size: 13.5px; white-space: nowrap; flex: none; transition: background .2s, color .2s; }
     nav a .ic { color: var(--muted); transition: color .2s; }
     nav a:hover { background: var(--hover); color: var(--text); }
-    nav a.active { background: var(--grad); color: var(--on-gold); box-shadow: 0 10px 24px -14px color-mix(in srgb, var(--gold) 90%, transparent); }
-    nav a.active .ic { color: var(--on-gold); }
+    nav a.active { background: var(--text); color: var(--bg); }
+    nav a.active .ic { color: var(--bg); }
     nav a.active .navcount { background: rgba(255,255,255,.22); color: inherit; }
-    nav .group-label { margin: 16px 11px 6px; }
-    nav .bottom { margin-top: auto; padding: 12px; border: 1px solid var(--line); border-radius: 16px; background: var(--bg-2); }
-    main { padding: 34px 44px 60px; max-width: 1240px; width: 100%; }
+    nav .group-label { display: none; }
+    nav .sepv { width: 1px; height: 22px; background: var(--line-2); margin: 0 8px; flex: none; }
+    nav .bottom { margin: 0 0 0 auto; padding: 0; border: 0; background: none; display: flex; align-items: center; gap: 12px; flex: none; }
+    nav .bottom p { display: none; }
+    nav .bottom .row { margin: 0 !important; gap: 10px; }
+    main { padding: 30px 34px 70px; max-width: 1380px; width: 100%; margin: 0 auto; }
     section { display: none; animation: rise .45s var(--ease); } section.active { display: block; }
     @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
     .page-head { display: flex; align-items: flex-end; gap: 16px; margin-bottom: 26px; }
@@ -57,6 +62,12 @@
     .seg button { border: 0; background: transparent; color: var(--muted); font: 550 12.5px var(--sans); padding: 6px 11px; border-radius: 7px; cursor: pointer; display: inline-flex; gap: 6px; align-items: center; }
     .seg button.on { background: var(--card); color: var(--text); box-shadow: 0 1px 2px rgba(0,0,0,.2), inset 0 0 0 1px var(--line-2); }
 
+    .quickadd { display: flex; align-items: center; gap: 10px; padding: 8px 8px 8px 18px; border: 1px solid var(--line-2); background: var(--card); border-radius: 18px; margin-bottom: 14px; box-shadow: var(--shadow); }
+    .quickadd .ic { color: var(--muted); }
+    .quickadd input[type=text] { border: 0; background: transparent; box-shadow: none !important; padding: 10px 4px; font-size: 14.5px; }
+    .quickadd select { width: auto; max-width: 190px; border-radius: 12px; }
+    .quickadd:focus-within { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-soft); }
+    .page-head h1 { font-size: 34px; }
     .navcount { margin-left: auto; font: 500 10.5px var(--mono); color: var(--gold-ink); background: var(--gold-soft); border-radius: 99px; padding: 2px 7px; } .navcount:empty { display: none; }
     .lstats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 14px; }
     .lstat { padding: 16px 18px; border: 1px solid var(--line); border-radius: 18px; background: var(--card); box-shadow: var(--shadow); }
@@ -137,30 +148,26 @@
     .tmeta { display: flex; align-items: center; gap: 8px; padding: 11px 14px; border-top: 1px solid var(--line); }
     .wn { position: relative; }
     .wn ul { margin: 10px 0 0; padding-left: 18px; color: var(--text-2); } .wn li { margin: 6px 0; }
-    @media (max-width: 980px) { .layout { grid-template-columns: 1fr; } nav { position: static; height: auto; flex-direction: row; flex-wrap: wrap; } nav .bottom, nav .group-label { display: none; } main { padding: 24px; } .kpis, .grid2, .feat, .trust { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 980px) { nav { padding: 0 14px; } main { padding: 24px; } .kpis, .grid2, .feat, .trust { grid-template-columns: 1fr 1fr; } }
   </style>
 </head>
 <body>
 <div class="layout">
   <nav>
     <div class="brand"><img class="mark" src="icons/128.png" alt=""><div><b>ElevenTabs</b><div class="by">by YourElevens</div></div></div>
-    <a href="start.html" id="nav-start"><i data-icon="sun" data-size="17"></i>Welcome back</a>
-    <a href="#library" data-s="library"><i data-icon="library" data-size="17"></i>Saved<span class="navcount" id="nav-saved"></span></a>
-    <a href="#overview" data-s="overview"><i data-icon="chart-column" data-size="17"></i>Overview</a>
-    <a href="#tabs" data-s="tabs"><i data-icon="layers-2" data-size="17"></i>Open tabs</a>
-    <a href="#sessions" data-s="sessions"><i data-icon="archive-restore" data-size="17"></i>Sessions</a>
-    <span class="eyebrow group-label">Clean up</span>
-    <a href="#bookmarks" data-s="bookmarks"><i data-icon="bookmark" data-size="17"></i>Bookmarks</a>
-    <a href="#history" data-s="history"><i data-icon="history" data-size="17"></i>History</a>
-    <span class="eyebrow group-label">Preferences</span>
-    <a href="#appearance" data-s="appearance"><i data-icon="sparkles" data-size="17"></i>Appearance</a>
-    <a href="#settings" data-s="settings"><i data-icon="settings-2" data-size="17"></i>Settings</a>
-    <a href="#privacy" data-s="privacy"><i data-icon="shield-check" data-size="17"></i>Privacy &amp; security</a>
-    <a href="#whatsnew" data-s="whatsnew"><i data-icon="zap" data-size="17"></i>What's new</a>
+    <a href="#library" data-s="library"><i data-icon="bookmark" data-size="16"></i>Bookmarks<span class="navcount" id="nav-saved"></span></a>
+    <a href="#tabs" data-s="tabs"><i data-icon="layers-2" data-size="16"></i>Open tabs</a>
+    <a href="#sessions" data-s="sessions"><i data-icon="archive-restore" data-size="16"></i>Sessions</a>
+    <a href="#overview" data-s="overview"><i data-icon="chart-column" data-size="16"></i>Overview</a>
+    <a href="start.html" id="nav-start"><i data-icon="sun" data-size="16"></i>Welcome back</a>
+    <span class="sepv"></span>
+    <a href="#bookmarks" data-s="bookmarks"><i data-icon="folder-tree" data-size="16"></i>Tidy up</a>
+    <a href="#history" data-s="history"><i data-icon="history" data-size="16"></i>History</a>
+    <a href="#appearance" data-s="appearance"><i data-icon="sparkles" data-size="16"></i>Appearance</a>
+    <a href="#settings" data-s="settings"><i data-icon="settings-2" data-size="16"></i>Settings</a>
+    <a href="#privacy" data-s="privacy"><i data-icon="shield-check" data-size="16"></i>Privacy</a>
     <div class="bottom">
-      <div class="row" style="gap:8px;color:var(--ok)"><i data-icon="shield-check" data-size="15"></i><b style="font-size:12.5px">Local only</b></div>
-      <p class="tiny muted" style="margin:6px 0 0">No servers, no accounts, no network access. Your data never leaves this browser profile.</p>
-      <div class="row tiny" style="margin-top:10px;justify-content:space-between"><span class="mono muted" id="nav-ver"></span><a href="#whatsnew" style="white-space:nowrap">What's new</a></div>
+      <div class="row tiny"><span class="mono muted" id="nav-ver"></span><a href="#whatsnew" data-s="whatsnew" style="padding:6px 10px;font-size:12px">What's new</a></div>
     </div>
   </nav>
 
@@ -229,20 +236,20 @@
     <!-- LIBRARY (Saved) -->
     <section id="library">
       <div class="page-head">
-        <div class="grow"><span class="eyebrow" id="l-eyebrow">Your collection</span><h1>Saved, <em class="gold">and sorted</em></h1><p>Pages you saved from the ElevenTabs popup, organised into categories. Kept on this device only.</p></div>
-        <button class="btn" id="l-add"><i data-icon="plus" data-size="16"></i>Add link</button>
-        <button class="btn" id="l-import"><i data-icon="download" data-size="16"></i>Import from Chrome</button>
+        <div class="grow"><span class="eyebrow" id="l-eyebrow">All bookmarks</span><h1>Your <em class="gold">bookmarks</em></h1><p>Click the ElevenTabs icon on any page to bookmark it into a folder. Everything lives here, kept on this device only.</p></div>
+                <button class="btn" id="l-import"><i data-icon="download" data-size="16"></i>Import from Chrome</button>
         <button class="btn" id="l-export"><i data-icon="upload" data-size="16"></i>Export</button>
       </div>
-      <div class="lstats" id="l-stats"></div>
+      <form class="quickadd" id="qa" autocomplete="off"><i data-icon="link" data-size="18"></i><input type="text" id="qa-url" placeholder="Paste a link here and press Enter to bookmark it" aria-label="Link to bookmark"><select id="qa-folder" aria-label="Folder"></select><button class="btn btn-gold" type="submit"><i data-icon="bookmark-plus" data-size="16"></i>Save</button></form>
+      <div class="lstats" id="l-stats" hidden></div>
       <div class="syncbar" id="l-sync"></div>
       <div class="lib-wrap">
-        <aside class="card rail" id="rail"></aside>
+        <aside class="card rail" id="rail" aria-label="Folders"></aside>
         <div>
           <div class="toolbar">
             <label class="sbox"><i data-icon="search" data-size="16"></i><input type="text" id="l-q" placeholder="Search title, site or note" aria-label="Search saved"></label>
             <select id="l-sort" aria-label="Sort"><option value="new">Newest first</option><option value="old">Oldest first</option><option value="az">A to Z</option><option value="site">By site</option></select>
-            <span class="seg"><button id="v-board" class="on" title="Grouped by category"><i data-icon="folder-tree" data-size="15"></i>By category</button><button id="v-grid" title="Grid"><i data-icon="layout-grid" data-size="15"></i></button><button id="v-list" title="List"><i data-icon="layout-list" data-size="15"></i></button></span>
+            <span class="seg"><button id="v-board" class="on" title="Grouped by folder"><i data-icon="folder-tree" data-size="15"></i>By folder</button><button id="v-grid" title="Grid"><i data-icon="layout-grid" data-size="15"></i></button><button id="v-list" title="List"><i data-icon="layout-list" data-size="15"></i></button></span>
           </div>
           <div class="bulk" id="bulk"><b id="bulk-n"></b><span class="muted small">Move to</span><select id="bulk-cat" style="width:auto"></select><button class="btn btn-sm" id="bulk-fav"><i data-icon="star" data-size="14"></i>Favourite</button><button class="btn btn-sm btn-danger" id="bulk-del"><i data-icon="trash-2" data-size="14"></i>Delete</button><button class="btn btn-sm btn-quiet" id="bulk-x">Clear</button></div>
           <div id="l-body"></div>

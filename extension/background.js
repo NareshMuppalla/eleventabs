@@ -1,5 +1,5 @@
 // ElevenTabs service worker: grouping, duplicates, sleeping, sessions, time tracking.
-import { saveItem } from './lib/library.js';
+import { saveItem, loadLib, findByUrl } from './lib/library.js';
 import { getConfig, categorize, isWebUrl, hostOf, normUrl, todayKey, isPrivate } from './lib/config.js';
 
 const SLEEP_ALARM = 'tb-sleep';
@@ -402,6 +402,46 @@ function bindFollow() {
 bindFollow();
 chrome.permissions.onAdded.addListener(bindFollow);
 
+// ---------- bookmark menu (right-click) and "saved" tick on the toolbar icon ----------
+async function buildMenu() {
+  try {
+    await chrome.contextMenus.removeAll();
+    const lib = await loadLib();
+    chrome.contextMenus.create({ id: 'et-root', title: 'Bookmark in ElevenTabs', contexts: ['page', 'link'] });
+    chrome.contextMenus.create({ id: 'et-auto', parentId: 'et-root', title: 'Pick the folder for me', contexts: ['page', 'link'] });
+    chrome.contextMenus.create({ id: 'et-sep', parentId: 'et-root', type: 'separator', contexts: ['page', 'link'] });
+    for (const c of lib.cats.slice(0, 30)) chrome.contextMenus.create({ id: 'et-f:' + c.id, parentId: 'et-root', title: c.name, contexts: ['page', 'link'] });
+    chrome.contextMenus.create({ id: 'et-open', parentId: 'et-root', title: 'Open all bookmarks…', contexts: ['page', 'link'] });
+  } catch {}
+}
+chrome.runtime.onInstalled.addListener(buildMenu);
+chrome.runtime.onStartup.addListener(buildMenu);
+chrome.storage.onChanged.addListener((ch, area) => { if (area === 'local' && ch.library) buildMenu(); });
+chrome.contextMenus.onClicked.addListener(async (info, tab) => {
+  if (info.menuItemId === 'et-open') { chrome.tabs.create({ url: chrome.runtime.getURL('dashboard.html#library') }); return; }
+  const id = String(info.menuItemId);
+  if (!id.startsWith('et-auto') && !id.startsWith('et-f:')) return;
+  const url = info.linkUrl || info.pageUrl || tab?.url; const title = info.linkUrl ? (info.selectionText || info.linkUrl) : tab?.title;
+  if (!isWebUrl(url)) return;
+  const { settings } = await getConfig();
+  const mirror = settings.mirrorChrome && await chrome.permissions.contains({ permissions: ['bookmarks'] });
+  await saveItem({ url, title, cat: id.startsWith('et-f:') ? id.slice(5) : undefined }, { mirror }).catch(() => {});
+  if (tab?.id != null) badge(tab.id, true);
+});
+async function badge(tabId, on) {
+  try {
+    await chrome.action.setBadgeBackgroundColor({ tabId, color: '#4caf7d' });
+    await chrome.action.setBadgeText({ tabId, text: on ? '✓' : '' });
+  } catch {}
+}
+async function refreshBadge(tabId, url) {
+  if (!isWebUrl(url)) return badge(tabId, false);
+  const lib = await loadLib(); badge(tabId, !!findByUrl(lib, url));
+}
+chrome.tabs.onActivated.addListener(async ({ tabId }) => { const t = await chrome.tabs.get(tabId).catch(() => null); if (t) refreshBadge(tabId, t.url); });
+chrome.tabs.onUpdated.addListener((tabId, ch, t) => { if (ch.url || ch.status === 'complete') refreshBadge(tabId, t.url); });
+chrome.storage.onChanged.addListener(async (ch, area) => { if (area === 'local' && ch.library) { const [t] = await chrome.tabs.query({ active: true, currentWindow: true }); if (t) refreshBadge(t.id, t.url); } });
+
 // Save the current tab to the library (shortcut / right-click free; assign a key at chrome://extensions/shortcuts).
 async function quickSave() {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -411,9 +451,7 @@ async function quickSave() {
     const mirror = settings.mirrorChrome && await chrome.permissions.contains({ permissions: ['bookmarks'] });
     await saveItem({ url: tab.url, title: tab.title }, { mirror }).then(() => { ok = true; }).catch(() => {});
   }
-  await chrome.action.setBadgeBackgroundColor({ color: ok ? '#4caf7d' : '#e5675a' });
-  await chrome.action.setBadgeText({ text: ok ? '✓' : '!' });
-  setTimeout(() => chrome.action.setBadgeText({ text: '' }), 1800);
+  if (tab?.id != null) await badge(tab.id, ok);
 }
 
 // ---------- messages from popup / dashboard ----------

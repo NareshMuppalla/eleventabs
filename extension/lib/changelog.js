@@ -1,6 +1,19 @@
 // Release notes. Shown on the What's new page; build.sh copies them to the website.
 export const CHANGELOG = [
   {
+    "version": "2.3.0",
+    "date": "2026-11-04",
+    "title": "Bookmarks first: folders, right-click and a new dashboard layout",
+    "notes": [
+      "The toolbar popup now opens on Bookmark. Pick a folder, or make a new one right there, and press Save bookmark. A green tick shows on the icon when a page is already bookmarked.",
+      "Right-click any page or link, then Bookmark in ElevenTabs, and choose the folder from the menu. Shortcut: Alt+Shift+B.",
+      "Dashboard rebuilt with a top bar instead of the sidebar. Bookmarks is the home page, with a paste-a-link bar, a Folders list, and bookmarks grouped by folder.",
+      "Folders replace 'categories' everywhere in Bookmarks. Drag a bookmark onto a folder to move it.",
+      "Website images fixed (they were stretched).",
+      "New permission: contextMenus (for the right-click menu). It shows no warning."
+    ]
+  },
+  {
     "version": "2.2.0",
     "date": "2026-11-04",
     "title": "A new look, and every bookmark in one sorted place",
