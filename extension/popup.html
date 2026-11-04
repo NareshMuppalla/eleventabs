@@ -11,7 +11,7 @@
     .stats { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--line); border-radius: 14px; background: var(--card); overflow: hidden; margin-bottom: 12px; }
     .stat { padding: 11px 10px 10px; }
     .stat + .stat { border-left: 1px solid var(--line); }
-    .stat b { display: block; font: 500 22px/1.1 var(--mono); letter-spacing: -.02em; margin-top: 6px; }
+    .stat b { display: block; font: 800 22px/1.1 var(--sans); letter-spacing: -.02em; margin-top: 6px; }
     .stat.hot b { color: var(--gold-ink); }
     .hero-btn { width: 100%; justify-content: center; padding: 13px; font-size: 14.5px; border-radius: 12px; }
     .actions { margin-top: 10px; border: 1px solid var(--line); border-radius: 14px; background: var(--card); padding: 4px; }
@@ -28,7 +28,7 @@
     .tabbar button:hover { color: var(--text); }
     .tabbar button.on { background: var(--card); color: var(--text); box-shadow: 0 1px 2px rgba(0,0,0,.25), inset 0 0 0 1px var(--line-2); }
     .tabbar button.on .ic { color: var(--gold); }
-    .tabbar .cnt { font: 500 10.5px var(--mono); padding: 2px 6px; border-radius: 99px; background: var(--gold-soft); color: var(--gold-ink); }
+    .tabbar .cnt { font: 650 12px var(--sans); padding: 2px 6px; border-radius: 99px; background: var(--gold-soft); color: var(--gold-ink); }
     .pane { display: none; animation: rise .35s var(--ease); } .pane.on { display: block; }
     @keyframes rise { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
     .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
@@ -40,7 +40,7 @@
     .cur { display: flex; align-items: center; gap: 11px; padding: 12px; border: 1px solid var(--line); border-radius: 14px; background: var(--card); }
     .cur .fv { width: 36px; height: 36px; border-radius: 10px; background: var(--card-2); display: grid; place-items: center; flex: none; border: 1px solid var(--line); }
     .cur .fv img { width: 20px; height: 20px; border-radius: 5px; }
-    .cur .tt { font-weight: 650; font-size: 13.5px; } .cur .hh { font: 500 11px var(--mono); color: var(--muted); margin-top: 2px; }
+    .cur .tt { font-weight: 650; font-size: 13.5px; } .cur .hh { font: 650 12px var(--sans); color: var(--muted); margin-top: 2px; }
     .star { border: 0; background: transparent; color: var(--faint); cursor: pointer; padding: 6px; border-radius: 8px; transition: color .2s, background .2s, transform .2s var(--ease); }
     .star:hover { background: var(--hover); color: var(--gold-ink); } .star.on { color: var(--gold); } .star.on svg { fill: currentColor; }
     .already { display: none; align-items: center; gap: 8px; margin-top: 10px; padding: 8px 11px; border-radius: 10px; background: var(--gold-soft); border: 1px solid var(--gold-line); color: var(--gold-ink); font-size: 12px; font-weight: 600; }
@@ -50,7 +50,7 @@
     .cc { display: inline-flex; align-items: center; gap: 7px; padding: 6px 10px; border-radius: 99px; border: 1px solid var(--line-2); background: var(--card); color: var(--text-2); font: 550 12px var(--sans); cursor: pointer; transition: all .2s var(--ease); }
     .cc:hover { border-color: var(--gold-line); color: var(--text); }
     .cc.on { background: var(--gold-soft); border-color: var(--gold); color: var(--text); box-shadow: 0 0 0 1px var(--gold) inset; }
-    .cc.sug::after { content: "suggested"; font: 500 9px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--gold-ink); margin-left: 2px; }
+    .cc.sug::after { content: "suggested"; font: 700 10px var(--sans); letter-spacing: .06em; text-transform: uppercase; color: var(--gold-ink); margin-left: 2px; }
     .cc.add { border-style: dashed; color: var(--muted); }
     .newcat { display: none; gap: 6px; margin-top: 8px; } .newcat.on { display: flex; }
     .savebar { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 12px; }
@@ -62,7 +62,7 @@
     .found .s .ic { color: var(--muted); }
     .hit { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 9px; cursor: pointer; color: var(--text); text-decoration: none; }
     .hit:hover { background: var(--hover); } .hit img { width: 16px; height: 16px; border-radius: 4px; flex: none; }
-    .hit .tt { font-size: 12.5px; font-weight: 550; } .hit .hh { font: 500 10.5px var(--mono); color: var(--muted); }
+    .hit .tt { font-size: 12.5px; font-weight: 550; } .hit .hh { font: 650 12px var(--sans); color: var(--muted); }
     .hit .dot { margin-left: auto; }
     .libbtn { width: 100%; justify-content: center; margin-top: 10px; }
     footer { margin-top: 12px; display: grid; gap: 2px; }

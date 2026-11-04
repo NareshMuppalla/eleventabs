@@ -52,7 +52,7 @@ export function buildVars(t) {
   const v = dark ? {
     '--bg': t.bg, '--bg-2': mix(t.bg, W, .03), '--card': mix(t.bg, W, .05), '--card-2': mix(t.bg, W, .075), '--hover': mix(t.bg, W, .1),
     '--line': rgba(t.text, .08), '--line-2': rgba(t.text, .15),
-    '--text': t.text, '--text-2': mix(t.text, t.bg, .18), '--muted': mix(t.text, t.bg, .45), '--faint': mix(t.text, t.bg, .65),
+    '--text': t.text, '--text-2': mix(t.text, t.bg, .08), '--muted': mix(t.text, t.bg, .3), '--faint': mix(t.text, t.bg, .5),
     '--gold': mid, '--gold-ink': hi, '--bronze': lo, '--gold-soft': rgba(mid, .11), '--gold-line': rgba(mid, .32),
     '--danger': '#ff8a7a', '--danger-soft': 'rgba(255, 138, 122, .1)', '--ok': '#86d6a8',
     '--shadow': '0 1px 0 rgba(255,255,255,.03) inset, 0 12px 32px -18px rgba(0,0,0,.8)',
@@ -60,7 +60,7 @@ export function buildVars(t) {
   } : {
     '--bg': t.bg, '--bg-2': mix(t.bg, K, .03), '--card': mix(t.bg, W, .6), '--card-2': mix(t.bg, W, .3), '--hover': mix(t.bg, K, .025),
     '--line': rgba(t.text, .09), '--line-2': rgba(t.text, .18),
-    '--text': t.text, '--text-2': mix(t.text, t.bg, .15), '--muted': mix(t.text, t.bg, .52), '--faint': mix(t.text, t.bg, .7),
+    '--text': t.text, '--text-2': mix(t.text, t.bg, .08), '--muted': mix(t.text, t.bg, .36), '--faint': mix(t.text, t.bg, .55),
     '--gold': mix(mid, K, .28), '--gold-ink': mix(mid, K, .42), '--bronze': lo, '--gold-soft': rgba(mid, .14), '--gold-line': rgba(mix(mid, K, .2), .38),
     '--danger': '#b93a0a', '--danger-soft': 'rgba(185, 58, 10, .08)', '--ok': '#2f6d58',
     '--shadow': '0 1px 0 rgba(255,255,255,.7) inset, 0 10px 30px -20px rgba(40,30,10,.35)',

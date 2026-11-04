@@ -1,6 +1,17 @@
 // Release notes. Shown on the What's new page; build.sh copies them to the website.
 export const CHANGELOG = [
   {
+    "version": "2.4.0",
+    "date": "2026-11-04",
+    "title": "New logo, clearer text, and Chrome folders kept",
+    "notes": [
+      "New ElevenTabs logo: a bookmark with a tick over stacked tabs.",
+      "Easier to read everywhere: all small monospace labels are now clear Satoshi type, text is larger, and grey text is darker (or lighter in dark mode).",
+      "Import from Chrome now keeps your Chrome folders as folders here, and gives any site with 3 or more bookmarks its own folder. 'Sort unsorted' does the same for what is already imported.",
+      "Importing now also turns on Auto-add, so new Chrome bookmarks appear here by themselves."
+    ]
+  },
+  {
     "version": "2.3.0",
     "date": "2026-11-04",
     "title": "Bookmarks first: folders, right-click and a new dashboard layout",

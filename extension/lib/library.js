@@ -120,10 +120,10 @@ export async function deleteCat(id) {
   await saveLib(lib);
 }
 
-// Put every uncategorised item into the best matching category.
+// Put every unsorted bookmark into a folder (your rules, its Chrome folder, or its site).
 export async function autoSort() {
-  const lib = await loadLib(); const cfg = await getConfig(); let n = 0;
-  for (const i of lib.items) if (!i.cat) { const c = suggestCat(i.url, lib, cfg.categories); if (c) { i.cat = c; n++; } }
+  const lib = await loadLib(); const cfg = await getConfig();
+  const n = sortLoose(lib, cfg.categories);
   await saveLib(lib); return n;
 }
 
@@ -135,24 +135,45 @@ function flat(nodes, path = [], out = []) {
   }
   return out;
 }
-// Copies your Chrome bookmarks into the library (originals are never touched). Chrome folder names that match a category are kept.
+const ROOT_FOLDERS = /^(bookmarks bar|bookmarks|other bookmarks|mobile bookmarks|favorites bar|reading list|)$/i;
+function prettyHost(h) { const base = (h || '').replace(/^www\./, '').split('.').slice(0, -1).join('.') || h; const w = base.split('.').pop(); return w ? w[0].toUpperCase() + w.slice(1) : h; }
+function catByName(lib, name) {
+  const n = String(name || '').trim().slice(0, 40); if (!n) return '';
+  let c = lib.cats.find(x => x.name.toLowerCase() === n.toLowerCase());
+  if (!c) { c = { id: 'u' + uid(), name: n, color: COLORS[lib.cats.length % COLORS.length], patterns: [] }; lib.cats.push(c); }
+  return c.id;
+}
+// Sort whatever has no folder yet: your rules, then the Chrome folder it came from, then busy sites (3+ bookmarks) get their own folder.
+function sortLoose(lib, cfgCats) {
+  let n = 0;
+  for (const i of lib.items) if (!i.cat) {
+    let id = suggestCat(i.url, lib, cfgCats);
+    if (!id && i.folder && !ROOT_FOLDERS.test(i.folder)) id = catByName(lib, i.folder);
+    if (id) { i.cat = id; n++; }
+  }
+  const byHost = {};
+  for (const i of lib.items) if (!i.cat) (byHost[hostOf(i.url)] = byHost[hostOf(i.url)] || []).push(i);
+  for (const [h, arr] of Object.entries(byHost)) if (h && arr.length >= 3) { const id = catByName(lib, prettyHost(h)); for (const i of arr) { i.cat = id; n++; } }
+  return n;
+}
+// Copies your Chrome bookmarks into the library (originals are never touched). Chrome folders become folders here.
 export async function importChrome() {
   const lib = await loadLib(); const cfg = await getConfig();
   const tree = await chrome.bookmarks.getTree();
-  const byName = new Map(lib.cats.map(c => [c.name.toLowerCase(), c.id]));
   let added = 0, existed = 0, skipped = 0;
-  const seen = new Set(lib.items.map(i => normUrl(i.url)));
+  const have = new Map(lib.items.map(i => [normUrl(i.url), i]));
   for (const b of flat(tree)) {
     if (!isWebUrl(b.url)) { skipped++; continue; }
-    const k = normUrl(b.url); if (seen.has(k)) { existed++; continue; } seen.add(k);
-    const cat = suggestCat(b.url, lib, cfg.categories) || byName.get((b.folder || '').toLowerCase()) || '';
-    lib.items.push({ id: uid(), url: s(b.url, 2000), title: s(b.title, 200).trim() || hostOf(b.url), note: '', cat, fav: false, added: Number(b.added) || Date.now(), folder: s(b.folder, 80) });
-    added++;
+    const k = normUrl(b.url); const ex = have.get(k);
+    if (ex) { existed++; if (!ex.folder) ex.folder = s(b.folder, 80); continue; }
+    const it = { id: uid(), url: s(b.url, 2000), title: s(b.title, 200).trim() || hostOf(b.url), note: '', cat: '', fav: false, added: Number(b.added) || Date.now(), folder: s(b.folder, 80) };
+    lib.items.push(it); have.set(k, it); added++;
   }
+  const sorted = sortLoose(lib, cfg.categories);
   lib.items.sort((a, b) => b.added - a.added);
   if (lib.items.length > MAX_ITEMS) lib.items.length = MAX_ITEMS;
   await saveLib(lib);
-  return { added, existed, skipped };
+  return { added, existed, skipped, sorted };
 }
 
 async function mirrorToChrome(item, lib) {

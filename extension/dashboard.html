@@ -13,7 +13,7 @@
     nav::-webkit-scrollbar { display: none; }
     nav .brand { padding: 0 18px 0 0; margin-right: 6px; border-right: 1px solid var(--line); flex: none; }
     nav .brand .by { display: none; }
-    nav a { display: flex; align-items: center; gap: 8px; padding: 9px 14px; border-radius: 99px; color: var(--text-2); font-weight: 600; font-size: 13.5px; white-space: nowrap; flex: none; transition: background .2s, color .2s; }
+    nav a { display: flex; align-items: center; gap: 8px; padding: 9px 12px; border-radius: 99px; color: var(--text-2); font-weight: 600; font-size: 13.5px; white-space: nowrap; flex: none; transition: background .2s, color .2s; }
     nav a .ic { color: var(--muted); transition: color .2s; }
     nav a:hover { background: var(--hover); color: var(--text); }
     nav a.active { background: var(--text); color: var(--bg); }
@@ -21,7 +21,7 @@
     nav a.active .navcount { background: rgba(255,255,255,.22); color: inherit; }
     nav .group-label { display: none; }
     nav .sepv { width: 1px; height: 22px; background: var(--line-2); margin: 0 8px; flex: none; }
-    nav .bottom { margin: 0 0 0 auto; padding: 0; border: 0; background: none; display: flex; align-items: center; gap: 12px; flex: none; }
+    nav .bottom { display: none; margin: 0 0 0 auto; padding: 0; border: 0; background: none; display: flex; align-items: center; gap: 12px; flex: none; }
     nav .bottom p { display: none; }
     nav .bottom .row { margin: 0 !important; gap: 10px; }
     main { padding: 30px 34px 70px; max-width: 1380px; width: 100%; margin: 0 auto; }
@@ -31,20 +31,20 @@
     .page-head h1 { font: 800 38px/1.05 var(--sans); letter-spacing: -.035em; margin-top: 10px; }
     .page-head p { color: var(--muted); margin: 8px 0 0; max-width: 620px; }
     .kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-bottom: 14px; }
-    .kpi b { display: block; font: 500 32px/1 var(--mono); letter-spacing: -.03em; margin-top: 14px; }
+    .kpi b { display: block; font: 800 32px/1 var(--sans); letter-spacing: -.03em; margin-top: 14px; }
     .kpi .sub { color: var(--muted); font-size: 12.5px; margin-top: 6px; }
     .kpi.gold b { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
     .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     .grid2 > .card { min-width: 0; }
     .catrow { display: grid; grid-template-columns: 150px 1fr 64px; gap: 14px; align-items: center; padding: 7px 0; }
-    .catrow .v { text-align: right; font: 500 12.5px var(--mono); color: var(--text-2); }
+    .catrow .v { text-align: right; font: 650 12.5px var(--sans); color: var(--text-2); }
     .days { display: flex; align-items: flex-end; gap: 10px; height: 190px; padding-top: 6px; }
     .day { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 8px; height: 100%; }
     .day .stack { width: 100%; max-width: 46px; display: flex; flex-direction: column-reverse; border-radius: 8px; overflow: hidden; min-height: 3px; background: var(--bg-2); gap: 2px; }
     .day .stack span { display: block; }
-    .day .lbl { font: 500 10.5px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
-    .day .tot { font: 500 11px var(--mono); color: var(--text-2); min-height: 14px; }
-    .site-row .v { font: 500 12.5px var(--mono); color: var(--text-2); white-space: nowrap; }
+    .day .lbl { font: 650 12px var(--sans); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+    .day .tot { font: 650 12px var(--sans); color: var(--text-2); min-height: 14px; }
+    .site-row .v { font: 650 12.5px var(--sans); color: var(--text-2); white-space: nowrap; }
     .empty { padding: 26px; text-align: center; color: var(--muted); border: 1px dashed var(--line-2); border-radius: 12px; }
     .empty .ic { margin: 0 auto 10px; color: var(--gold); }
     .gate { display: flex; align-items: center; gap: 16px; padding: 18px; border: 1px solid var(--gold-line); background: var(--gold-soft); border-radius: 14px; margin-bottom: 14px; }
@@ -68,7 +68,7 @@
     .quickadd select { width: auto; max-width: 190px; border-radius: 12px; }
     .quickadd:focus-within { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-soft); }
     .page-head h1 { font-size: 34px; }
-    .navcount { margin-left: auto; font: 500 10.5px var(--mono); color: var(--gold-ink); background: var(--gold-soft); border-radius: 99px; padding: 2px 7px; } .navcount:empty { display: none; }
+    .navcount { margin-left: auto; font: 650 12px var(--sans); color: var(--gold-ink); background: var(--gold-soft); border-radius: 99px; padding: 2px 7px; } .navcount:empty { display: none; }
     .lstats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 14px; }
     .lstat { padding: 16px 18px; border: 1px solid var(--line); border-radius: 18px; background: var(--card); box-shadow: var(--shadow); }
     .lstat b { display: block; font: 800 30px/1 var(--sans); letter-spacing: -.04em; margin-top: 10px; }
@@ -79,7 +79,7 @@
     .bsec { margin-bottom: 26px; }
     .bsec-h { display: flex; align-items: center; gap: 10px; margin: 0 0 12px; cursor: pointer; user-select: none; }
     .bsec-h h3 { font: 800 18px/1 var(--sans); letter-spacing: -.02em; }
-    .bsec-h .cnt { font: 500 11.5px var(--mono); color: var(--muted); padding: 3px 9px; border-radius: 99px; background: var(--bg-2); border: 1px solid var(--line); }
+    .bsec-h .cnt { font: 650 12px var(--sans); color: var(--muted); padding: 3px 9px; border-radius: 99px; background: var(--bg-2); border: 1px solid var(--line); }
     .bsec-h .line { flex: 1; height: 1px; background: var(--line); }
     .bsec-h .chev { color: var(--muted); transition: transform .25s var(--ease); } .bsec.closed .chev { transform: rotate(-90deg); } .bsec.closed .lgrid { display: none; }
     .bsec-h .all { font-size: 12px; font-weight: 600; color: var(--gold-ink); border: 0; background: transparent; cursor: pointer; padding: 4px 8px; border-radius: 8px; } .bsec-h .all:hover { background: var(--hover); }
@@ -91,7 +91,7 @@
     .rail .ri:hover { background: var(--hover); color: var(--text); }
     .rail .ri.on { background: var(--card-2); color: var(--text); box-shadow: inset 0 0 0 1px var(--line-2); }
     .rail .ri.drop { background: var(--gold-soft); box-shadow: inset 0 0 0 1px var(--gold); }
-    .rail .ri .n { margin-left: auto; font: 500 11px var(--mono); color: var(--muted); }
+    .rail .ri .n { margin-left: auto; font: 650 12px var(--sans); color: var(--muted); }
     .rail .ri .ic { color: var(--muted); } .rail .ri.on .ic { color: var(--gold); }
     .rail .sep { height: 1px; background: var(--line); margin: 8px 6px; }
     .rail .cat-actions { display: flex; gap: 6px; padding: 6px 4px 2px; flex-wrap: wrap; }
@@ -108,7 +108,7 @@
     .lcard.sel { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold), var(--shadow); }
     .lcard .top { display: flex; align-items: center; gap: 9px; }
     .lcard .fv { width: 30px; height: 30px; border-radius: 9px; background: var(--card-2); border: 1px solid var(--line); display: grid; place-items: center; flex: none; } .lcard .fv img { width: 18px; height: 18px; border-radius: 4px; }
-    .lcard .host { font: 500 11px var(--mono); color: var(--muted); } 
+    .lcard .host { font: 650 12px var(--sans); color: var(--muted); } 
     .lcard .ttl { font-weight: 650; font-size: 14px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; color: var(--text); text-decoration: none; }
     .lcard .ttl:hover { color: var(--gold-ink); }
     .lcard .note { color: var(--muted); font-size: 12.5px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
@@ -120,7 +120,7 @@
     .lgrid.list .lcard { flex-direction: row; align-items: center; padding: 9px 12px; gap: 14px; } .lgrid.list .lcard .top { width: 230px; } .lgrid.list .lcard .ttl { -webkit-line-clamp: 1; flex: 1; } .lgrid.list .lcard .note { display: none; } .lgrid.list .lcard .bot { margin: 0; min-width: 260px; } .lgrid.list .lcard .acts { position: static; background: none; padding: 0; } .lgrid.list .lcard .pick { left: -22px; }
     .lgrid.list .lcard .body { flex: 1; min-width: 0; } 
     .catchip { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 62%; display: inline-flex; align-items: center; gap: 6px; padding: 3px 9px; border-radius: 99px; background: var(--bg-2); border: 1px solid var(--line); font: 550 11.5px var(--sans); color: var(--text-2); }
-    .when { font: 500 11px var(--mono); color: var(--faint); }
+    .when { font: 650 12px var(--sans); color: var(--faint); }
     .modal { position: fixed; inset: 0; z-index: 50; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,.55); backdrop-filter: blur(4px); } .modal.on { display: flex; }
     .modal .card { width: min(520px, 92vw); padding: 22px; animation: rise .3s var(--ease); }
     .modal label.f { display: block; margin-top: 12px; } .modal label.f > span { display: block; margin-bottom: 5px; }
@@ -148,6 +148,7 @@
     .tmeta { display: flex; align-items: center; gap: 8px; padding: 11px 14px; border-top: 1px solid var(--line); }
     .wn { position: relative; }
     .wn ul { margin: 10px 0 0; padding-left: 18px; color: var(--text-2); } .wn li { margin: 6px 0; }
+    @media (max-width: 1500px) { nav a { padding: 9px 10px; } nav .brand { padding-right: 12px; } }
     @media (max-width: 980px) { nav { padding: 0 14px; } main { padding: 24px; } .kpis, .grid2, .feat, .trust { grid-template-columns: 1fr 1fr; } }
   </style>
 </head>
@@ -166,9 +167,7 @@
     <a href="#appearance" data-s="appearance"><i data-icon="sparkles" data-size="16"></i>Appearance</a>
     <a href="#settings" data-s="settings"><i data-icon="settings-2" data-size="16"></i>Settings</a>
     <a href="#privacy" data-s="privacy"><i data-icon="shield-check" data-size="16"></i>Privacy</a>
-    <div class="bottom">
-      <div class="row tiny"><span class="mono muted" id="nav-ver"></span><a href="#whatsnew" data-s="whatsnew" style="padding:6px 10px;font-size:12px">What's new</a></div>
-    </div>
+    <a href="#whatsnew" data-s="whatsnew" title="What's new"><i data-icon="zap" data-size="16"></i>What's new<span id="nav-ver" hidden></span></a>
   </nav>
 
   <main>

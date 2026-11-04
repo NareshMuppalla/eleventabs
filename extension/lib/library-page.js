@@ -33,6 +33,7 @@ export function initLibrary({ loaders, $, esc, toast, has, ask }) {
     const s = $('l-sync'); s.className = 'syncbar' + (followOn ? ' ok' : '');
     s.innerHTML = followOn
       ? `${icon('check-check', 18)}<span class="grow"><b>Chrome bookmarks are kept in sync.</b> <span class="muted small">Anything you bookmark in Chrome appears here, in the right category.</span></span><label class="check"><input type="checkbox" id="s-follow" checked>Auto-add</label><button class="btn btn-sm" id="s-import">${icon('download', 14)}Re-import now</button>`
+      : lib.items.length > 20 ? `${icon('bookmark-plus', 18)}<span class="grow"><b>Keep Chrome bookmarks coming in.</b> <span class="muted small">Turn on Auto-add so every bookmark you make in Chrome also lands here, in a folder.</span></span><button class="btn btn-gold btn-sm" id="s-go">${icon('check-check', 14)}Turn on Auto-add</button>${count(i => !i.cat) ? `<button class="btn btn-sm" id="r-auto2">${icon('wand-sparkles', 14)}Sort ${count(i => !i.cat)} unsorted</button>` : ''}`
       : `${icon('bookmark-plus', 18)}<span class="grow"><b>See every bookmark in one place.</b> <span class="muted small">Bring in your Chrome bookmarks (copies only, originals untouched) and keep new ones coming in automatically.</span></span><button class="btn btn-gold btn-sm" id="s-go">${icon('download', 14)}Bring in my bookmarks</button>`;
   }
   async function reload() { await chromeState(); lib = await loadLib(); $('nav-saved').textContent = lib.items.length || ''; render(); }
@@ -164,15 +165,17 @@ export function initLibrary({ loaders, $, esc, toast, has, ask }) {
   const setMode = m => { mode = m; for (const k of ['board', 'grid', 'list']) $('v-' + k).classList.toggle('on', k === m); render(); };
   $('v-board').onclick = () => setMode('board'); $('v-grid').onclick = () => setMode('grid'); $('v-list').onclick = () => setMode('list');
   $('l-sync').addEventListener('click', async e => {
-    if (e.target.closest('#s-go')) { if (!(await has('bookmarks')) && !(await ask('bookmarks'))) return; const r = await importChrome(); const c = await getConfig(); c.settings.followChrome = true; await saveConfig({ settings: c.settings }); toast(`Brought in ${plural(r.added, 'bookmark')}. New ones will appear automatically.`, 'check-check'); reload(); }
-    if (e.target.closest('#s-import')) { const r = await importChrome(); toast(`${plural(r.added, 'new bookmark')} added`, 'download'); reload(); }
+    if (e.target.closest('#s-go')) { if (!(await has('bookmarks')) && !(await ask('bookmarks'))) return; const r = await importChrome(); const c = await getConfig(); c.settings.followChrome = true; await saveConfig({ settings: c.settings }); toast(`Brought in ${plural(r.added, 'bookmark')} and sorted ${r.sorted} into folders. New ones appear automatically.`, 'check-check'); reload(); }
+    if (e.target.closest('#r-auto2')) { const n = await autoSort(); toast(n ? `Sorted ${plural(n, 'bookmark')} into folders` : 'Nothing more to sort', 'wand-sparkles'); reload(); return; }
+    if (e.target.closest('#s-import')) { const r = await importChrome(); toast(`${plural(r.added, 'new bookmark')} added, ${r.sorted} sorted`, 'download'); reload(); }
   });
   $('l-sync').addEventListener('change', async e => { if (e.target.id !== 's-follow') return; const c = await getConfig(); c.settings.followChrome = e.target.checked; await saveConfig({ settings: c.settings }); toast(e.target.checked ? 'New Chrome bookmarks will appear here' : 'Auto-add is off'); reload(); });
 
   const doImport = async () => {
     if (!(await has('bookmarks')) && !(await ask('bookmarks'))) return;
     const r = await importChrome();
-    toast(`Imported ${plural(r.added, 'bookmark')}${r.existed ? ` · ${r.existed} already here` : ''}. Your Chrome bookmarks are untouched.`, 'download');
+    const c = await getConfig(); c.settings.followChrome = true; await saveConfig({ settings: c.settings });
+    toast(`Imported ${plural(r.added, 'bookmark')}, ${r.sorted} sorted into folders. Chrome bookmarks untouched.`, 'download');
     reload();
   };
   $('l-import').onclick = doImport;
